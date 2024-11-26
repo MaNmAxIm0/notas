@@ -72,7 +72,7 @@ function updateDomainSelect(selectedSubject) {
             infoIcon.className = 'domain-info-icon';
             infoIcon.innerHTML = '❓';
             infoIcon.title = 'Click for domain information';
-            infoIcon.onclick = window.showPopup;
+            infoIcon.onclick = showPopup;
             domainContainer.appendChild(infoIcon);
         }
     }
@@ -723,9 +723,18 @@ document.getElementById('select12Subject').addEventListener('change', function()
 document.addEventListener('click', function(event) {
     const popup = document.getElementById('domainInfoPopup');
     if (event.target === popup) {
-        window.closePopup();
+        closePopup();
     }
 });
+
+// Add JavaScript functions to handle the popup
+function showPopup() {
+    document.getElementById('domainInfoPopup').style.display = 'flex';
+}
+
+window.closePopup = function() {
+    document.getElementById('domainInfoPopup').style.display = 'none';
+}
 
 // New function to get exam grades
 function getExamGrades() {
@@ -761,8 +770,35 @@ function getExamGrades() {
 function updateFinalGrades12() {
     if (!window.testData) return;
 
-    // Group tests by subject
+    // Clear existing summary and average display
+    const summaryContainer = document.querySelector('.year12-finals');
+    summaryContainer.innerHTML = '';
+    
+    // Remove existing average display if present
+    const existingAverage = document.querySelector('.year12-quick-average');
+    if (existingAverage) {
+        existingAverage.remove();
+    }
+
+    // Create and insert average display next to the title
+    const averageDisplay = document.createElement('div');
+    averageDisplay.className = 'year12-quick-average';
+    averageDisplay.style.cssText = `
+        background: #e3f2fd;
+        display: inline-block;
+        padding: 8px 15px;
+        border-radius: 8px;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        text-align: center;
+        margin-left: 15px;
+        vertical-align: middle;
+    `;
+
+    // Calculate overall average
     const subjectTests = {};
+    let totalGrade = 0;
+    let subjectCount = 0;
+
     window.testData.forEach(test => {
         if (!subjectTests[test.subject]) {
             subjectTests[test.subject] = [];
@@ -770,67 +806,108 @@ function updateFinalGrades12() {
         subjectTests[test.subject].push(test);
     });
 
-    // Clear existing summary
-    const summaryTable = document.getElementById('finals12Summary');
-    if (!summaryTable) return;
-    summaryTable.innerHTML = '';
-
-    // Update summary for each subject
-    Object.entries(subjectTests).forEach(([subject, tests]) => {
-        // Group tests by domain
-        const domainTests = {};
-        tests.forEach(test => {
-            if (!domainTests[test.domain]) {
-                domainTests[test.domain] = [];
-            }
-            domainTests[test.domain].push(test);
-        });
-
-        // Calculate domain averages and final grade
-        const domains = subjectDomains[subject] || [];
-        const domainAverages = {};
-        let finalGrade = 0;
-        let totalWeight = 0;
-
-        domains.forEach(domain => {
-            const domainTests = tests.filter(t => t.domain === domain.name);
-            if (domainTests.length > 0) {
-                const avg = domainTests.reduce((sum, t) => sum + t.grade, 0) / domainTests.length;
-                domainAverages[domain.name] = avg;
-                finalGrade += avg * domain.weight;
-                totalWeight += domain.weight;
+    // Process non-Portuguese subjects first
+    Object.entries(subjectTests)
+        .filter(([subject]) => subject !== 'Português')
+        .forEach(([subject, tests]) => {
+            const subjectGrade = processSubject(subject, tests, summaryContainer);
+            if (subjectGrade !== null) {
+                totalGrade += subjectGrade;
+                subjectCount++;
             }
         });
 
-        // Create table row
-        const row = document.createElement('tr');
-        row.innerHTML = `
-            <td>${subject}</td>
-            <td>
-                <div class="domain-grades-layout">
-                    ${Object.entries(domainAverages).map(([domain, avg]) => `
-                        <div class="domain-grade-item">
-                            <span class="domain-name">${domain}</span>
-                            <span class="domain-value">${avg.toFixed(1)}</span>
-                        </div>
-                    `).join('')}
-                </div>
-                <div class="domain-tests">
-                    ${tests.map(test => `
-                        <div class="test-grade" title="${test.name}">
-                            ${test.domain}: ${test.grade.toFixed(1)}
-                        </div>
-                    `).join('')}
-                </div>
-            </td>
-            <td>${totalWeight > 0 ? (finalGrade / totalWeight).toFixed(1) : '-'}</td>
-        `;
-        summaryTable.appendChild(row);
-    });
+    // Process Portuguese last
+    if (subjectTests['Português']) {
+        const portugueseGrade = processSubject('Português', subjectTests['Português'], summaryContainer);
+        if (portugueseGrade !== null) {
+            totalGrade += portugueseGrade;
+            subjectCount++;
+        }
+    }
+
+    // Update average display
+    const yearAverage = subjectCount > 0 ? totalGrade / subjectCount : 0;
+    averageDisplay.innerHTML = `
+        <strong>Média 12º Ano:</strong>
+        <span style="font-size: 1.2em; margin-left: 5px">${yearAverage.toFixed(1)}</span>
+    `;
+
+    // Insert average display next to the title (instead of before test input section)
+    const title = document.querySelector('#year12-tab h2');
+    title.appendChild(averageDisplay);
 }
-window.closePopup = function() {
-    document.getElementById('domainInfoPopup').style.display = 'none';
-};
-window.showPopup = function() {
-    document.getElementById('domainInfoPopup').style.display = 'flex';
-};
+
+function processSubject(subject, tests, container) {
+    const domains = subjectDomains[subject] || [];
+    const domainAverages = {};
+    let subjectFinalGrade = 0;
+    let totalWeight = 0;
+
+    domains.forEach(domain => {
+        const domainTests = tests.filter(t => t.domain === domain.name);
+        if (domainTests.length > 0) {
+            const avg = domainTests.reduce((sum, t) => sum + t.grade, 0) / domainTests.length;
+            domainAverages[domain.name] = avg;
+            subjectFinalGrade += avg * domain.weight;
+            totalWeight += domain.weight;
+        }
+    });
+
+    const tableContainer = document.createElement('div');
+    tableContainer.className = `subject-table ${subject === 'Português' ? 'full-width' : ''}`;
+    
+    tableContainer.innerHTML = `
+        <table class="finals-summary-table">
+            <thead>
+                <tr>
+                    <th colspan="${domains.length + 1}">${subject}</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    ${domains.map((domain) => `
+                        <td>
+                            <div class="domain-grade-item">
+                                <span class="domain-name">${domain.name}</span>
+                                <div class="domain-tests">
+                                    ${tests
+                                        .filter(t => t.domain === domain.name)
+                                        .map((test, index) => `
+                                            <div class="test-grade" title="${test.name}">
+                                                ${test.grade.toFixed(1)}
+                                                <span class="remove-test" onclick="removeTest(${window.testData.indexOf(test)}, '${subject}', '${domain.name}')">&times;</span>
+                                            </div>
+                                        `).join('')}
+                                </div>
+                                <span class="domain-value">Média: ${(domainAverages[domain.name] || 0).toFixed(1)}</span>
+                            </div>
+                        </td>
+                    `).join('')}
+                    <td>
+                        <strong>Média Final: ${(subjectFinalGrade / totalWeight).toFixed(1)}</strong>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    `;
+
+    container.appendChild(tableContainer);
+    return totalWeight > 0 ? subjectFinalGrade / totalWeight : null;
+}
+
+function removeTest(testIndex, subject, domain) {
+    if (confirm('Tem certeza que deseja remover este teste?')) {
+        window.testData = window.testData.filter((test, index) => index !== testIndex);
+        updateFinalGrades12();
+        calculateFinalGrades();
+        
+        // Save to database if user is logged in
+        if (auth.currentUser) {
+            saveUserData(auth.currentUser.uid);
+        }
+    }
+}
+
+// Make it available globally
+window.removeTest = removeTest;
