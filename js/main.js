@@ -1,5 +1,4 @@
 function showTab(tabId) {
-    // Hide all tabs
     document.querySelectorAll('.tab-content').forEach(tab => {
         tab.classList.remove('active');
     });
