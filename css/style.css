@@ -264,12 +264,17 @@ button:hover {
     white-space: nowrap;
 }
 
-/* Add to existing CSS */
 .domain-info-icon {
     cursor: pointer;
     margin-left: 5px;
     color: #666;
     font-size: 18px;
+    display: inline-block;
+    vertical-align: middle;
+}
+
+.domain-info-icon:hover {
+    color: #333;
 }
 
 .popup-overlay {
@@ -298,6 +303,7 @@ button:hover {
 .popup-content img {
     max-width: 100%;
     height: auto;
+    display: block;
 }
 
 .close-popup {
@@ -307,4 +313,8 @@ button:hover {
     font-size: 24px;
     cursor: pointer;
     color: #666;
+}
+
+.close-popup:hover {
+    color: #333;
 }
