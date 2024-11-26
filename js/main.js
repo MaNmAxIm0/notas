@@ -1,4 +1,3 @@
-// Update these functions to be exposed to window scope, before the Firebase initialization code
 function showLogin() {
     document.getElementById('loginScreen').style.display = 'block';
     document.getElementById('registerScreen').style.display = 'none';
@@ -17,25 +16,57 @@ function showMainContent() {
     document.getElementById('mainContent').style.display = 'block';
 }
 
-function showTab(tabId) {
-    // Hide all tabs
-    document.querySelectorAll('.tab-content').forEach(tab => {
-        tab.classList.remove('active');
-    });
-    document.querySelectorAll('.tab-button').forEach(button => {
-        button.classList.remove('active');
-    });
-
-    // Show selected tab
-    document.getElementById(`${tabId}-tab`).classList.add('active');
-    document.querySelector(`.tab-button[onclick="showTab('${tabId}')"]`).classList.add('active');
-}
-
-// Expose functions to window scope
+// Update these functions to be exposed to window scope, before the Firebase initialization code
 window.showLogin = showLogin;
 window.showRegister = showRegister;
 window.showMainContent = showMainContent;
 window.showTab = showTab;
+window.logout = function() {
+    signOut(auth)
+      .then(() => {
+        window.testData = [];
+        showLogin();
+      })
+      .catch((error) => {
+        alert('Erro de logout: ' + error.message);
+      });
+};
+
+// Add improved error handling to the registration form
+document.getElementById('registerForm').addEventListener('submit', (e) => {
+    e.preventDefault();
+    const email = document.getElementById('registerEmail').value;
+    const password = document.getElementById('registerPassword').value;
+    
+    if (password.length < 6) {
+        alert('A senha deve ter pelo menos 6 caracteres');
+        return;
+    }
+    
+    createUserWithEmailAndPassword(auth, email, password)
+      .then((userCredential) => {
+        alert('Conta criada com sucesso!');
+        initializeUserData(userCredential.user.uid);
+      })
+      .catch((error) => {
+        switch (error.code) {
+            case 'auth/email-already-in-use':
+                alert('Este email já está registrado');
+                break;
+            case 'auth/invalid-email':
+                alert('Email inválido');
+                break;
+            case 'auth/operation-not-allowed':
+                alert('Registro de conta desativado');
+                break;
+            case 'auth/weak-password':
+                alert('Senha muito fraca');
+                break;
+            default:
+                alert('Erro de registo: ' + error.message);
+        }
+      });
+});
 
 // Import the functions you need from the SDKs you need
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-app.js";
@@ -77,21 +108,6 @@ document.getElementById('loginForm').addEventListener('submit', (e) => {
       })
       .catch((error) => {
         alert('Erro de login: ' + error.message);
-      });
-});
-
-// Update registration handler
-document.getElementById('registerForm').addEventListener('submit', (e) => {
-    e.preventDefault();
-    const email = document.getElementById('registerEmail').value;
-    const password = document.getElementById('registerPassword').value;
-    
-    createUserWithEmailAndPassword(auth, email, password)
-      .then((userCredential) => {
-        initializeUserData(userCredential.user.uid);
-      })
-      .catch((error) => {
-        alert('Erro de registo: ' + error.message);
       });
 });
 
