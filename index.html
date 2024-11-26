@@ -5,6 +5,13 @@
 </head>
 <body>
 
+<div class="popup-overlay" id="domainInfoPopup">
+    <div class="popup-content">
+        <span class="close-popup" onclick="window.closePopup()">&times;</span>
+        <img src="/notas/images/edf.png" alt="Physical Education Performance Profile" width="800" height="600">
+    </div>
+</div>
+
 <div id="loginScreen" style="display: block;">
   <div style="max-width: 400px; margin: 100px auto; padding: 20px; background: white; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
     <h2>Login</h2>
@@ -40,14 +47,10 @@
 </div>
 
 <div id="mainContent" style="display: none;">
-<h1>Calculadora de Notas do Ensino Secundário</h1>
-
-<div class="popup-overlay" id="domainInfoPopup">
-    <div class="popup-content">
-        <span class="close-popup" onclick="closePopup()">&times;</span>
-        <img src="/notas/images/edf.png" alt="Physical Education Performance Profile" width="800" height="600">
-    </div>
-</div>
+  <div style="display: flex; justify-content: flex-end; margin-bottom: 20px;">
+    <button onclick="logout()" style="background-color: #f44336;">Logout</button>
+  </div>
+  <h1>Calculadora de Notas do Ensino Secundário</h1>
 
 <div class="tab-container">
     <div class="tab-buttons">
