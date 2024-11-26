@@ -75,13 +75,13 @@ import { getDatabase, ref, set, get } from "https://www.gstatic.com/firebasejs/1
 
 // Your web app's Firebase configuration
 const firebaseConfig = {
-    apiKey: "AIzaSyC1hg5b-lRtilVWYxeEU6sAwSHfCi7uAG8",
-    authDomain: "notas-a3feb.firebaseapp.com",
-    databaseURL: "https://notas-a3feb-default-rtdb.europe-west1.firebasedatabase.app",
-    projectId: "notas-a3feb",
-    storageBucket: "notas-a3feb.firebasestorage.app",
-    messagingSenderId: "657388702531",
-    appId: "1:657388702531:web:2e25bf0481273453e7bdf6"
+  apiKey: "AIzaSyC1hg5b-lRtilVWYxeEU6sAwSHfCi7uAG8",
+  authDomain: "notas-a3feb.firebaseapp.com",
+  databaseURL: "https://notas-a3feb-default-rtdb.europe-west1.firebasedatabase.app",
+  projectId: "notas-a3feb",
+  storageBucket: "notas-a3feb.firebasestorage.app",
+  messagingSenderId: "657388702531",
+  appId: "1:657388702531:web:2e25bf0481273453e7bdf6",
 };
 
 // Initialize Firebase
