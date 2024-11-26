@@ -161,11 +161,10 @@ button:hover {
 }
 
 .test-input-section {
-    background-color: #fff;
-    padding: 20px;
-    border-radius: 8px;
+    position: relative;
+    width: 100%;
+    padding-right: 0;  /* Remove right padding */
     margin-bottom: 20px;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
 }
 
 .consolidated-input {
@@ -183,10 +182,22 @@ button:hover {
 }
 
 .year12-finals {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
+    display: flex;
+    flex-wrap: wrap;
     gap: 20px;
-    margin-bottom: 20px;
+}
+
+.subject-table {
+    width: calc(50% - 10px);
+    background: white;
+    padding: 15px;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.subject-table.full-width {
+    width: 100%;
+    order: 999; /* Ensures it appears last */
 }
 
 .domain-grades-layout {
@@ -254,14 +265,46 @@ button:hover {
 }
 
 .test-grade {
-    font-size: 0.9em;
-    padding: 3px;
-    background-color: #f0f0f0;
-    border-radius: 3px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: #e3f2fd;
+    padding: 4px 8px;
+    border-radius: 4px;
+    margin: 2px 0;
+}
+
+.test-grade .remove-test {
+    color: #f44336;
+    cursor: pointer;
+    margin-left: 5px;
+    font-size: 16px;
+    padding: 0 4px;
+}
+
+.test-grade .remove-test:hover {
+    color: #d32f2f;
+}
+
+.year12-average-display {
+    background-color: #e3f2fd;
+    padding: 20px;
+    margin: 20px 0;
+    border-radius: 8px;
     text-align: center;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.year12-average-display h3 {
+    margin: 0;
+    color: #1976d2;
+}
+
+.year12-average-value {
+    font-size: 24px;
+    font-weight: bold;
+    margin: 10px 0;
+    color: #1565c0;
 }
 
 .domain-info-icon {
@@ -317,4 +360,32 @@ button:hover {
 
 .close-popup:hover {
     color: #333;
+}
+
+.year12-quick-average {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    background: #e3f2fd;
+    padding: 8px 15px;  /* Reduce padding */
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    text-align: center;
+}
+
+.test-input-section {
+    position: relative;
+    width: 100%;
+    padding-right: 0;  /* Remove right padding */
+    margin-bottom: 20px;
+}
+
+.year-section h2 {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.year12-quick-average {
+    flex-shrink: 0;
 }
