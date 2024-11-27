@@ -163,7 +163,7 @@ button:hover {
 .test-input-section {
     position: relative;
     width: 100%;
-    padding-right: 0;  /* Remove right padding */
+    padding-right: 0;
     margin-bottom: 20px;
 }
 
@@ -197,7 +197,7 @@ button:hover {
 
 .subject-table.full-width {
     width: 100%;
-    order: 999; /* Ensures it appears last */
+    order: 999;
 }
 
 .domain-grades-layout {
@@ -236,7 +236,7 @@ button:hover {
 }
 
 .subject-table.full-width {
-    grid-column: 1 / -1; /* Span all columns */
+    grid-column: 1 / -1;
 }
 
 .empty-cell {
@@ -367,7 +367,7 @@ button:hover {
     top: 20px;
     right: 20px;
     background: #e3f2fd;
-    padding: 8px 15px;  /* Reduce padding */
+    padding: 8px 15px;
     border-radius: 8px;
     box-shadow: 0 2px 4px rgba(0,0,0,0.1);
     text-align: center;
@@ -376,7 +376,7 @@ button:hover {
 .test-input-section {
     position: relative;
     width: 100%;
-    padding-right: 0;  /* Remove right padding */
+    padding-right: 0;
     margin-bottom: 20px;
 }
 
