@@ -389,3 +389,197 @@ button:hover {
 .year12-quick-average {
     flex-shrink: 0;
 }
+
+#exam-summary-table {
+    border-collapse: collapse;
+    width: 100%;
+    margin-top: 20px;
+}
+
+#exam-summary-table th,
+#exam-summary-table td {
+    border: 1px solid #ddd;
+    padding: 12px;
+    text-align: left;
+}
+
+#exam-summary-table th {
+    background-color: #f5f5f5;
+    font-weight: bold;
+}
+
+#exam-summary-table tr:hover {
+    background-color: #f9f9f9;
+}
+
+@media screen and (max-width: 768px) {
+  body {
+    padding: 10px;
+  }
+
+  .tab-buttons {
+    flex-wrap: wrap;
+  }
+
+  .tab-button {
+    flex: 1 1 calc(50% - 10px);
+    min-width: calc(50% - 10px);
+    text-align: center;
+  }
+
+  .consolidated-input {
+    grid-template-columns: 1fr;
+    gap: 15px;
+  }
+
+  .domain-grades-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .domain-tests {
+    grid-template-columns: 1fr;
+  }
+
+  .year12-finals {
+    gap: 10px;
+  }
+
+  .subject-table {
+    width: 100%;
+    overflow-x: auto;
+  }
+
+  .final-averages > div {
+    grid-template-columns: 1fr !important;
+  }
+
+  /* Make tables scrollable horizontally */
+  .finals-summary-table,
+  #exam-summary-table,
+  #summary-table {
+    display: block;
+    overflow-x: auto;
+    white-space: nowrap;
+  }
+
+  /* Adjust exam input layout */
+  .exam-input-container > div {
+    grid-template-columns: 1fr !important;
+  }
+
+  /* Adjust popup content for mobile */
+  .popup-content {
+    max-width: 95%;
+    margin: 10px;
+    padding: 15px;
+  }
+
+  /* Adjust login/register forms */
+  #loginScreen > div,
+  #registerScreen > div {
+    margin: 20px auto;
+    width: 90%;
+  }
+
+  /* Make year sections more compact */
+  .year-section {
+    padding: 15px;
+    margin: 10px 0;
+  }
+
+  /* Adjust grade inputs */
+  .grade-input {
+    width: 100%;
+  }
+
+  /* Make domain select full width */
+  .domain-select {
+    width: 100%;
+    margin-left: 0;
+  }
+
+  /* Adjust subject layout */
+  .subject {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 5px;
+  }
+
+  /* Adjust quick average position */
+  .year12-quick-average {
+    position: static;
+    margin: 10px 0;
+  }
+
+  /* Make the header stack on mobile */
+  .year-section h2 {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+  }
+
+  /* Adjust test input section */
+  .test-input-section {
+    padding: 10px;
+  }
+
+  /* Make sure tables don't overflow */
+  table {
+    max-width: 100%;
+  }
+
+  /* Adjust exam summary table */
+  #exam-summary-table th,
+  #exam-summary-table td {
+    padding: 8px;
+  }
+
+  /* Add visual scroll indicator for tables */
+  .table-container {
+    position: relative;
+  }
+
+  .table-container::after {
+    content: '⟷';
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    background: rgba(0,0,0,0.1);
+    padding: 2px 5px;
+    border-radius: 4px;
+    font-size: 12px;
+  }
+
+  /* Make buttons more touch-friendly */
+  button {
+    min-height: 44px;
+    padding: 12px 20px;
+  }
+
+  .submit-grade,
+  .reset-grade {
+    padding: 8px 16px;
+  }
+
+  /* Adjust input heights for better touch targets */
+  input[type="number"],
+  input[type="text"],
+  input[type="email"],
+  input[type="password"],
+  select {
+    height: 44px;
+    padding: 8px;
+  }
+
+  /* Make remove buttons larger for touch */
+  .test-grade .remove-test {
+    padding: 8px;
+    font-size: 20px;
+  }
+
+  /* Add space between stacked elements */
+  .test-container,
+  .exam-entry {
+    margin-bottom: 15px;
+  }
+}
