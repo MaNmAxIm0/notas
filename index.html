@@ -1,4 +1,5 @@
 <html><head><base href="/" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Calculadora de Notas do Ensino Secundário</title>
 <link rel="stylesheet" href="/notas/css/style.css">
 <script src="/notas/js/main.js" type="module"></script>
@@ -21,9 +22,6 @@
       <button type="submit">Entrar</button>
       <button type="button" onclick="showRegister()">Criar Nova Conta</button>
     </form>
-    <div style="margin-top: 10px; text-align: center;">
-      <a href="#" onclick="showResetPassword()" style="color: #666; text-decoration: underline;">Esqueceu a senha?</a>
-    </div>
   </div>
 </div>
 
@@ -45,17 +43,6 @@
       <button type="button" onclick="showLogin()" style="background-color: #666; color: white; padding: 10px; border: none; border-radius: 4px; cursor: pointer;">
         Voltar ao Login
       </button>
-    </form>
-  </div>
-</div>
-
-<div id="resetPasswordScreen" style="display: none;">
-  <div style="max-width: 400px; margin: 100px auto; padding: 20px; background: white; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
-    <h2>Redefinir Senha</h2>
-    <form id="resetPasswordForm" style="display: flex; flex-direction: column; gap: 10px;">
-      <input type="email" id="resetEmail" placeholder="Email" required>
-      <button type="submit">Enviar Email de Redefinição</button>
-      <button type="button" onclick="showLogin()">Voltar ao Login</button>
     </form>
   </div>
 </div>
@@ -118,8 +105,12 @@
                         <thead>
                             <tr>
                                 <th>Disciplina</th>
-                                <th>Médias por Domínio</th>
-                                <th>Nota Final</th>
+                                <th>10º Ano</th>
+                                <th>11º Ano</th>
+                                <th>12º Ano</th>
+                                <th>Nota Exame</th>
+                                <th>CIF</th>
+                                <th>Nota na Pauta</th>
                             </tr>
                         </thead>
                         <tbody id="finals12Summary">
@@ -134,10 +125,25 @@
     <div id="exams-tab" class="tab-content">
         <div class="exam-section">
             <h2>Exames Nacionais</h2>
-            <div id="exam-container">
-                <button onclick="addExam()">Adicionar Novo Exame</button>
-                <div id="exam-entries"></div>
+            <div class="exam-input-container" style="margin-bottom: 20px; padding: 15px; background: #f5f5f5; border-radius: 8px;">
+                <div style="display: grid; grid-template-columns: 1fr auto auto; gap: 10px; align-items: center;">
+                    <select id="exam-subject" class="exam-subject-select">
+                        <option value="">Selecione a Disciplina</option>
+                        <!-- Will be populated with subjects -->
+                    </select>
+                    <input 
+                        type="number" 
+                        id="exam-grade-input" 
+                        min="0" 
+                        max="200" 
+                        step="1" 
+                        placeholder="Nota (0-200)"
+                        style="width: 120px; padding: 8px;"
+                    >
+                    <button onclick="addExam()" style="padding: 8px 16px;">Adicionar Exame</button>
+                </div>
             </div>
+            <div id="exam-entries"></div>
         </div>
     </div>
 
@@ -153,19 +159,10 @@
                         <th>12º Ano</th>
                         <th>Nota Exame</th>
                         <th>CIF</th>
+                        <th>Nota na Pauta</th>
                     </tr>
                 </thead>
                 <tbody id="summary-body"></tbody>
-                <tfoot>
-                    <tr class="year-average">
-                        <td>Média Anual</td>
-                        <td id="year10-average">-</td>
-                        <td id="year11-average">-</td>
-                        <td id="year12-average">-</td>
-                        <td>-</td>
-                        <td>-</td>
-                    </tr>
-                </tfoot>
             </table>
             
             <div class="final-averages" style="margin-top: 30px; padding: 20px; background-color: #f8f9fa; border-radius: 8px;">
@@ -178,6 +175,26 @@
                     <div class="average-box" style="padding: 15px; background: white; border-radius: 6px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
                         <h4>Média de acesso ao ensino superior</h4>
                         <p id="total-average-with-exams" style="font-size: 24px; font-weight: bold; margin: 10px 0;">-</p>
+                        <div style="margin-top: 10px;">
+                            <label for="exam-weight-input">Peso dos Exames (%):</label>
+                            <div style="display: flex; align-items: center; gap: 10px;">
+                                <input 
+                                    type="number" 
+                                    id="exam-weight-input" 
+                                    min="0" 
+                                    max="100" 
+                                    step="1" 
+                                    value="50"
+                                    style="width: 80px; padding: 5px;"
+                                >
+                                <button 
+                                    onclick="calculateFinalGrades()"
+                                    style="padding: 5px 10px; background-color: #4CAF50; color: white; border: none; border-radius: 4px; cursor: pointer;"
+                                >
+                                    Atualizar
+                                </button>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
