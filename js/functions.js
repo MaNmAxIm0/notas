@@ -1,3 +1,7 @@
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-app.js";
+import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut, onAuthStateChanged, sendPasswordResetEmail } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-auth.js";
+import { getDatabase, ref, set, get } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-database.js";
+
 const subjects = {
   year10: ['Matemática A', 'Português', 'Inglês', 'Educação Física', 'Filosofia', 'Economia A', 'Geografia A'],
   year11: ['Matemática A', 'Português', 'Inglês', 'Educação Física', 'Filosofia', 'Economia A', 'Geografia A'],
@@ -81,18 +85,31 @@ function updateDomainSelect(selectedSubject) {
 function showLogin() {
     document.getElementById('loginScreen').style.display = 'block';
     document.getElementById('registerScreen').style.display = 'none';
+    document.getElementById('resetPasswordScreen').style.display = 'none';
     document.getElementById('mainContent').style.display = 'none';
 }
 
 function showRegister() {
     document.getElementById('loginScreen').style.display = 'none';
     document.getElementById('registerScreen').style.display = 'block';
+    document.getElementById('resetPasswordScreen').style.display = 'none';
     document.getElementById('mainContent').style.display = 'none';
 }
+
+function showResetPassword() {
+    document.getElementById('loginScreen').style.display = 'none';
+    document.getElementById('registerScreen').style.display = 'none';
+    document.getElementById('resetPasswordScreen').style.display = 'block';
+    document.getElementById('mainContent').style.display = 'none';
+}
+
+// Add to window scope
+window.showResetPassword = showResetPassword;
 
 function showMainContent() {
     document.getElementById('loginScreen').style.display = 'none';
     document.getElementById('registerScreen').style.display = 'none';
+    document.getElementById('resetPasswordScreen').style.display = 'none';
     document.getElementById('mainContent').style.display = 'block';
 }
 
@@ -162,11 +179,31 @@ document.getElementById('registerForm').addEventListener('submit', (e) => {
       });
 });
 
-// Import the functions you need from the SDKs you need
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-app.js";
-import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-auth.js";
-import { getDatabase, ref, set, get } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-database.js";
+// Add event listener for password reset form
+document.getElementById('resetPasswordForm').addEventListener('submit', (e) => {
+    e.preventDefault();
+    const email = document.getElementById('resetEmail').value;
+    
+    sendPasswordResetEmail(auth, email)
+        .then(() => {
+            alert('Email de redefinição de senha enviado! Verifique sua caixa de entrada.');
+            showLogin();
+        })
+        .catch((error) => {
+            switch (error.code) {
+                case 'auth/invalid-email':
+                    alert('Email inválido');
+                    break;
+                case 'auth/user-not-found':
+                    alert('Não existe conta com este email');
+                    break;
+                default:
+                    alert('Erro ao enviar email de redefinição: ' + error.message);
+            }
+        });
+});
 
+// Import the functions you need from the SDKs you need
 // Your web app's Firebase configuration
 const firebaseConfig = {
     apiKey: "AIzaSyC1hg5b-lRtilVWYxeEU6sAwSHfCi7uAG8",
@@ -474,22 +511,17 @@ function calculateFinalGrades() {
     document.getElementById('year12-average').textContent = year12Average ? year12Average.toFixed(1) : '-';
 
     // Calculate and update final averages
-    const cifAverage = calculateCIFAverage(year10Average, year11Average, year12Average);
-    const finalAverage = calculateFinalAverage(cifAverage, examGrades);
+    const cifAverage = calculateSecondaryEducationAverage(); // Gets value on 200-point scale
+    const finalAverage = calculateFinalAverage(cifAverage / 10, examGrades); // Convert back to 20-point scale for final average calculation
 
-    // Update final averages display
+    // Update final averages display with new label and format
     document.getElementById('total-average-no-exams').textContent = 
         cifAverage ? cifAverage.toFixed(1) : '-';
     document.getElementById('total-average-with-exams').textContent = 
-        finalAverage ? finalAverage.toFixed(1) : '-';
+        finalAverage ? (finalAverage * 10).toFixed(1) : '-'; // Convert to 200-point scale
 
     // Update summary table
     updateSummaryTable(year10Average, year11Average, year12Average, examGrades);
-
-    // Save data if user is logged in
-    if (auth.currentUser) {
-        saveUserData(auth.currentUser.uid);
-    }
 }
 
 function calculateYearAverage(year) {
@@ -613,31 +645,75 @@ function updateSummaryTable(year10Avg, year11Avg, year12Avg, examGrades) {
         const year11Grade = getGrade(subject, 11);
         const year12Grade = getSubjectGrade12(subject);
         const examGrade = examGrades[subject] ? examGrades[subject].grade : null;
-        const cif = calculateSubjectCIF(year10Grade, year11Grade, year12Grade);
+        
+        // Calculate regular CIF (weighted average of all years)
+        const yearGrades = [
+            { grade: year10Grade, weight: 0.3 },
+            { grade: year11Grade, weight: 0.3 },
+            { grade: year12Grade, weight: 0.4 }
+        ].filter(g => g.grade !== null);
+        
+        let finalCIF;
+        if (yearGrades.length > 0) {
+            const weightedSum = yearGrades.reduce((sum, g) => sum + g.grade * g.weight, 0);
+            const totalWeight = yearGrades.reduce((sum, g) => sum + g.weight, 0);
+            const regularCIF = totalWeight > 0 ? weightedSum / totalWeight : null;
+            
+            // If subject has an exam, calculate weighted average with exam grade
+            if (examGrade !== null && regularCIF !== null) {
+                finalCIF = (regularCIF * 0.7) + (examGrade * 0.3);
+            } else {
+                finalCIF = regularCIF;
+            }
+        } else {
+            finalCIF = null;
+        }
 
         row.innerHTML = `
             <td>${subject}</td>
             <td>${year10Grade ? year10Grade.toFixed(1) : '-'}</td>
             <td>${year11Grade ? year11Grade.toFixed(1) : '-'}</td>
-            <td>${year12Grade ? year12Grade.toFixed(1) : '-'}</td>
+            <td>${year12Grade ? Math.round(year12Grade) : '-'}</td>
             <td>${examGrade ? examGrade.toFixed(1) : '-'}</td>
-            <td>${cif ? cif.toFixed(1) : '-'}</td>
+            <td>${finalCIF ? finalCIF.toFixed(1) : '-'}</td>
         `;
         tbody.appendChild(row);
     });
 }
 
+// Function to get grade
 function getGrade(subject, year) {
     const input = document.querySelector(`.year${year}-grade[data-subject="${subject}"]`);
     return input ? parseFloat(input.value) : null;
 }
 
+// Function to get subject grade for 12th year
 function getSubjectGrade12(subject) {
     if (!window.testData) return null;
-    const subjectTests = window.testData.filter(test => test.subject === subject);
-    return calculateSubjectAverage(subjectTests, subject);
+    const tests = window.testData.filter(test => test.subject === subject);
+    if (tests.length === 0) return null;
+
+    const domains = subjectDomains[subject] || [];
+    let subjectFinalGrade = 0;
+    let totalWeight = 0;
+
+    domains.forEach(domain => {
+        const domainTests = tests.filter(t => t.domain === domain.name);
+        if (domainTests.length > 0) {
+            // Calculate raw average for the domain
+            const rawAvg = domainTests.reduce((sum, t) => sum + t.grade, 0) / domainTests.length;
+            // Apply domain weight (percentage * 0.01)
+            const weightedAvg = rawAvg * domain.weight;
+            subjectFinalGrade += weightedAvg;
+            totalWeight += domain.weight;
+        }
+    });
+
+    // Round the final grade to the nearest integer before returning
+    return totalWeight > 0 ? Math.round(subjectFinalGrade) : null;
 }
 
+// Function to calculate subject CIF
 function calculateSubjectCIF(year10Grade, year11Grade, year12Grade) {
     const grades = [
         { grade: year10Grade, weight: 0.3 },
@@ -649,8 +725,18 @@ function calculateSubjectCIF(year10Grade, year11Grade, year12Grade) {
 
     const weightedSum = grades.reduce((sum, g) => sum + g.grade * g.weight, 0);
     const totalWeight = grades.reduce((sum, g) => sum + g.weight, 0);
-
-    return totalWeight > 0 ? weightedSum / totalWeight : null;
+    
+    const regularCIF = totalWeight > 0 ? weightedSum / totalWeight : null;
+    
+    // Get exam grades
+    const examGrades = calculateExamGrades();
+    
+    // If subject has an exam, calculate weighted average with exam grade
+    if (examGrades && examGrades[subject] && regularCIF !== null) {
+        return (regularCIF * 0.7) + (examGrades[subject].grade * 0.3);
+    }
+    
+    return regularCIF;
 }
 
 // Add event listeners to all inputs
@@ -669,7 +755,7 @@ document.addEventListener('DOMContentLoaded', function() {
     createYearInputs();
 });
 
-// New function definition added after getYearGrades
+// New function to add test for 12th year
 function addTest12thYear() {
     const subject = document.getElementById('select12Subject').value;
     const testName = document.getElementById('testName').value;
@@ -847,9 +933,16 @@ function processSubject(subject, tests, container) {
     domains.forEach(domain => {
         const domainTests = tests.filter(t => t.domain === domain.name);
         if (domainTests.length > 0) {
-            const avg = domainTests.reduce((sum, t) => sum + t.grade, 0) / domainTests.length;
-            domainAverages[domain.name] = avg;
-            subjectFinalGrade += avg * domain.weight;
+            // Calculate raw average for the domain
+            const rawAvg = domainTests.reduce((sum, t) => sum + t.grade, 0) / domainTests.length;
+            // Apply domain weight (percentage * 0.01)
+            const weightedAvg = rawAvg * domain.weight;
+            domainAverages[domain.name] = {
+                rawAverage: rawAvg,
+                weightedAverage: weightedAvg,
+                weight: domain.weight * 100 // Keep as percentage for display
+            };
+            subjectFinalGrade += weightedAvg;
             totalWeight += domain.weight;
         }
     });
@@ -869,7 +962,7 @@ function processSubject(subject, tests, container) {
                     ${domains.map((domain) => `
                         <td>
                             <div class="domain-grade-item">
-                                <span class="domain-name">${domain.name}</span>
+                                <span class="domain-name">${domain.name} (${domain.weight * 100}%)</span>
                                 <div class="domain-tests">
                                     ${tests
                                         .filter(t => t.domain === domain.name)
@@ -880,12 +973,15 @@ function processSubject(subject, tests, container) {
                                             </div>
                                         `).join('')}
                                 </div>
-                                <span class="domain-value">Média: ${(domainAverages[domain.name] || 0).toFixed(1)}</span>
+                                <span class="domain-value">
+                                    Média: ${(domainAverages[domain.name]?.rawAverage || 0).toFixed(1)} × ${domain.weight * 100}% = 
+                                    ${(domainAverages[domain.name]?.weightedAverage || 0).toFixed(2)}
+                                </span>
                             </div>
                         </td>
                     `).join('')}
                     <td>
-                        <strong>Média Final: ${(subjectFinalGrade / totalWeight).toFixed(1)}</strong>
+                        <strong>Média Final: ${subjectFinalGrade.toFixed(1)}</strong>
                     </td>
                 </tr>
             </tbody>
@@ -893,7 +989,7 @@ function processSubject(subject, tests, container) {
     `;
 
     container.appendChild(tableContainer);
-    return totalWeight > 0 ? subjectFinalGrade / totalWeight : null;
+    return totalWeight > 0 ? subjectFinalGrade : null;
 }
 
 function removeTest(testIndex, subject, domain) {
@@ -911,3 +1007,45 @@ function removeTest(testIndex, subject, domain) {
 
 // Make it available globally
 window.removeTest = removeTest;
+
+// New function to calculate secondary education average
+function calculateSecondaryEducationAverage() {
+    const subjects = getAllSubjects();
+    let totalCIF = 0;
+    let subjectCount = 0;
+
+    subjects.forEach(subject => {
+        const year10Grade = getGrade(subject, 10);
+        const year11Grade = getGrade(subject, 11);
+        const year12Grade = getSubjectGrade12(subject);
+        
+        // Calculate regular CIF (weighted average of all years)
+        const yearGrades = [
+            { grade: year10Grade, weight: 0.3 },
+            { grade: year11Grade, weight: 0.3 },
+            { grade: year12Grade, weight: 0.4 }
+        ].filter(g => g.grade !== null);
+        
+        if (yearGrades.length > 0) {
+            const weightedSum = yearGrades.reduce((sum, g) => sum + g.grade * g.weight, 0);
+            const totalWeight = yearGrades.reduce((sum, g) => sum + g.weight, 0);
+            let subjectCIF = totalWeight > 0 ? weightedSum / totalWeight : null;
+            
+            // Get exam grades
+            const examGrades = calculateExamGrades();
+            
+            // If subject has an exam, calculate weighted average with exam grade
+            if (examGrades && examGrades[subject] && subjectCIF !== null) {
+                subjectCIF = (subjectCIF * 0.7) + (examGrades[subject].grade * 0.3);
+            }
+            
+            if (subjectCIF !== null) {
+                // Round to nearest integer before adding to total
+                totalCIF += Math.round(subjectCIF);
+                subjectCount++;
+            }
+        }
+    });
+
+    return subjectCount > 0 ? (totalCIF / subjectCount) * 10 : null; // Multiply by 10 to convert to 200-point scale
+}
