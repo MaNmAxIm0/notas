@@ -8,7 +8,7 @@
 <div class="popup-overlay" id="domainInfoPopup">
     <div class="popup-content">
         <span class="close-popup" onclick="closePopup()">&times;</span>
-        <img src="/notas/images/edf.png" alt="Physical Education Performance Profile" width="800" height="600">
+        <img src="/a/962e19a0-f547-4d5b-bb26-d893af11d9ff" alt="Physical Education Performance Profile" width="800" height="600">
     </div>
 </div>
 
@@ -21,6 +21,9 @@
       <button type="submit">Entrar</button>
       <button type="button" onclick="showRegister()">Criar Nova Conta</button>
     </form>
+    <div style="margin-top: 10px; text-align: center;">
+      <a href="#" onclick="showResetPassword()" style="color: #666; text-decoration: underline;">Esqueceu a senha?</a>
+    </div>
   </div>
 </div>
 
@@ -42,6 +45,17 @@
       <button type="button" onclick="showLogin()" style="background-color: #666; color: white; padding: 10px; border: none; border-radius: 4px; cursor: pointer;">
         Voltar ao Login
       </button>
+    </form>
+  </div>
+</div>
+
+<div id="resetPasswordScreen" style="display: none;">
+  <div style="max-width: 400px; margin: 100px auto; padding: 20px; background: white; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+    <h2>Redefinir Senha</h2>
+    <form id="resetPasswordForm" style="display: flex; flex-direction: column; gap: 10px;">
+      <input type="email" id="resetEmail" placeholder="Email" required>
+      <button type="submit">Enviar Email de Redefinição</button>
+      <button type="button" onclick="showLogin()">Voltar ao Login</button>
     </form>
   </div>
 </div>
@@ -158,7 +172,7 @@
                 <h3>Médias Finais</h3>
                 <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-top: 15px;">
                     <div class="average-box" style="padding: 15px; background: white; border-radius: 6px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
-                        <h4>Média CIF</h4>
+                        <h4>Média do Ensino Secundário</h4>
                         <p id="total-average-no-exams" style="font-size: 24px; font-weight: bold; margin: 10px 0;">-</p>
                     </div>
                     <div class="average-box" style="padding: 15px; background: white; border-radius: 6px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
