@@ -50,26 +50,3 @@ window.getDomainWeight = getDomainWeight;
 window.processSubject = processSubject;
 window.updateFinalGrades12 = updateFinalGrades12;
 
-document.addEventListener("DOMContentLoaded", function() {
-    document.querySelectorAll('.test-grade span[title]').forEach(item => {
-        item.addEventListener('click', function() {
-            let tooltip = document.createElement('div');
-            tooltip.textContent = this.getAttribute('title');
-            tooltip.style.position = 'absolute';
-            tooltip.style.background = '#333';
-            tooltip.style.color = '#fff';
-            tooltip.style.padding = '5px 10px';
-            tooltip.style.borderRadius = '5px';
-            tooltip.style.top = (this.getBoundingClientRect().top + window.scrollY - 30) + 'px';
-            tooltip.style.left = (this.getBoundingClientRect().left + window.scrollX) + 'px';
-            tooltip.style.zIndex = '1000';
-            tooltip.classList.add('mobile-tooltip');
-            
-            document.body.appendChild(tooltip);
-
-            setTimeout(() => {
-                tooltip.remove();
-            }, 2000); // Remove após 2 segundos
-        });
-    });
-});
