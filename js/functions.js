@@ -991,10 +991,12 @@ function processSubject(subject, tests, container) {
                                     ${tests
                                         .filter(t => t.domain === domain.name)
                                         .map((test, index) => `
-                                            <div class="test-grade" title="${test.name}">
-                                                ${Math.round(test.grade * 10) / 10}
+                                            <div class="test-grade">
+                                                <span class="test-name">${test.name}</span> <!-- Nome do teste -->
+                                                <span>${Math.round(test.grade * 10) / 10}</span> <!-- Nota -->
                                                 <span class="remove-test" onclick="removeTest(${window.testData.indexOf(test)}, '${subject}', '${domain.name}')">&times;</span>
                                             </div>
+
                                         `).join('')}
                                 </div>
                                 <span class="domain-value">
