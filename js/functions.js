@@ -1082,5 +1082,3 @@ function calculateSecondaryEducationAverage() {
 
     return subjectCount > 0 ? (totalGrade / subjectCount) * 10 : null;
 }
-
-
