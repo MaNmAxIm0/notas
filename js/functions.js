@@ -537,9 +537,9 @@ function calculateFinalGrades() {
 
     // Update final averages display
     document.getElementById('total-average-no-exams').textContent = 
-        secondaryAverage ? secondaryAverage.toFixed(1) : '-';
+        secondaryAverage ? Math.round(secondaryAverage * 10) / 10 : '-';
     document.getElementById('total-average-with-exams').textContent = 
-        finalAverage ? finalAverage.toFixed(1) : '-';
+        finalAverage ? Math.round(finalAverage * 10) / 10 : '-';
 
     // Update summary table
     updateSummaryTable(year10Average, year11Average, year12Average, examGrades);
@@ -686,8 +686,8 @@ function updateSummaryTable(year10Avg, year11Avg, year12Avg, examGrades) {
             <td>${year10Grade ? Math.round(year10Grade) : '-'}</td>
             <td>${year11Grade ? Math.round(year11Grade) : '-'}</td>
             <td>${year12Grade ? Math.round(year12Grade) : '-'}</td>
-            <td>${examGrade ? examGrade.toFixed(1) : '-'}</td>
-            <td>${finalCIF ? finalCIF.toFixed(2) : '-'}</td>
+            <td>${examGrade ? Math.round(examGrade * 10) / 10 : '-'}</td>
+            <td>${finalCIF ? Math.round(finalCIF * 100) / 100 : '-'}</td>
             <td>${finalCIF ? Math.round(finalCIF) : '-'}</td>
         `;
         tbody.appendChild(row);
@@ -940,7 +940,7 @@ function updateFinalGrades12() {
     const yearAverage = subjectCount > 0 ? totalGrade / subjectCount : 0;
     averageDisplay.innerHTML = `
         <strong>Média 12º Ano:</strong>
-        <span style="font-size: 1.2em; margin-left: 5px">${yearAverage.toFixed(1)}</span>
+        <span style="font-size: 1.2em; margin-left: 5px">${Math.round(yearAverage * 10) /10}</span>
     `;
 
     // Insert average display next to the title (instead of before test input section)
@@ -992,20 +992,20 @@ function processSubject(subject, tests, container) {
                                         .filter(t => t.domain === domain.name)
                                         .map((test, index) => `
                                             <div class="test-grade" title="${test.name}">
-                                                ${test.grade.toFixed(1)}
+                                                ${Math.round(test.grade * 10) / 10}
                                                 <span class="remove-test" onclick="removeTest(${window.testData.indexOf(test)}, '${subject}', '${domain.name}')">&times;</span>
                                             </div>
                                         `).join('')}
                                 </div>
                                 <span class="domain-value">
-                                    Média: ${(domainAverages[domain.name]?.rawAverage || 0).toFixed(1)} × ${domain.weight * 100}% = 
-                                    ${(domainAverages[domain.name]?.weightedAverage || 0).toFixed(2)}
+                                    Média: ${Math.round((domainAverages[domain.name]?.rawAverage || 0) * 10) / 10} × ${domain.weight * 100}% = 
+                                    ${Math.round((domainAverages[domain.name]?.weightedAverage || 0) * 10) / 10}
                                 </span>
                             </div>
                         </td>
                     `).join('')}
                     <td>
-                        <strong>Média Final: ${subjectFinalGrade.toFixed(1)}</strong>
+                        <strong>Média Final: ${Math.round(subjectFinalGrade * 10) / 10}</strong>
                     </td>
                 </tr>
             </tbody>
