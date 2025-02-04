@@ -29,9 +29,9 @@ window.calculateFinalGrades = function() {
 
     // Update final averages display
     document.getElementById('total-average-no-exams').textContent = 
-        secondaryAverage ? secondaryAverage.toFixed(1) : '-';
+        secondaryAverage ? Math.round(secondaryAverage * 10) / 10 : '-';
     document.getElementById('total-average-with-exams').textContent = 
-        finalAverage ? finalAverage.toFixed(1) : '-';
+        finalAverage ? Math.round(finalAverage * 10) / 10 : '-';
 
     // Update summary table
     updateSummaryTable(year10Average, year11Average, year12Average, examGrades);
