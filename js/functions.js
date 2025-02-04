@@ -438,14 +438,24 @@ function addExam() {
         return;
     }
 
-    // Create or update summary table
+    // Obtém o contêiner de exames
     let examContainer = document.getElementById('exam-entries');
-    let examTable = document.getElementById('exam-summary-table');
     
+    // Procura um contêiner com a classe "table-container" dentro do examContainer
+    let container = examContainer.querySelector('.table-container');
+    let examTable = examContainer.querySelector('#exam-summary-table');
+
+    // Se o contêiner ainda não existir, cria-o e o adiciona ao examContainer
+    if (!container) {
+        container = document.createElement('div');
+        container.className = 'table-container';
+        examContainer.appendChild(container);
+    }
+    
+    // Se a tabela ainda não existir, cria-a e a insere dentro do contêiner
     if (!examTable) {
         examTable = document.createElement('table');
         examTable.id = 'exam-summary-table';
-        examTable.style.width = '100%';
         examTable.style.marginTop = '20px';
         examTable.innerHTML = `
             <thead>
@@ -457,7 +467,7 @@ function addExam() {
             </thead>
             <tbody></tbody>
         `;
-        examContainer.appendChild(examTable);
+        container.appendChild(examTable);
     }
 
     const tbody = examTable.querySelector('tbody');
@@ -466,26 +476,26 @@ function addExam() {
         <td>${subject}</td>
         <td>${grade}</td>
         <td>
-            <button onclick="this.closest('tr').remove(); calculateFinalGrades();" 
-                    style="background-color: #f44336; padding: 5px 10px;">
+            <button onclick="this.closest('tr').remove(); calculateFinalGrades();" style="background-color: #f44336; padding: 5px 10px;">
                 Remover
             </button>
         </td>
     `;
     tbody.appendChild(row);
 
-    // Clear inputs
+    // Limpa os inputs
     document.getElementById('exam-subject').value = '';
     document.getElementById('exam-grade-input').value = '';
 
-    // Update calculations
+    // Atualiza os cálculos
     calculateFinalGrades();
 
-    // Save if user is logged in
+    // Salva os dados se o usuário estiver logado
     if (auth.currentUser) {
         saveUserData(auth.currentUser.uid);
     }
 }
+
 
 // Helper function to get all unique subjects
 function getAllSubjects() {
@@ -639,7 +649,18 @@ function calculateCIFAverage(year10Avg, year11Avg, year12Avg) {
 }
 
 function updateSummaryTable(year10Avg, year11Avg, year12Avg, examGrades) {
+    // Verifica se a tabela de resumo já está dentro de um contêiner responsivo
+    const summaryTable = document.getElementById('summary-table');
+    if (summaryTable && !summaryTable.parentElement.classList.contains('table-container')) {
+        const container = document.createElement('div');
+        container.className = 'table-container';
+        summaryTable.parentElement.insertBefore(container, summaryTable);
+        container.appendChild(summaryTable);
+    }
+    
+    // Atualiza o corpo da tabela
     const tbody = document.getElementById('summary-body');
+    if (!tbody) return;
     tbody.innerHTML = '';
 
     const allSubjects = getAllSubjects();
@@ -653,15 +674,13 @@ function updateSummaryTable(year10Avg, year11Avg, year12Avg, examGrades) {
         
         let finalCIF;
         
-        // Special handling for Mathematics, Portuguese and Physical Education
+        // Cálculo especial para algumas disciplinas
         if (subject === 'Matemática A' || subject === 'Português' || subject === 'Educação Física') {
             const grades = [year10Grade, year11Grade, year12Grade].filter(g => g !== null);
             if (grades.length > 0) {
-                const rawAvg = grades.reduce((sum, grade) => sum + grade, 0) / grades.length;
-                finalCIF = rawAvg;
+                finalCIF = grades.reduce((sum, grade) => sum + grade, 0) / grades.length;
             }
         } else {
-            // For other subjects, use weighted average
             const yearGrades = [
                 { grade: year10Grade, weight: 0.3 },
                 { grade: year11Grade, weight: 0.3 },
@@ -675,9 +694,9 @@ function updateSummaryTable(year10Avg, year11Avg, year12Avg, examGrades) {
             }
         }
         
-        // Apply exam calculations if subject has an exam
+        // Aplica os exames, se houver, à média final
         if (examGrade !== null && finalCIF !== null) {
-            const roundedYearAvg = Math.round(finalCIF); // Round year average before exam calculation
+            const roundedYearAvg = Math.round(finalCIF);
             finalCIF = (roundedYearAvg * 0.7) + (examGrade * 0.3);
         }
 
@@ -693,6 +712,7 @@ function updateSummaryTable(year10Avg, year11Avg, year12Avg, examGrades) {
         tbody.appendChild(row);
     });
 }
+
 
 function getGrade(subject, year) {
     const input = document.querySelector(`.year${year}-grade[data-subject="${subject}"]`);
@@ -880,17 +900,17 @@ function getExamGrades() {
 function updateFinalGrades12() {
     if (!window.testData) return;
 
-    // Clear existing summary and average display
+    // Limpa o conteúdo anterior do contêiner dos finais do 12º ano
     const summaryContainer = document.querySelector('.year12-finals');
     summaryContainer.innerHTML = '';
-    
-    // Remove existing average display if present
+
+    // Remove a exibição de média existente, se houver
     const existingAverage = document.querySelector('.year12-quick-average');
     if (existingAverage) {
         existingAverage.remove();
     }
 
-    // Create and insert average display next to the title
+    // Cria e insere a exibição da média ao lado do título
     const averageDisplay = document.createElement('div');
     averageDisplay.className = 'year12-quick-average';
     averageDisplay.style.cssText = `
@@ -904,7 +924,7 @@ function updateFinalGrades12() {
         vertical-align: middle;
     `;
 
-    // Calculate overall average
+    // Calcula a média geral dos 12º ano
     const subjectTests = {};
     let totalGrade = 0;
     let subjectCount = 0;
@@ -916,7 +936,7 @@ function updateFinalGrades12() {
         subjectTests[test.subject].push(test);
     });
 
-    // Process non-Portuguese subjects first
+    // Processa as disciplinas (exceto Português) primeiro
     Object.entries(subjectTests)
         .filter(([subject]) => subject !== 'Português')
         .forEach(([subject, tests]) => {
@@ -927,7 +947,7 @@ function updateFinalGrades12() {
             }
         });
 
-    // Process Portuguese last
+    // Processa Português por último
     if (subjectTests['Português']) {
         const portugueseGrade = processSubject('Português', subjectTests['Português'], summaryContainer);
         if (portugueseGrade !== null) {
@@ -936,14 +956,14 @@ function updateFinalGrades12() {
         }
     }
 
-    // Update average display
+    // Atualiza a exibição da média
     const yearAverage = subjectCount > 0 ? totalGrade / subjectCount : 0;
     averageDisplay.innerHTML = `
         <strong>Média 12º Ano:</strong>
-        <span style="font-size: 1.2em; margin-left: 5px">${Math.round(yearAverage * 10) /10}</span>
+        <span style="font-size: 1.2em; margin-left: 5px">${Math.round(yearAverage * 10) / 10}</span>
     `;
 
-    // Insert average display next to the title (instead of before test input section)
+    // Insere a exibição da média ao lado do título (assumindo que o título está em #year12-tab h2)
     const title = document.querySelector('#year12-tab h2');
     title.appendChild(averageDisplay);
 }
@@ -957,20 +977,25 @@ function processSubject(subject, tests, container) {
     domains.forEach(domain => {
         const domainTests = tests.filter(t => t.domain === domain.name);
         if (domainTests.length > 0) {
-            // Calculate raw average for the domain
+            // Calcula a média bruta para o domínio
             const rawAvg = domainTests.reduce((sum, t) => sum + t.grade, 0) / domainTests.length;
-            // Apply domain weight (percentage * 0.01)
+            // Aplica o peso do domínio
             const weightedAvg = rawAvg * domain.weight;
             domainAverages[domain.name] = {
                 rawAverage: rawAvg,
                 weightedAverage: weightedAvg,
-                weight: domain.weight * 100 // Keep as percentage for display
+                weight: domain.weight * 100 // Mantém em porcentagem para exibição
             };
             subjectFinalGrade += weightedAvg;
             totalWeight += domain.weight;
         }
     });
 
+    // Cria um contêiner responsivo para a tabela (envolvido pela classe .table-container)
+    const responsiveContainer = document.createElement('div');
+    responsiveContainer.className = 'table-container';
+
+    // Cria o contêiner da tabela para o assunto (mantendo o estilo específico da disciplina)
     const tableContainer = document.createElement('div');
     tableContainer.className = `subject-table ${subject === 'Português' ? 'full-width' : ''}`;
     
@@ -991,12 +1016,10 @@ function processSubject(subject, tests, container) {
                                     ${tests
                                         .filter(t => t.domain === domain.name)
                                         .map((test, index) => `
-                                            <div class="test-grade">
-                                                <span class="test-name">${test.name}</span> <!-- Nome do teste -->
-                                                <span>${Math.round(test.grade * 10) / 10}</span> <!-- Nota -->
+                                            <div class="test-grade" title="${test.name}">
+                                                ${Math.round(test.grade * 10) / 10}
                                                 <span class="remove-test" onclick="removeTest(${window.testData.indexOf(test)}, '${subject}', '${domain.name}')">&times;</span>
                                             </div>
-
                                         `).join('')}
                                 </div>
                                 <span class="domain-value">
@@ -1014,9 +1037,14 @@ function processSubject(subject, tests, container) {
         </table>
     `;
 
-    container.appendChild(tableContainer);
+    // Insere a tabela dentro do contêiner responsivo
+    responsiveContainer.appendChild(tableContainer);
+    // E insere esse contêiner no container principal (por exemplo, .year12-finals)
+    container.appendChild(responsiveContainer);
+
     return totalWeight > 0 ? subjectFinalGrade : null;
 }
+
 
 function removeTest(testIndex, subject, domain) {
     if (confirm('Tem certeza que deseja remover este teste?')) {
