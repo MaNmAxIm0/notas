@@ -428,60 +428,17 @@ table {
 
 /* Media queries para melhorar a visualização em dispositivos móveis */
 @media screen and (max-width: 768px) {
-    body {
-        padding: 10px;
+    .subject-table {
+        width: 100% !important;
     }
-
-    /* Tamanho de fonte e espaçamento ajustados para tabelas */
     table {
         font-size: 14px;
     }
-
     th, td {
-        padding: 8px;
-    }
-
-    /* Ajusta os botões e inputs para telas menores */
-    .tab-buttons {
-        flex-direction: column;
-        gap: 8px;
-    }
-
-    .tab-button {
-        width: 100%;
-        padding: 15px;
-        font-size: 18px;
-    }
-
-    input[type="number"],
-    input[type="text"],
-    input[type="email"],
-    input[type="password"],
-    select,
-    .grade-input,
-    .domain-select {
-        width: 100%;
-        height: 48px;
-        padding: 12px;
-        font-size: 16px;
-        margin: 5px 0;
-    }
-
-    button {
-        width: 100%;
-        min-height: 48px;
-        padding: 12px 20px;
-        font-size: 16px;
-        margin: 10px 0;
-    }
-
-    /* Melhorar a experiência de toque */
-    button:active,
-    .tab-button:active,
-    .test-grade:active {
-        transform: scale(0.98);
+        padding: 6px; /* reduzir um pouco o padding */
     }
 }
+
 
 /* Estilo para o nome dos testes (para aparecerem sempre, mesmo sem hover) */
 .test-name {
