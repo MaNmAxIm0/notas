@@ -251,12 +251,11 @@ function setYearGrades(yearGrades) {
 function setExamGrades(examGrades) {
     if (!examGrades) return;
     
-    // Encontra o contêiner de exames
+    // Limpa o contêiner de exames
     const examContainer = document.getElementById('exam-entries');
-    // Limpa o conteúdo
     examContainer.innerHTML = '';
     
-    // Cria um novo contêiner responsivo e a tabela
+    // Cria o contêiner responsivo e a tabela
     const container = document.createElement('div');
     container.className = 'table-container';
     
@@ -282,7 +281,7 @@ function setExamGrades(examGrades) {
     Object.entries(examGrades).forEach(([subject, data]) => {
         if (subject !== 'average' && data) {
             const row = document.createElement('tr');
-            // Como na função addExam(), a nota é armazenada no mesmo formato; se necessário, converta:
+            // Se a nota foi salva na escala de 20 pontos, converta se necessário:
             row.innerHTML = `
                 <td>${subject}</td>
                 <td>${data.grade * 10}</td>
@@ -291,6 +290,7 @@ function setExamGrades(examGrades) {
         }
     });
 }
+
 
 
 // Initialize user data when creating new account
@@ -471,7 +471,7 @@ function addExam() {
         examContainer.appendChild(container);
     }
     
-    // Se a tabela ainda não existir, cria-a com cabeçalho apenas com "Disciplina" e "Nota"
+    // Se a tabela ainda não existir, cria-a com cabeçalho simples (2 colunas)
     if (!examTable) {
         examTable = document.createElement('table');
         examTable.id = 'exam-summary-table';
@@ -511,6 +511,7 @@ function addExam() {
 
 
 
+
 // Helper function to get all unique subjects
 function getAllSubjects() {
     return [...new Set([...subjects.year10, ...subjects.year11, ...subjects.year12])];
@@ -525,24 +526,24 @@ function calculateExamGrades() {
         const rows = examTable.querySelectorAll('tbody tr');
         rows.forEach(row => {
             const subject = row.cells[0].textContent;
-            const grade = parseFloat(row.cells[1].textContent) / 10; // Converte para a escala de 20 pontos, se necessário
+            const grade = parseFloat(row.cells[1].textContent) / 10; // Converte de volta para a escala de 20 pontos, se necessário
             if (!isNaN(grade)) {
                 examGrades[subject] = {
                     grade: grade,
-                    weight: 1 // Peso padrão, se não for usado
+                    weight: 1 // Peso padrão (ajuste se for usar pesos)
                 };
             }
         });
-
-        // Calcula a média se houver exames
+        
+        // Calcula a média, se houver
         const grades = Object.values(examGrades).map(g => g.grade);
         if (grades.length > 0) {
             examGrades.average = grades.reduce((a, b) => a + b, 0) / grades.length;
         }
     }
-
     return examGrades;
 }
+
 
 
 // Function to calculate final grades
