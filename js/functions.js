@@ -72,6 +72,19 @@ const loginForm = document.getElementById('loginForm');
 if (loginForm) {
     loginForm.addEventListener('submit', login);
 }
+// Função para atualizar as notas finais do 12º ano
+function updateFinalGrades12(userId, finalGrades) {
+    const finalGradesRef = firebase.database().ref(`users/${userId}/finalGrades12`);
+
+    finalGradesRef.set(finalGrades)
+        .then(() => {
+            console.log("Notas finais do 12º ano atualizadas com sucesso.");
+        })
+        .catch((error) => {
+            console.error("Erro ao atualizar notas finais do 12º ano:", error);
+        });
+}
+
 // ============================
 // CONFIGURAÇÃO DE DISCIPLINAS E DOMÍNIOS
 // ============================
