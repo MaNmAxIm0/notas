@@ -1,90 +1,3 @@
-// Função de login atualizada
-async function login(event) {
-    event.preventDefault(); // Impede o comportamento padrão de reload da página
-
-    const email = document.getElementById('email').value;
-    const password = document.getElementById('password').value;
-
-    try {
-        const userCredential = await firebase.auth().signInWithEmailAndPassword(email, password);
-        const user = userCredential.user;
-        console.log("Login bem-sucedido", user);
-
-        // Carrega notas e redireciona para a página de dashboard
-        await loadYear12Grades(user.uid);
-        window.location.href = "dashboard.html"; // Substitua pelo nome correto da página
-    } catch (error) {
-        console.error("Erro ao fazer login", error);
-        alert("Erro ao fazer login: " + error.message);
-    }
-}
-
-// Função para carregar as notas do 12º ano
-async function loadYear12Grades(userId) {
-    const gradesRef = firebase.database().ref(`users/${userId}/year12Grades`);
-
-    try {
-        const snapshot = await gradesRef.once('value');
-        const grades = snapshot.val();
-
-        if (grades) {
-            console.log("Notas carregadas:", grades);
-            populateGradesTable(grades);
-        } else {
-            console.log("Nenhuma nota encontrada.");
-        }
-    } catch (error) {
-        console.error("Erro ao carregar notas", error);
-    }
-}
-
-// Função para preencher a tabela com as notas
-function populateGradesTable(grades) {
-    const tableBody = document.getElementById('gradesTableBody');
-    tableBody.innerHTML = '';
-
-    Object.entries(grades).forEach(([key, grade]) => {
-        const row = document.createElement('tr');
-
-        row.innerHTML = `
-            <td>${grade.disciplina}</td>
-            <td>${grade.nota}</td>
-            <td>${grade.peso}%</td>
-        `;
-
-        tableBody.appendChild(row);
-    });
-}
-
-// Função para salvar as notas (correção do erro de referência)
-function setYearGrades(userId, grades) {
-    const gradesRef = firebase.database().ref(`users/${userId}/year12Grades`);
-
-    gradesRef.set(grades).then(() => {
-        console.log("Notas salvas com sucesso.");
-    }).catch((error) => {
-        console.error("Erro ao salvar notas", error);
-    });
-}
-
-// Configurar o evento de submissão do formulário de login
-const loginForm = document.getElementById('loginForm');
-if (loginForm) {
-    loginForm.addEventListener('submit', login);
-}
-// Função para atualizar as notas finais do 12º ano
-function updateFinalGrades12(userId, finalGrades) {
-    const finalGradesRef = firebase.database().ref(`users/${userId}/finalGrades12`);
-
-    finalGradesRef.set(finalGrades)
-        .then(() => {
-            console.log("Notas finais do 12º ano atualizadas com sucesso.");
-        })
-        .catch((error) => {
-            console.error("Erro ao atualizar notas finais do 12º ano:", error);
-        });
-}
-
 // ============================
 // CONFIGURAÇÃO DE DISCIPLINAS E DOMÍNIOS
 // ============================
@@ -717,6 +630,92 @@ window.loadUserData = function(userId) {
       showMainContent();
     });
 };
+// Função de login atualizada
+async function login(event) {
+    event.preventDefault(); // Impede o comportamento padrão de reload da página
+
+    const email = document.getElementById('email').value;
+    const password = document.getElementById('password').value;
+
+    try {
+        const userCredential = await firebase.auth().signInWithEmailAndPassword(email, password);
+        const user = userCredential.user;
+        console.log("Login bem-sucedido", user);
+
+        // Carrega notas e redireciona para a página de dashboard
+        await loadYear12Grades(user.uid);
+        window.location.href = "dashboard.html"; // Substitua pelo nome correto da página
+    } catch (error) {
+        console.error("Erro ao fazer login", error);
+        alert("Erro ao fazer login: " + error.message);
+    }
+}
+
+// Função para carregar as notas do 12º ano
+async function loadYear12Grades(userId) {
+    const gradesRef = firebase.database().ref(`users/${userId}/year12Grades`);
+
+    try {
+        const snapshot = await gradesRef.once('value');
+        const grades = snapshot.val();
+
+        if (grades) {
+            console.log("Notas carregadas:", grades);
+            populateGradesTable(grades);
+        } else {
+            console.log("Nenhuma nota encontrada.");
+        }
+    } catch (error) {
+        console.error("Erro ao carregar notas", error);
+    }
+}
+
+// Função para preencher a tabela com as notas
+function populateGradesTable(grades) {
+    const tableBody = document.getElementById('gradesTableBody');
+    tableBody.innerHTML = '';
+
+    Object.entries(grades).forEach(([key, grade]) => {
+        const row = document.createElement('tr');
+
+        row.innerHTML = `
+            <td>${grade.disciplina}</td>
+            <td>${grade.nota}</td>
+            <td>${grade.peso}%</td>
+        `;
+
+        tableBody.appendChild(row);
+    });
+}
+
+// Função para salvar as notas (correção do erro de referência)
+function setYearGrades(userId, grades) {
+    const gradesRef = firebase.database().ref(`users/${userId}/year12Grades`);
+
+    gradesRef.set(grades).then(() => {
+        console.log("Notas salvas com sucesso.");
+    }).catch((error) => {
+        console.error("Erro ao salvar notas", error);
+    });
+}
+
+// Configurar o evento de submissão do formulário de login
+const loginForm = document.getElementById('loginForm');
+if (loginForm) {
+    loginForm.addEventListener('submit', login);
+}
+// Função para atualizar as notas finais do 12º ano
+function updateFinalGrades12(userId, finalGrades) {
+    const finalGradesRef = firebase.database().ref(`users/${userId}/finalGrades12`);
+
+    finalGradesRef.set(finalGrades)
+        .then(() => {
+            console.log("Notas finais do 12º ano atualizadas com sucesso.");
+        })
+        .catch((error) => {
+            console.error("Erro ao atualizar notas finais do 12º ano:", error);
+        });
+}
 
 // ============================
 // FUNÇÃO AUXILIAR PARA CRIAR INPUTS DE 10º E 11º ANOS
