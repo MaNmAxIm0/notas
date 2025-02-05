@@ -441,18 +441,18 @@ function addExam() {
     // Obtém o contêiner de exames
     let examContainer = document.getElementById('exam-entries');
     
-    // Procura um contêiner com a classe "table-container" dentro do examContainer
+    // Procura se já existe um contêiner .table-container dentro de examContainer
     let container = examContainer.querySelector('.table-container');
     let examTable = examContainer.querySelector('#exam-summary-table');
 
-    // Se o contêiner ainda não existir, cria-o e o adiciona ao examContainer
+    // Se o contêiner ainda não existir, cria-o
     if (!container) {
         container = document.createElement('div');
         container.className = 'table-container';
         examContainer.appendChild(container);
     }
     
-    // Se a tabela ainda não existir, cria-a e a insere dentro do contêiner
+    // Se a tabela ainda não existir, cria-a com cabeçalho apenas com "Disciplina" e "Nota"
     if (!examTable) {
         examTable = document.createElement('table');
         examTable.id = 'exam-summary-table';
@@ -462,7 +462,6 @@ function addExam() {
                 <tr>
                     <th>Disciplina</th>
                     <th>Nota</th>
-                    <th>Ação</th>
                 </tr>
             </thead>
             <tbody></tbody>
@@ -475,11 +474,6 @@ function addExam() {
     row.innerHTML = `
         <td>${subject}</td>
         <td>${grade}</td>
-        <td>
-            <button onclick="this.closest('tr').remove(); calculateFinalGrades();" style="background-color: #f44336; padding: 5px 10px;">
-                Remover
-            </button>
-        </td>
     `;
     tbody.appendChild(row);
 
@@ -495,6 +489,7 @@ function addExam() {
         saveUserData(auth.currentUser.uid);
     }
 }
+
 
 
 // Helper function to get all unique subjects
@@ -977,26 +972,25 @@ function processSubject(subject, tests, container) {
     domains.forEach(domain => {
         const domainTests = tests.filter(t => t.domain === domain.name);
         if (domainTests.length > 0) {
-            // Calcula a média bruta para o domínio
             const rawAvg = domainTests.reduce((sum, t) => sum + t.grade, 0) / domainTests.length;
-            // Aplica o peso do domínio
             const weightedAvg = rawAvg * domain.weight;
             domainAverages[domain.name] = {
                 rawAverage: rawAvg,
                 weightedAverage: weightedAvg,
-                weight: domain.weight * 100 // Mantém em porcentagem para exibição
+                weight: domain.weight * 100
             };
             subjectFinalGrade += weightedAvg;
             totalWeight += domain.weight;
         }
     });
 
-    // Cria um contêiner responsivo para a tabela (envolvido pela classe .table-container)
+    // Cria o contêiner responsivo
     const responsiveContainer = document.createElement('div');
     responsiveContainer.className = 'table-container';
 
-    // Cria o contêiner da tabela para o assunto (mantendo o estilo específico da disciplina)
+    // Cria o contêiner da tabela para o assunto
     const tableContainer = document.createElement('div');
+    // Se desejar que em telas maiores fique 50%, em telas pequenas forçamos 100% via CSS
     tableContainer.className = `subject-table ${subject === 'Português' ? 'full-width' : ''}`;
     
     tableContainer.innerHTML = `
@@ -1008,14 +1002,13 @@ function processSubject(subject, tests, container) {
             </thead>
             <tbody>
                 <tr>
-                    ${domains.map((domain) => `
+                    ${domains.map(domain => `
                         <td>
                             <div class="domain-grade-item">
                                 <span class="domain-name">${domain.name} (${domain.weight * 100}%)</span>
                                 <div class="domain-tests">
-                                    ${tests
-                                        .filter(t => t.domain === domain.name)
-                                        .map((test, index) => `
+                                    ${tests.filter(t => t.domain === domain.name)
+                                        .map(test => `
                                             <div class="test-grade" title="${test.name}">
                                                 ${Math.round(test.grade * 10) / 10}
                                                 <span class="remove-test" onclick="removeTest(${window.testData.indexOf(test)}, '${subject}', '${domain.name}')">&times;</span>
@@ -1037,13 +1030,12 @@ function processSubject(subject, tests, container) {
         </table>
     `;
 
-    // Insere a tabela dentro do contêiner responsivo
     responsiveContainer.appendChild(tableContainer);
-    // E insere esse contêiner no container principal (por exemplo, .year12-finals)
     container.appendChild(responsiveContainer);
 
     return totalWeight > 0 ? subjectFinalGrade : null;
 }
+
 
 
 function removeTest(testIndex, subject, domain) {
