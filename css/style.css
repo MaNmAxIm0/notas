@@ -83,14 +83,14 @@ table {
     margin-top: 20px;
 }
 
-th, td {
-    border: 1px solid #ddd;
-    padding: 8px;
-    text-align: center;
+table {
+    width: 100%;
+    table-layout: fixed;
 }
 
-th {
-    background-color: #f0f0f0;
+th, td {
+    word-wrap: break-word;
+    text-align: center;
 }
 
 button {
@@ -414,11 +414,11 @@ button:hover {
 }
 
 /* NOVO: Contêiner responsivo para tabelas */
-.table-container {
-    width: 100%;
+.tabela-container {
     overflow-x: auto;
-    -webkit-overflow-scrolling: touch;
+    max-width: 100%;
 }
+
 
 /* Garantir que as tabelas ocupam 100% da largura do contêiner */
 table {
@@ -488,3 +488,13 @@ table {
     text-align: center;
     margin-bottom: 3px;
 }
+.nota-input {
+    width: 40px; /* Ajusta conforme necessário */
+    font-size: 14px;
+}
+
+.remover-nota {
+    font-size: 12px;
+    padding: 2px 4px;
+}
+
