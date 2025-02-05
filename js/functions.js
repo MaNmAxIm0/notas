@@ -526,7 +526,6 @@ function salvarNotas() {
     console.error('Erro:', error);
     alert('Erro ao salvar as notas.');
   });
-}
 
 // Existing JavaScript functions
 function showTab(tabId) {
