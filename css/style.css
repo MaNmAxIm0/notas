@@ -6,7 +6,6 @@ body {
     background-color: #f5f5f5;
 }
 
-
 .tab-container {
     margin: 20px 0;
 }
@@ -84,13 +83,15 @@ table {
     margin-top: 20px;
 }
 
-th, td {
+.finals-summary-table th, 
+.finals-summary-table td {
     border: 1px solid #ddd;
     padding: 8px;
     text-align: center;
+    min-width: 100px;  /* Largura mínima para manter o alinhamento */
 }
 
-th {
+.finals-summary-table th {
     background-color: #f0f0f0;
 }
 
@@ -413,14 +414,15 @@ button:hover {
     background-color: #f9f9f9;
 }
 
+/* Ajustes para dispositivos móveis */
 @media screen and (max-width: 768px) {
   body {
     padding: 10px;
   }
 
-  /* Make text larger for better readability */
+  /* Aumenta o tamanho da fonte para melhor leitura */
   body, input, select, button {
-    font-size: 16px; /* Base font size for better readability */
+    font-size: 16px;
   }
 
   h1 {
@@ -432,7 +434,7 @@ button:hover {
     font-size: 20px;
   }
 
-  /* Make tab buttons stack and fill width */
+  /* Botões das abas empilhados e com largura total */
   .tab-buttons {
     flex-direction: column;
     gap: 8px;
@@ -444,7 +446,7 @@ button:hover {
     font-size: 18px;
   }
 
-  /* Make inputs larger and full width */
+  /* Entradas com largura total e maior tamanho para toque */
   input[type="number"],
   input[type="text"],
   input[type="email"],
@@ -453,13 +455,13 @@ button:hover {
   .grade-input,
   .domain-select {
     width: 100%;
-    height: 48px; /* Larger touch target */
+    height: 48px;
     padding: 12px;
     font-size: 16px;
     margin: 5px 0;
   }
 
-  /* Adjust buttons for better touch targets */
+  /* Botões com alvo de toque maior */
   button {
     width: 100%;
     min-height: 48px;
@@ -468,16 +470,18 @@ button:hover {
     margin: 10px 0;
   }
 
-  /* Make tables more mobile-friendly */
-  table {
-    font-size: 14px;
+  /* Tabelas com rolagem horizontal para evitar quebra de layout */
+  .finals-summary-table {
+    display: block;
+    overflow-x: auto;
+    white-space: nowrap;
   }
 
   th, td {
     padding: 12px 8px;
   }
 
-  /* Stack grid items */
+  /* Ajusta itens de grid para dispositivos móveis */
   .consolidated-input,
   .domain-grades-layout,
   .domain-tests {
@@ -485,14 +489,14 @@ button:hover {
     gap: 15px;
   }
 
-  /* Adjust spacing for sections */
+  /* Ajusta espaçamentos em seções */
   .year-section,
   .exam-section {
     padding: 15px;
     margin: 15px 0;
   }
 
-  /* Make test grades more touch-friendly */
+  /* Itens de testes mais amigáveis ao toque */
   .test-grade {
     padding: 12px;
     margin: 8px 0;
@@ -503,19 +507,19 @@ button:hover {
     font-size: 24px;
   }
 
-  /* Make the exam input container more mobile-friendly */
+  /* Ajusta container do exame para dispositivos móveis */
   .exam-input-container > div {
     grid-template-columns: 1fr;
     gap: 15px;
   }
 
-  /* Make sure tables don't overflow */
+  /* Garante que tabelas não extrapolem a tela */
   .table-container {
     overflow-x: auto;
     -webkit-overflow-scrolling: touch;
   }
 
-  /* Adjust popup for mobile */
+  /* Ajusta popup para dispositivos móveis */
   .popup-content {
     width: 90%;
     max-height: 80vh;
@@ -527,7 +531,7 @@ button:hover {
     padding: 10px;
   }
 
-  /* Adjust login/register forms */
+  /* Ajusta formulários de login/cadastro */
   #loginScreen > div,
   #registerScreen > div {
     width: 90%;
@@ -535,39 +539,51 @@ button:hover {
     padding: 20px;
   }
 
-  /* Adjust final averages display */
+  /* Ajusta exibição das médias finais */
   .final-averages > div {
     grid-template-columns: 1fr;
     gap: 15px;
   }
 
-  /* Make summary sections more readable */
+  /* Aumenta tamanho dos números das médias */
   #total-average-no-exams,
   #total-average-with-exams {
     font-size: 28px !important;
   }
 
-  /* Add visual feedback for touch interactions */
+  /* Feedback visual para toque */
   button:active,
   .tab-button:active,
   .test-grade:active {
     transform: scale(0.98);
   }
 
-  /* Improve spacing between elements */
+  /* Espaçamento entre elementos */
   .subject {
     margin: 20px 0;
   }
 
-  /* Make domain info icon larger */
+  /* Ícone de informação maior */
   .domain-info-icon {
     font-size: 24px;
     padding: 8px;
   }
-.test-name {
-    display: block; /* Força o nome a aparecer sempre */
+  
+  .test-name {
+    display: block;
     font-size: 12px;
     color: #555;
     text-align: center;
     margin-bottom: 3px;
+  }
+
+  /* --- NOVAS ALTERAÇÕES --- */
+  /* Em telas menores, organiza o layout do 12º ano em coluna */
+  .year12-finals {
+    flex-direction: column;
+  }
+
+  .subject-table {
+    width: 100%;
+  }
 }
