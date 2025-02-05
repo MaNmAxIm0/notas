@@ -1,52 +1,63 @@
-function showTab(tabId) {
-    // Hide all tabs
-    document.querySelectorAll('.tab-content').forEach(tab => {
-        tab.classList.remove('active');
+document.getElementById('loginForm').addEventListener('submit', (e) => {
+  e.preventDefault();
+  const email = document.getElementById('loginEmail').value;
+  const password = document.getElementById('loginPassword').value;
+  
+  signInWithEmailAndPassword(auth, email, password)
+    .then((userCredential) => {
+      loadUserData(userCredential.user.uid);
+    })
+    .catch((error) => {
+      alert('Erro de login: ' + error.message);
     });
-    document.querySelectorAll('.tab-button').forEach(button => {
-        button.classList.remove('active');
+});
+
+document.getElementById('registerForm').addEventListener('submit', (e) => {
+  e.preventDefault();
+  const email = document.getElementById('registerEmail').value;
+  const password = document.getElementById('registerPassword').value;
+  
+  if (password.length < 6) {
+    alert('A senha deve ter pelo menos 6 caracteres');
+    return;
+  }
+  
+  createUserWithEmailAndPassword(auth, email, password)
+    .then((userCredential) => {
+      alert('Conta criada com sucesso!');
+      initializeUserData(userCredential.user.uid);
+    })
+    .catch((error) => {
+      switch (error.code) {
+        case 'auth/email-already-in-use':
+          alert('Este email já está registrado');
+          break;
+        case 'auth/invalid-email':
+          alert('Email inválido');
+          break;
+        case 'auth/operation-not-allowed':
+          alert('Registro de conta desativado');
+          break;
+        case 'auth/weak-password':
+          alert('Senha muito fraca');
+          break;
+        default:
+          alert('Erro de registo: ' + error.message);
+      }
     });
+});
 
-    // Show selected tab
-    document.getElementById(`${tabId}-tab`).classList.add('active');
-    document.querySelector(`.tab-button[onclick="showTab('${tabId}')"]`).classList.add('active');
+onAuthStateChanged(auth, (user) => {
+  if (user) {
+    loadUserData(user.uid);
+    setupAutoSave();
+  } else {
+    showLogin();
+  }
+});
+
+function calculateYear12Average() {
+  // Função de exemplo para calcular a média do 12º ano
+  // Adicione a lógica correta para calcular a média do 12º ano
+  return 0;
 }
-
-// Add calculateFinalGrades to global scope
-window.calculateFinalGrades = function() {
-    const year10Average = calculateYearAverage(10);
-    const year11Average = calculateYearAverage(11);
-    const year12Average = calculateYear12Average();
-    const examGrades = calculateExamGrades();
-
-    // Calculate and update final averages
-    const secondaryAverage = calculateSecondaryEducationAverage(); // Gets value on 200-point scale
-    const examAverage = examGrades.average ? examGrades.average * 10 : 0; // Convert to 200-point scale
-    const examWeightInput = document.getElementById('exam-weight-input');
-    const weight = examWeightInput ? parseFloat(examWeightInput.value) : 50; // Use input value or default to 50
-
-    const finalAverage = ((100 - weight) * secondaryAverage * 0.01) + (weight * 0.01 * examAverage);
-
-    // Update final averages display
-    document.getElementById('total-average-no-exams').textContent = 
-        secondaryAverage ? Math.round(secondaryAverage * 10) / 10 : '-';
-    document.getElementById('total-average-with-exams').textContent = 
-        finalAverage ? Math.round(finalAverage * 10) / 10 : '-';
-
-    // Update summary table
-    updateSummaryTable(year10Average, year11Average, year12Average, examGrades);
-}
-
-// Also make it available globally through window object
-window.calculateFinalGrades = calculateFinalGrades;
-window.calculateYear12Average = calculateYear12Average;
-window.calculateExamGrades = calculateExamGrades;
-window.calculateSecondaryEducationAverage = calculateSecondaryEducationAverage;
-window.updateSummaryTable = updateSummaryTable;
-window.getGrade = getGrade; 
-window.getSubjectGrade12 = getSubjectGrade12;
-window.calculateSubjectCIF = calculateSubjectCIF;
-window.getDomainWeight = getDomainWeight;
-window.processSubject = processSubject;
-window.updateFinalGrades12 = updateFinalGrades12;
-
