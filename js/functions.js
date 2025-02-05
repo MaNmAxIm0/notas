@@ -48,6 +48,7 @@ function populateSubjectSelect() {
     select.appendChild(option);
   });
 }
+// Defina a função updateFinalGrades12
 function updateFinalGrades12() {
   const subjects = document.querySelectorAll('.year12-grade');
   let total = 0;
