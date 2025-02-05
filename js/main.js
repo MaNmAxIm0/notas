@@ -1,5 +1,23 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-app.js";
-import { getAuth, signInWithEmailAndPassword, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-auth.js";
+import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-auth.js";
+import { getDatabase, ref, set, get } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-database.js";
+
+// Defina ou importe a função loadUserData
+function loadUserData(userId) {
+  const database = getDatabase();
+  const userRef = ref(database, 'users/' + userId);
+  get(userRef).then((snapshot) => {
+    if (snapshot.exists()) {
+      const data = snapshot.val();
+      // Faça algo com os dados do usuário
+      console.log(data);
+    } else {
+      console.log("No data available");
+    }
+  }).catch((error) => {
+    console.error(error);
+  });
+}
 
 // Your web app's Firebase configuration
 const firebaseConfig = {
@@ -15,6 +33,7 @@ const firebaseConfig = {
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
+const database = getDatabase(app);
 
 document.getElementById('loginForm').addEventListener('submit', (e) => {
   e.preventDefault();
