@@ -57,7 +57,58 @@ onAuthStateChanged(auth, (user) => {
 });
 
 function calculateYear12Average() {
-  // Função de exemplo para calcular a média do 12º ano
-  // Adicione a lógica correta para calcular a média do 12º ano
+  if (!window.testData || window.testData.length === 0) return null;
+
+  const subjectTests = {};
+  window.testData.forEach(test => {
+    if (!subjectTests[test.subject]) {
+      subjectTests[test.subject] = [];
+    }
+    subjectTests[test.subject].push(test);
+  });
+
+  let totalGrade = 0;
+  let subjectCount = 0;
+
+  Object.entries(subjectTests).forEach(([subject, tests]) => {
+    const subjectGrade = calculateSubjectAverage(tests, subject);
+    if (subjectGrade !== null) {
+      totalGrade += subjectGrade;
+      subjectCount++;
+    }
+  });
+
+  return subjectCount > 0 ? totalGrade / subjectCount : null;
+}
+
+function calculateSubjectAverage(tests, subject) {
+  if (!tests || tests.length === 0) return null;
+
+  const domainTests = {};
+  tests.forEach(test => {
+    if (!domainTests[test.domain]) {
+      domainTests[test.domain] = [];
+    }
+    domainTests[test.domain].push(test);
+  });
+
+  let weightedTotal = 0;
+  let totalWeight = 0;
+
+  Object.entries(domainTests).forEach(([domain, domainTests]) => {
+    const domainWeight = getDomainWeight(subject, domain);
+    const domainAverage = domainTests.reduce((sum, test) => sum + test.grade, 0) / domainTests.length;
+    weightedTotal += domainAverage * domainWeight;
+    totalWeight += domainWeight;
+  });
+
+  return totalWeight > 0 ? weightedTotal / totalWeight : null;
+}
+
+function getDomainWeight(subject, domainName) {
+  if (subjectDomains[subject]) {
+    const domain = subjectDomains[subject].find(d => d.name === domainName);
+    return domain ? domain.weight : 0;
+  }
   return 0;
 }
