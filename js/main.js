@@ -124,8 +124,67 @@ function updateFinalGrades12() {
 }
 
 function calculateFinalGrades() {
-  // Implemente a lógica para calcular as notas finais
-  console.log("Calculando as notas finais...");
+    // Seleciona os inputs de notas dos diferentes anos
+    const year10Grades = document.querySelectorAll('.year10-grade');
+    const year11Grades = document.querySelectorAll('.year11-grade');
+    const year12Grades = document.querySelectorAll('.year12-grade');
+
+    // Função para calcular a média das notas
+    const calculateAverage = (grades) => {
+        let total = 0;
+        let count = 0;
+        grades.forEach(grade => {
+            const value = parseFloat(grade.value);
+            if (!isNaN(value)) {
+                total += value;
+                count++;
+            }
+        });
+        return count > 0 ? (total / count) : 0;
+    };
+
+    // Calcula a média das notas para cada ano
+    const averageYear10 = calculateAverage(year10Grades);
+    const averageYear11 = calculateAverage(year11Grades);
+    const averageYear12 = calculateAverage(year12Grades);
+
+    // Seleciona os inputs de notas dos exames
+    const examGrades = document.querySelectorAll('#exam-entries tr');
+
+    // Função para calcular a média ponderada dos exames
+    const calculateExamAverage = (exams) => {
+        let total = 0;
+        let weightTotal = 0;
+        exams.forEach(exam => {
+            const gradeCell = exam.querySelector('td:nth-child(2)');
+            const weightCell = exam.querySelector('td:nth-child(3)');
+            const grade = parseFloat(gradeCell.textContent);
+            const weight = parseFloat(weightCell.textContent);
+            if (!isNaN(grade) && !isNaN(weight)) {
+                total += (grade * (weight / 100));
+                weightTotal += (weight / 100);
+            }
+        });
+        return weightTotal > 0 ? (total / weightTotal) : 0;
+    };
+
+    // Calcula a média ponderada dos exames
+    const averageExams = calculateExamAverage(examGrades);
+
+    // Obtém o peso dos exames do input
+    const examWeightInput = document.getElementById('exam-weight-input');
+    const examWeight = parseFloat(examWeightInput.value) / 100;
+
+    // Calcula as médias finais
+    const totalAverageNoExams = (averageYear10 + averageYear11 + averageYear12) / 3;
+    const totalAverageWithExams = ((1 - examWeight) * totalAverageNoExams) + (examWeight * averageExams);
+
+    // Atualiza os elementos do DOM com as médias finais
+    document.getElementById('total-average-no-exams').textContent = totalAverageNoExams.toFixed(2);
+    document.getElementById('total-average-with-exams').textContent = totalAverageWithExams.toFixed(2);
+
+    console.log("Média do Ensino Secundário (sem exames):", totalAverageNoExams);
+    console.log("Média de acesso ao ensino superior (com exames):", totalAverageWithExams);
 }
 
 // Lógica de autenticação
