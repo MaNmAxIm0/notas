@@ -2,7 +2,7 @@ const subjects = {
   year10: ['Matemática A', 'Português', 'Inglês', 'Educação Física', 'Filosofia', 'Economia A', 'Geografia A'],
   year11: ['Matemática A', 'Português', 'Inglês', 'Educação Física', 'Filosofia', 'Economia A', 'Geografia A'],
   year12: ['Aplicações Informáticas B', 'Economia C', 'Português', 'Matemática A', 'Educação Física']
-}; 
+};
 
 const subjectDomains = {
   'Português': [
@@ -247,50 +247,51 @@ function setYearGrades(yearGrades) {
     });
 }
 
-// Function to set exam grades
+// =================== NOVA ALTERAÇÃO NA FUNÇÃO setExamGrades ===================
+// Em vez de limpar todo o container, verifica se a tabela já existe e atualiza o tbody
 function setExamGrades(examGrades) {
     if (!examGrades) return;
     
-    // Clear existing exam entries
-    document.getElementById('exam-entries').innerHTML = '';
-    
-    // Add saved exam entries
+    let examTable = document.getElementById('exam-summary-table');
+    if (!examTable) {
+        examTable = document.createElement('table');
+        examTable.id = 'exam-summary-table';
+        examTable.style.width = '100%';
+        examTable.style.marginTop = '20px';
+        examTable.innerHTML = `
+            <thead>
+                <tr>
+                    <th>Disciplina</th>
+                    <th>Nota</th>
+                    <th>Ação</th>
+                </tr>
+            </thead>
+            <tbody></tbody>
+        `;
+        document.getElementById('exam-entries').appendChild(examTable);
+    }
+    const tbody = examTable.querySelector('tbody');
+    tbody.innerHTML = ''; // Apenas limpa o tbody
+
+    // Adiciona os exames salvos
     Object.entries(examGrades).forEach(([subject, data]) => {
         if (subject !== 'average' && data) {
-            const examDiv = document.createElement('div');
-            examDiv.className = 'exam-entry';
-            examDiv.innerHTML = `
-                <select class="exam-subject">
-                    ${getAllSubjects().map(subj => 
-                        `<option value="${subj}" ${subj === subject ? 'selected' : ''}>${subj}</option>`
-                    ).join('')}
-                </select>
-                <input type="number" min="0" max="200" step="1" class="exam-grade" value="${data.grade * 10}" placeholder="0-200">
-                <input type="number" min="0" max="100" step="1" class="exam-weight" value="${data.weight * 100}" placeholder="Peso %">
-                <button onclick="this.parentElement.remove()">Remover</button>
+            const row = document.createElement('tr');
+            row.innerHTML = `
+                <td>${subject}</td>
+                <td>${data.grade * 10}</td>
+                <td>
+                    <button onclick="this.closest('tr').remove(); calculateFinalGrades();" 
+                            style="background-color: #f44336; padding: 5px 10px;">
+                        Remover
+                    </button>
+                </td>
             `;
-            document.getElementById('exam-entries').appendChild(examDiv);
+            tbody.appendChild(row);
         }
     });
 }
-
-// Initialize user data when creating new account
-window.initializeUserData = function(userId) {
-    const emptyData = {
-      testData: [],
-      yearGrades: {
-        year10: {},
-        year11: {}
-      },
-      examGrades: {}
-    };
-    
-    dbSet(ref(database, 'users/' + userId), emptyData)
-      .then(() => {
-        window.testData = [];
-        showMainContent();
-      });
-};
+// =============================================================================
 
 // Add auto-save functionality
 function setupAutoSave() {
@@ -422,7 +423,8 @@ function createYearInputs() {
   });
 }
 
-// New function to add exam input
+// =================== NOVA ALTERAÇÃO NA FUNÇÃO addExam ===================
+// Agora, em vez de criar uma nova tabela a cada exame, a função verifica se a tabela já existe e adiciona uma nova linha.
 function addExam() {
     const subject = document.getElementById('exam-subject').value;
     const grade = document.getElementById('exam-grade-input').value;
@@ -438,10 +440,9 @@ function addExam() {
         return;
     }
 
-    // Create or update summary table
-    let examContainer = document.getElementById('exam-entries');
     let examTable = document.getElementById('exam-summary-table');
     
+    // Se a tabela ainda não existe, cria-a
     if (!examTable) {
         examTable = document.createElement('table');
         examTable.id = 'exam-summary-table';
@@ -457,9 +458,9 @@ function addExam() {
             </thead>
             <tbody></tbody>
         `;
-        examContainer.appendChild(examTable);
+        document.getElementById('exam-entries').appendChild(examTable);
     }
-
+    
     const tbody = examTable.querySelector('tbody');
     const row = document.createElement('tr');
     row.innerHTML = `
@@ -474,18 +475,19 @@ function addExam() {
     `;
     tbody.appendChild(row);
 
-    // Clear inputs
+    // Limpa os inputs
     document.getElementById('exam-subject').value = '';
     document.getElementById('exam-grade-input').value = '';
 
-    // Update calculations
+    // Atualiza os cálculos
     calculateFinalGrades();
 
-    // Save if user is logged in
+    // Salva se o usuário estiver logado
     if (auth.currentUser) {
         saveUserData(auth.currentUser.uid);
     }
 }
+// =============================================================================
 
 // Helper function to get all unique subjects
 function getAllSubjects() {
@@ -545,13 +547,7 @@ function calculateFinalGrades() {
     updateSummaryTable(year10Average, year11Average, year12Average, examGrades);
 }
 
-// No need to modify the calculateFinalAverage function as it's no longer used
-/*
-function calculateFinalAverage(cifAverage, examGrades) {
-    if (!cifAverage || !examGrades || !examGrades.average) return null;
-    return (cifAverage + examGrades.average) / 2;
-}
-*/
+// (The remaining functions remain unchanged.)
 
 function calculateYear12Average() {
     if (!window.testData || window.testData.length === 0) return null;
@@ -848,29 +844,27 @@ window.closePopup = function() {
 
 // New function to get exam grades
 function getExamGrades() {
-    const examEntries = document.querySelectorAll('.exam-entry');
+    const examTable = document.getElementById('exam-summary-table');
     const examGrades = {};
 
-    examEntries.forEach(entry => {
-        const subject = entry.querySelector('.exam-subject').value;
-        const gradeInput = entry.querySelector('.exam-grade');
-        const weightInput = entry.querySelector('.exam-weight');
-        
-        if (gradeInput.value && weightInput.value) {
-            const grade = parseFloat(gradeInput.value) / 10; // Convert from 200-point to 20-point scale
-            const weight = parseFloat(weightInput.value) / 100; // Convert percentage to decimal
-            
-            examGrades[subject] = {
-                grade: grade,
-                weight: weight
-            };
-        }
-    });
+    if (examTable) {
+        const rows = examTable.querySelectorAll('tbody tr');
+        rows.forEach(row => {
+            const subject = row.cells[0].textContent;
+            const grade = parseFloat(row.cells[1].textContent) / 10; // Convert from 200-point to 20-point scale
+            if (!isNaN(grade)) {
+                examGrades[subject] = {
+                    grade: grade,
+                    weight: 1 // Default weight if needed
+                };
+            }
+        });
 
-    // Calculate average if there are any grades
-    const grades = Object.values(examGrades).map(g => g.grade);
-    if (grades.length > 0) {
-        examGrades.average = grades.reduce((a, b) => a + b, 0) / grades.length;
+        // Calculate average if there are any grades
+        const grades = Object.values(examGrades).map(g => g.grade);
+        if (grades.length > 0) {
+            examGrades.average = grades.reduce((a, b) => a + b, 0) / grades.length;
+        }
     }
 
     return examGrades;
@@ -992,11 +986,10 @@ function processSubject(subject, tests, container) {
                                         .filter(t => t.domain === domain.name)
                                         .map((test, index) => `
                                             <div class="test-grade">
-                                                <span class="test-name">${test.name}</span> <!-- Nome do teste -->
-                                                <span>${Math.round(test.grade * 10) / 10}</span> <!-- Nota -->
+                                                <span class="test-name">${test.name}</span>
+                                                <span>${Math.round(test.grade * 10) / 10}</span>
                                                 <span class="remove-test" onclick="removeTest(${window.testData.indexOf(test)}, '${subject}', '${domain.name}')">&times;</span>
                                             </div>
-
                                         `).join('')}
                                 </div>
                                 <span class="domain-value">
