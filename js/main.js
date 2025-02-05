@@ -49,6 +49,23 @@ function getExamGrades() {
   return {};
 }
 
+// Defina a função setYearGrades
+function setYearGrades(yearGrades) {
+  if (!yearGrades) return;
+
+  ['year10', 'year11', 'year12'].forEach(year => {
+    const yearNum = year.replace('year', '');
+    if (yearGrades[year]) {
+      Object.entries(yearGrades[year]).forEach(([subject, grade]) => {
+        const input = document.querySelector(`.year${yearNum}-grade[data-subject="${subject}"]`);
+        if (input && grade !== null) {
+          input.value = grade;
+        }
+      });
+    }
+  });
+}
+
 // Defina a função loadUserData
 function loadUserData(userId) {
   const database = getDatabase();
@@ -81,7 +98,8 @@ function initializeUserData(userId) {
     testData: [],
     yearGrades: {
       year10: {},
-      year11: {}
+      year11: {},
+      year12: {}
     },
     examGrades: {}
   };
@@ -222,4 +240,43 @@ function getDomainWeight(subject, domainName) {
     return domain ? domain.weight : 0;
   }
   return 0;
+}
+
+function setExamGrades(examGrades) {
+  if (!examGrades) return;
+
+  const examContainer = document.getElementById('exam-entries');
+  examContainer.innerHTML = '';
+
+  const container = document.createElement('div');
+  container.className = 'table-container';
+
+  const examTable = document.createElement('table');
+  examTable.id = 'exam-summary-table';
+  examTable.style.marginTop = '20px';
+  examTable.innerHTML = `
+    <thead>
+      <tr>
+        <th>Disciplina</th>
+        <th>Nota</th>
+      </tr>
+    </thead>
+    <tbody></tbody>
+  `;
+
+  container.appendChild(examTable);
+  examContainer.appendChild(container);
+
+  const tbody = examTable.querySelector('tbody');
+
+  Object.entries(examGrades).forEach(([subject, data]) => {
+    if (subject !== 'average' && data) {
+      const row = document.createElement('tr');
+      row.innerHTML = `
+        <td>${subject}</td>
+        <td>${data.grade * 10}</td>
+      `;
+      tbody.appendChild(row);
+    }
+  });
 }
