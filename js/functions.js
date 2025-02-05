@@ -4,6 +4,7 @@ const subjects = {
   year12: ['Aplicações Informáticas B', 'Economia C', 'Português', 'Matemática A', 'Educação Física']
 };
 
+
 const subjectDomains = {
   'Português': [
     { name: 'Oralidade', weight: 0.20 },
