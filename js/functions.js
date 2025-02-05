@@ -530,8 +530,8 @@ document.addEventListener('DOMContentLoaded', function() {
 document.getElementById('loginForm').addEventListener('submit', (e) => {
   e.preventDefault();
   console.log('Login submit capturado');
-  const email = document.getElementById('loginEmail').value;
-  const password = document.getElementById('loginPassword').value;
+  const email = document.getElementById('email').value;
+  const password = document.getElementById('password').value;
   signInWithEmailAndPassword(auth, email, password)
     .then((userCredential) => {
       console.log('Login bem-sucedido', userCredential.user);
