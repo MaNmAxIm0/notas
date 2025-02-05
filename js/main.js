@@ -126,7 +126,12 @@ function updateFinalGrades12() {
   });
 
   const average = count > 0 ? total / count : 0;
-  document.getElementById('year12-final-grade').innerText = average.toFixed(2);
+  const finalGradeElement = document.getElementById('year12-final-grade');
+  if (finalGradeElement) {
+    finalGradeElement.innerText = average.toFixed(2);
+  } else {
+    console.error("Elemento com ID 'year12-final-grade' não encontrado.");
+  }
 }
 
 // Your web app's Firebase configuration
