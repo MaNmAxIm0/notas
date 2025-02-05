@@ -293,13 +293,6 @@ function setupAutoSave() {
   });
 }
 
-// Function to show login screen
-function showLogin() {
-  document.getElementById('loginScreen').style.display = 'block';
-  document.getElementById('registerScreen').style.display = 'none';
-  document.getElementById('mainContent').style.display = 'none';
-}
-
 // Function to show main content
 function showMainContent() {
   document.getElementById('loginScreen').style.display = 'none';
@@ -526,6 +519,7 @@ function salvarNotas() {
     console.error('Erro:', error);
     alert('Erro ao salvar as notas.');
   });
+}
 
 // Existing JavaScript functions
 function showTab(tabId) {
