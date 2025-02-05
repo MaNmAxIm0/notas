@@ -460,10 +460,6 @@ function saveUserData(userId) {
   return dbSet(ref(database, 'users/' + userId), data);
 }
 
-function getExamGrades() {
-  const examEntries = document.querySelectorAll('.exam-entry');
-  const examGrades = {};
-
   examEntries.forEach(entry => {
     const subject = entry.querySelector('.exam-subject').value;
     const gradeInput = entry.querySelector('.exam-grade');
