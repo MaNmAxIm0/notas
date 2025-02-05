@@ -986,76 +986,82 @@ function updateFinalGrades12() {
 
 function processSubject(subject, tests, container) {
     const domains = subjectDomains[subject] || [];
-    const domainAverages = {};
+    let rowsHtml = '';
     let subjectFinalGrade = 0;
     let totalWeight = 0;
 
+    // Para cada domínio definido para o assunto:
     domains.forEach(domain => {
+        // Filtra os testes que pertencem a este domínio
         const domainTests = tests.filter(t => t.domain === domain.name);
         if (domainTests.length > 0) {
+            // Calcula a média bruta para este domínio
             const rawAvg = domainTests.reduce((sum, t) => sum + t.grade, 0) / domainTests.length;
+            // Calcula a contribuição ponderada
             const weightedAvg = rawAvg * domain.weight;
-            domainAverages[domain.name] = {
-                rawAverage: rawAvg,
-                weightedAverage: weightedAvg,
-                weight: domain.weight * 100
-            };
             subjectFinalGrade += weightedAvg;
             totalWeight += domain.weight;
+
+            // Cria uma lista (div) para os testes: cada teste com nome e nota arredondada
+            let testsHtml = domainTests
+                .map(test => `<div class="test-grade">${test.name}: ${Math.round(test.grade * 10) / 10}</div>`)
+                .join('');
+            // Cria uma linha da tabela para este domínio
+            rowsHtml += `
+                <tr>
+                    <td style="width:40%; padding:4px; border:1px solid #ddd;">${domain.name} (${domain.weight * 100}%)</td>
+                    <td style="width:60%; padding:4px; border:1px solid #ddd;">
+                        ${testsHtml}
+                        <br><strong>Média: ${Math.round(rawAvg * 10) / 10}</strong>
+                    </td>
+                </tr>
+            `;
         }
     });
 
-    // Cria o contêiner responsivo
-    const responsiveContainer = document.createElement('div');
-    responsiveContainer.className = 'table-container';
+    // Linha final com a média final do assunto (se houver dados)
+    let finalRow = '';
+    if (totalWeight > 0) {
+        let finalSubjectAverage = subjectFinalGrade / totalWeight;
+        finalRow = `
+            <tr>
+                <td colspan="2" style="text-align:right; font-weight:bold; padding:4px; border:1px solid #ddd;">
+                    Média Final: ${Math.round(finalSubjectAverage * 10) / 10}
+                </td>
+            </tr>
+        `;
+    }
 
-    // Cria o contêiner da tabela para o assunto
-    const tableContainer = document.createElement('div');
-    // Se desejar que em telas maiores fique 50%, em telas pequenas forçamos 100% via CSS
-    tableContainer.className = `subject-table ${subject === 'Português' ? 'full-width' : ''}`;
-    
-    tableContainer.innerHTML = `
-        <table class="finals-summary-table">
+    // Monta o HTML completo da tabela para o assunto
+    let tableHtml = `
+        <table class="finals-summary-table" style="width:100%; border-collapse:collapse;">
             <thead>
                 <tr>
-                    <th colspan="${domains.length + 1}">${subject}</th>
+                    <th colspan="2" style="padding:6px; border:1px solid #ddd;">${subject}</th>
                 </tr>
             </thead>
             <tbody>
-                <tr>
-                    ${domains.map(domain => `
-                        <td>
-                            <div class="domain-grade-item">
-                                <span class="domain-name">${domain.name} (${domain.weight * 100}%)</span>
-                                <div class="domain-tests">
-                                    ${tests.filter(t => t.domain === domain.name)
-                                        .map(test => `
-                                            <div class="test-grade" title="${test.name}">
-                                                ${Math.round(test.grade * 10) / 10}
-                                                <span class="remove-test" onclick="removeTest(${window.testData.indexOf(test)}, '${subject}', '${domain.name}')">&times;</span>
-                                            </div>
-                                        `).join('')}
-                                </div>
-                                <span class="domain-value">
-                                    Média: ${Math.round((domainAverages[domain.name]?.rawAverage || 0) * 10) / 10} × ${domain.weight * 100}% = 
-                                    ${Math.round((domainAverages[domain.name]?.weightedAverage || 0) * 10) / 10}
-                                </span>
-                            </div>
-                        </td>
-                    `).join('')}
-                    <td>
-                        <strong>Média Final: ${Math.round(subjectFinalGrade * 10) / 10}</strong>
-                    </td>
-                </tr>
+                ${rowsHtml}
+                ${finalRow}
             </tbody>
         </table>
     `;
+
+    // Cria um contêiner responsivo para a tabela
+    const responsiveContainer = document.createElement('div');
+    responsiveContainer.className = 'table-container';
+    // Cria um contêiner adicional para a tabela do assunto
+    const tableContainer = document.createElement('div');
+    // Se desejar que alguns assuntos (ex.: Português) ocupem toda a largura, você pode usar a classe full-width
+    tableContainer.className = `subject-table ${subject === 'Português' ? 'full-width' : ''}`;
+    tableContainer.innerHTML = tableHtml;
 
     responsiveContainer.appendChild(tableContainer);
     container.appendChild(responsiveContainer);
 
     return totalWeight > 0 ? subjectFinalGrade : null;
 }
+
 
 
 
