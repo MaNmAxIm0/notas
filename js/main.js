@@ -19,13 +19,34 @@ function saveUserData(userId) {
   const database = getDatabase();
   const userRef = ref(database, 'users/' + userId);
   const data = {
-    // Adicione os dados que você deseja salvar
+    testData: window.testData || [],
+    yearGrades: {
+      year10: getYearGrades(10),
+      year11: getYearGrades(11),
+      year12: getYearGrades(12) // Adicione year12 se necessário
+    },
+    examGrades: getExamGrades() || {}
   };
+
+  // Adicionando log para verificar os dados antes de salvar
+  console.log("Dados sendo salvos: ", data);
+
   set(userRef, data).then(() => {
     console.log("Dados do usuário salvos com sucesso.");
   }).catch((error) => {
     console.error("Erro ao salvar os dados do usuário: ", error);
   });
+}
+
+// Funções auxiliares para obter dados
+function getYearGrades(year) {
+  // Implemente a lógica para obter as notas do ano especificado
+  return {};
+}
+
+function getExamGrades() {
+  // Implemente a lógica para obter as notas dos exames
+  return {};
 }
 
 // Defina a função loadUserData
@@ -35,13 +56,19 @@ function loadUserData(userId) {
   get(userRef).then((snapshot) => {
     if (snapshot.exists()) {
       const data = snapshot.val();
-      // Faça algo com os dados do usuário
-      console.log(data);
+      // Log dos dados carregados
+      console.log("Dados carregados: ", data);
+
+      window.testData = data.testData || [];
+      setYearGrades(data.yearGrades);
+      setExamGrades(data.examGrades);
+      updateFinalGrades12();  // Se esta função existir
+      calculateFinalGrades(); // Se esta função existir
     } else {
       console.log("No data available");
     }
   }).catch((error) => {
-    console.error(error);
+    console.error("Erro ao carregar os dados do usuário: ", error);
   });
 }
 
@@ -58,6 +85,7 @@ function initializeUserData(userId) {
     },
     examGrades: {}
   };
+
   set(userRef, initialData).then(() => {
     console.log("Dados iniciais do usuário definidos.");
   }).catch((error) => {
