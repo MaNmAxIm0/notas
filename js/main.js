@@ -1,20 +1,26 @@
-import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-auth.js";
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-app.js";
+import { getAuth, signInWithEmailAndPassword, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-auth.js";
 
-// Resto do código...
+// Your web app's Firebase configuration
+const firebaseConfig = {
+  apiKey: "AIzaSyC1hg5b-lRtilVWYxeEU6sAwSHfCi7uAG8",
+  authDomain: "notas-a3feb.firebaseapp.com",
+  databaseURL: "https://notas-a3feb-default-rtdb.europe-west1.firebasedatabase.app",
+  projectId: "notas-a3feb",
+  storageBucket: "notas-a3feb.firebasestorage.app",
+  messagingSenderId: "657388702531",
+  appId: "1:657388702531:web:2e25bf0481273453e7bdf6"
+};
 
-onAuthStateChanged(auth, (user) => {
-  if (user) {
-    loadUserData(user.uid);
-    setupAutoSave();
-  } else {
-    showLogin();
-  }
-});
+// Initialize Firebase
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+
 document.getElementById('loginForm').addEventListener('submit', (e) => {
   e.preventDefault();
   const email = document.getElementById('loginEmail').value;
   const password = document.getElementById('loginPassword').value;
-  
+
   signInWithEmailAndPassword(auth, email, password)
     .then((userCredential) => {
       loadUserData(userCredential.user.uid);
@@ -28,12 +34,12 @@ document.getElementById('registerForm').addEventListener('submit', (e) => {
   e.preventDefault();
   const email = document.getElementById('registerEmail').value;
   const password = document.getElementById('registerPassword').value;
-  
+
   if (password.length < 6) {
     alert('A senha deve ter pelo menos 6 caracteres');
     return;
   }
-  
+
   createUserWithEmailAndPassword(auth, email, password)
     .then((userCredential) => {
       alert('Conta criada com sucesso!');
