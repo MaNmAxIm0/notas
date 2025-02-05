@@ -74,7 +74,7 @@ function updateDomainSelect(selectedSubject) {
   }
 }
 
-function showLogin() {
+function showLoginScreen() {
   document.getElementById('loginScreen').style.display = 'block';
   document.getElementById('registerScreen').style.display = 'none';
   document.getElementById('mainContent').style.display = 'none';
@@ -92,7 +92,7 @@ function showMainContent() {
   document.getElementById('mainContent').style.display = 'block';
 }
 
-window.showLogin = showLogin;
+window.showLogin = showLoginScreen;
 window.showRegister = showRegister;
 window.showMainContent = showMainContent;
 window.showTab = showTab;
@@ -108,7 +108,7 @@ window.logout = function() {
       document.getElementById('exam-entries').innerHTML = '';
       document.querySelector('.year12-finals').innerHTML = '';
       calculateFinalGrades();
-      showLogin();
+      showLoginScreen();
     })
     .catch((error) => {
       alert('Erro de logout: ' + error.message);
@@ -202,61 +202,12 @@ window.loadUserData = function(userId) {
     });
 };
 
-document.getElementById('loginForm').addEventListener('submit', (e) => {
-  e.preventDefault();
-  const email = document.getElementById('loginEmail').value;
-  const password = document.getElementById('loginPassword').value;
-  
-  signInWithEmailAndPassword(auth, email, password)
-    .then((userCredential) => {
-      loadUserData(userCredential.user.uid);
-    })
-    .catch((error) => {
-      alert('Erro de login: ' + error.message);
-    });
-});
-
-document.getElementById('registerForm').addEventListener('submit', (e) => {
-  e.preventDefault();
-  const email = document.getElementById('registerEmail').value;
-  const password = document.getElementById('registerPassword').value;
-  
-  if (password.length < 6) {
-    alert('A senha deve ter pelo menos 6 caracteres');
-    return;
-  }
-  
-  createUserWithEmailAndPassword(auth, email, password)
-    .then((userCredential) => {
-      alert('Conta criada com sucesso!');
-      initializeUserData(userCredential.user.uid);
-    })
-    .catch((error) => {
-      switch (error.code) {
-        case 'auth/email-already-in-use':
-          alert('Este email já está registrado');
-          break;
-        case 'auth/invalid-email':
-          alert('Email inválido');
-          break;
-        case 'auth/operation-not-allowed':
-          alert('Registro de conta desativado');
-          break;
-        case 'auth/weak-password':
-          alert('Senha muito fraca');
-          break;
-        default:
-          alert('Erro de registo: ' + error.message);
-      }
-    });
-});
-
 onAuthStateChanged(auth, (user) => {
   if (user) {
     loadUserData(user.uid);
     setupAutoSave();
   } else {
-    showLogin();
+    showLoginScreen();
   }
 });
 
@@ -271,42 +222,56 @@ function setupAutoSave() {
   });
 }
 
-function showLogin() {
-  document.getElementById('loginScreen').style.display = 'block';
-  document.getElementById('registerScreen').style.display = 'none';
-  document.getElementById('mainContent').style.display = 'none';
+function showTab(tabId) {
+  document.querySelectorAll('.tab-content').forEach(tab => {
+    tab.classList.remove('active');
+  });
+  document.querySelectorAll('.tab-button').forEach(button => {
+    button.classList.remove('active');
+  });
+
+  document.getElementById(`${tabId}-tab`).classList.add('active');
+  document.querySelector(`.tab-button[onclick="showTab('${tabId}')"]`).classList.add('active');
 }
 
-function showMainContent() {
-  document.getElementById('loginScreen').style.display = 'none';
-  document.getElementById('registerScreen').style.display = 'none';
-  document.getElementById('mainContent').style.display = 'block';
-}
+window.calculateYearAverage = function(year) {
+  const grades = document.querySelectorAll(`.year${year}-grade`);
+  let total = 0;
+  let count = 0;
 
-window.initializeUserData = function(userId) {
-  const emptyData = {
-    testData: [],
-    yearGrades: {
-      year10: {},
-      year11: {}
-    },
-    examGrades: {}
-  };
-  
-  dbSet(ref(database, 'users/' + userId), emptyData)
-    .then(() => {
-      window.testData = [];
-      showMainContent();
-    });
+  grades.forEach(input => {
+    const value = parseFloat(input.value);
+    if (!isNaN(value)) {
+      total += value;
+      count++;
+    }
+  });
+
+  return count > 0 ? total / count : null;
 };
 
-function getYearGrades(year) {
-  const grades = {};
-  document.querySelectorAll(`.year${year}-grade`).forEach(input => {
-    const subject = input.dataset.subject;
-    grades[subject] = input.value ? parseFloat(input.value) : null;
+function createYearInputs() {
+  const year10Div = document.getElementById('year10');
+  subjects.year10.forEach(subject => {
+    year10Div.innerHTML += `
+      <div class="subject">
+        <label>${subject}:</label>
+        <input type="number" min="0" max="20" step="1" class="grade-input year10-grade" 
+               data-subject="${subject}" placeholder="0-20">
+      </div>
+    `;
   });
-  return grades;
+
+  const year11Div = document.getElementById('year11');
+  subjects.year11.forEach(subject => {
+    year11Div.innerHTML += `
+      <div class="subject">
+        <label>${subject}:</label>
+        <input type="number" min="0" max="20" step="1" class="grade-input year11-grade" 
+               data-subject="${subject}" placeholder="0-20">
+      </div>
+    `;
+  });
 }
 
 function setYearGrades(yearGrades) {
@@ -468,55 +433,24 @@ document.addEventListener('DOMContentLoaded', function() {
   }
 });
 
-function showTab(tabId) {
-  document.querySelectorAll('.tab-content').forEach(tab => {
-    tab.classList.remove('active');
+function getYearGrades(year) {
+  const grades = {};
+  document.querySelectorAll(`.year${year}-grade`).forEach(input => {
+    const subject = input.dataset.subject;
+    grades[subject] = input.value ? parseFloat(input.value) : null;
   });
-  document.querySelectorAll('.tab-button').forEach(button => {
-    button.classList.remove('active');
-  });
-
-  document.getElementById(`${tabId}-tab`).classList.add('active');
-  document.querySelector(`.tab-button[onclick="showTab('${tabId}')"]`).classList.add('active');
+  return grades;
 }
 
-window.calculateYearAverage = function(year) {
-  const grades = document.querySelectorAll(`.year${year}-grade`);
-  let total = 0;
-  let count = 0;
-
-  grades.forEach(input => {
-    const value = parseFloat(input.value);
-    if (!isNaN(value)) {
-      total += value;
-      count++;
-    }
-  });
-
-  return count > 0 ? total / count : null;
-};
-
-function createYearInputs() {
-  const year10Div = document.getElementById('year10');
-  subjects.year10.forEach(subject => {
-    year10Div.innerHTML += `
-      <div class="subject">
-        <label>${subject}:</label>
-        <input type="number" min="0" max="20" step="1" class="grade-input year10-grade" 
-               data-subject="${subject}" placeholder="0-20">
-      </div>
-    `;
-  });
-
-  const year11Div = document.getElementById('year11');
-  subjects.year11.forEach(subject => {
-    year11Div.innerHTML += `
-      <div class="subject">
-        <label>${subject}:</label>
-        <input type="number" min="0" max="20" step="1" class="grade-input year11-grade" 
-               data-subject="${subject}" placeholder="0-20">
-      </div>
-    `;
-  });
+function saveUserData(userId) {
+  const data = {
+    testData: window.testData || [],
+    yearGrades: {
+      year10: getYearGrades(10),
+      year11: getYearGrades(11)
+    },
+    examGrades: getExamGrades()
+  };
+  
+  return dbSet(ref(database, 'users/' + userId), data);
 }
-
