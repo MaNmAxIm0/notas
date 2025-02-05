@@ -31,7 +31,10 @@ const subjectDomains = {
     { name: 'Conhecimentos', weight: 0.15 }
   ]
 };
-
+function getAllSubjects() {
+  // Combina todas as disciplinas dos três anos em uma única lista
+  return [...subjects.year10, ...subjects.year11, ...subjects.year12];
+}
 function populateSubjectSelect() {
   const select = document.getElementById('select12Subject');
   if (!select) return;
