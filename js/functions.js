@@ -48,7 +48,22 @@ function populateSubjectSelect() {
     select.appendChild(option);
   });
 }
+function updateFinalGrades12() {
+  const subjects = document.querySelectorAll('.year12-grade');
+  let total = 0;
+  let count = 0;
 
+  subjects.forEach(subject => {
+    const grade = parseFloat(subject.value);
+    if (!isNaN(grade)) {
+      total += grade;
+      count++;
+    }
+  });
+
+  const average = count > 0 ? total / count : 0;
+  document.getElementById('year12-final-grade').innerText = average.toFixed(2);
+}
 function updateDomainSelect(selectedSubject) {
   const domainSelect = document.getElementById('testDomain');
   const domainContainer = domainSelect.parentElement;
