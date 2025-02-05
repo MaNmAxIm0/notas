@@ -83,14 +83,14 @@ table {
     margin-top: 20px;
 }
 
-table {
-    width: 100%;
-    table-layout: fixed;
+th, td {
+    border: 1px solid #ddd;
+    padding: 8px;
+    text-align: center;
 }
 
-th, td {
-    word-wrap: break-word;
-    text-align: center;
+th {
+    background-color: #f0f0f0;
 }
 
 button {
@@ -320,7 +320,6 @@ button:hover {
     color: #333;
 }
 
-/* Pop-up de informação */
 .popup-overlay {
     display: none;
     position: fixed;
@@ -413,80 +412,161 @@ button:hover {
     background-color: #f9f9f9;
 }
 
-/* NOVO: Contêiner responsivo para tabelas */
-.tabela-container {
-    overflow-x: auto;
-    max-width: 100%;
-}
-
-/* Garantir que as tabelas ocupam 100% da largura do contêiner */
-table {
-    width: 100%;
-    border-collapse: collapse;
-}
-
-/* Media queries para melhorar a visualização em dispositivos móveis */
 @media screen and (max-width: 768px) {
-    /* Ajuste da tabela para forçar duas colunas fixas e reduzir fonte/padding */
-    table {
-        table-layout: fixed;
-        width: 100%;
-        font-size: 12px;
-    }
-    th, td {
-        padding: 4px;
-        word-wrap: break-word;
-        text-align: center;
-    }
-    
-    /* Força a tabela de exames e de 12º ano a ocuparem 100% da largura */
-    .table-container, .subject-table {
-        width: 100% !important;
-    }
-    
-    /* Ajuste para os inputs e botões (formulários) */
-    input[type="number"],
-    input[type="text"],
-    input[type="email"],
-    input[type="password"],
-    select,
-    .grade-input,
-    .domain-select {
-        width: 100%;
-        height: 40px;
-        padding: 8px;
-        font-size: 14px;
-        margin: 5px 0;
-    }
-    button {
-        width: 100%;
-        min-height: 40px;
-        padding: 10px;
-        font-size: 14px;
-        margin: 10px 0;
-    }
-    
-    /* Se o grid do formulário de teste precisar ser empilhado */
-    .consolidated-input {
-        grid-template-columns: 1fr 1fr;
-        gap: 10px;
-    }
-}
+  body {
+    padding: 10px;
+  }
 
-/* Estilo para o nome dos testes (para aparecerem sempre, mesmo sem hover) */
+  /* Make text larger for better readability */
+  body, input, select, button {
+    font-size: 16px; /* Base font size for better readability */
+  }
+
+  h1 {
+    font-size: 24px;
+    margin: 15px 0;
+  }
+
+  h2 {
+    font-size: 20px;
+  }
+
+  /* Make tab buttons stack and fill width */
+  .tab-buttons {
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .tab-button {
+    width: 100%;
+    padding: 15px;
+    font-size: 18px;
+  }
+
+  /* Make inputs larger and full width */
+  input[type="number"],
+  input[type="text"],
+  input[type="email"],
+  input[type="password"],
+  select,
+  .grade-input,
+  .domain-select {
+    width: 100%;
+    height: 48px; /* Larger touch target */
+    padding: 12px;
+    font-size: 16px;
+    margin: 5px 0;
+  }
+
+  /* Adjust buttons for better touch targets */
+  button {
+    width: 100%;
+    min-height: 48px;
+    padding: 12px 20px;
+    font-size: 16px;
+    margin: 10px 0;
+  }
+
+  /* Make tables more mobile-friendly */
+  table {
+    font-size: 14px;
+  }
+
+  th, td {
+    padding: 12px 8px;
+  }
+
+  /* Stack grid items */
+  .consolidated-input,
+  .domain-grades-layout,
+  .domain-tests {
+    grid-template-columns: 1fr;
+    gap: 15px;
+  }
+
+  /* Adjust spacing for sections */
+  .year-section,
+  .exam-section {
+    padding: 15px;
+    margin: 15px 0;
+  }
+
+  /* Make test grades more touch-friendly */
+  .test-grade {
+    padding: 12px;
+    margin: 8px 0;
+  }
+
+  .test-grade .remove-test {
+    padding: 8px;
+    font-size: 24px;
+  }
+
+  /* Make the exam input container more mobile-friendly */
+  .exam-input-container > div {
+    grid-template-columns: 1fr;
+    gap: 15px;
+  }
+
+  /* Make sure tables don't overflow */
+  .table-container {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  /* Adjust popup for mobile */
+  .popup-content {
+    width: 90%;
+    max-height: 80vh;
+    padding: 20px;
+  }
+
+  .close-popup {
+    font-size: 32px;
+    padding: 10px;
+  }
+
+  /* Adjust login/register forms */
+  #loginScreen > div,
+  #registerScreen > div {
+    width: 90%;
+    margin: 50px auto;
+    padding: 20px;
+  }
+
+  /* Adjust final averages display */
+  .final-averages > div {
+    grid-template-columns: 1fr;
+    gap: 15px;
+  }
+
+  /* Make summary sections more readable */
+  #total-average-no-exams,
+  #total-average-with-exams {
+    font-size: 28px !important;
+  }
+
+  /* Add visual feedback for touch interactions */
+  button:active,
+  .tab-button:active,
+  .test-grade:active {
+    transform: scale(0.98);
+  }
+
+  /* Improve spacing between elements */
+  .subject {
+    margin: 20px 0;
+  }
+
+  /* Make domain info icon larger */
+  .domain-info-icon {
+    font-size: 24px;
+    padding: 8px;
+  }
 .test-name {
-    display: block;
+    display: block; /* Força o nome a aparecer sempre */
     font-size: 12px;
     color: #555;
     text-align: center;
     margin-bottom: 3px;
-}
-.nota-input {
-    width: 40px;
-    font-size: 14px;
-}
-
-.remover-nota {
-    font-size: 12px;
-    padding: 2px 4px;
 }
