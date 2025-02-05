@@ -169,13 +169,28 @@ document.getElementById('registerForm').addEventListener('submit', (e) => {
 
 onAuthStateChanged(auth, (user) => {
   if (user) {
-    document.getElementById('login-container').style.display = 'none';
-    document.getElementById('main-content').style.display = 'block';
+    const loginScreen = document.getElementById('loginScreen');
+    const mainContent = document.getElementById('mainContent');
+    
+    if (loginScreen && mainContent) {
+      loginScreen.style.display = 'none';
+      mainContent.style.display = 'block';
+    } else {
+      console.error('Elementos loginScreen ou mainContent não encontrados.');
+    }
+    
     loadUserData(user.uid);
     setupAutoSave();
   } else {
-    document.getElementById('login-container').style.display = 'block';
-    document.getElementById('main-content').style.display = 'none';
+    const loginScreen = document.getElementById('loginScreen');
+    const mainContent = document.getElementById('mainContent');
+    
+    if (loginScreen && mainContent) {
+      loginScreen.style.display = 'block';
+      mainContent.style.display = 'none';
+    } else {
+      console.error('Elementos loginScreen ou mainContent não encontrados.');
+    }
   }
 });
 
