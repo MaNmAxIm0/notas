@@ -2,7 +2,33 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.0/firebas
 import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-auth.js";
 import { getDatabase, ref, set, get } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-database.js";
 
-// Defina ou importe a função loadUserData
+// Defina a função setupAutoSave
+function setupAutoSave() {
+  const inputs = document.querySelectorAll('input, select');
+  inputs.forEach(input => {
+    input.addEventListener('change', () => {
+      if (auth.currentUser) {
+        saveUserData(auth.currentUser.uid);
+      }
+    });
+  });
+}
+
+// Defina a função saveUserData
+function saveUserData(userId) {
+  const database = getDatabase();
+  const userRef = ref(database, 'users/' + userId);
+  const data = {
+    // Adicione os dados que você deseja salvar
+  };
+  set(userRef, data).then(() => {
+    console.log("Dados do usuário salvos com sucesso.");
+  }).catch((error) => {
+    console.error("Erro ao salvar os dados do usuário: ", error);
+  });
+}
+
+// Defina a função loadUserData
 function loadUserData(userId) {
   const database = getDatabase();
   const userRef = ref(database, 'users/' + userId);
@@ -16,6 +42,26 @@ function loadUserData(userId) {
     }
   }).catch((error) => {
     console.error(error);
+  });
+}
+
+// Defina a função initializeUserData
+function initializeUserData(userId) {
+  const database = getDatabase();
+  const userRef = ref(database, 'users/' + userId);
+  const initialData = {
+    // Dados iniciais do usuário
+    testData: [],
+    yearGrades: {
+      year10: {},
+      year11: {}
+    },
+    examGrades: {}
+  };
+  set(userRef, initialData).then(() => {
+    console.log("Dados iniciais do usuário definidos.");
+  }).catch((error) => {
+    console.error("Erro ao definir os dados iniciais do usuário: ", error);
   });
 }
 
