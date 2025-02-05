@@ -1,3 +1,15 @@
+import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-auth.js";
+
+// Resto do código...
+
+onAuthStateChanged(auth, (user) => {
+  if (user) {
+    loadUserData(user.uid);
+    setupAutoSave();
+  } else {
+    showLogin();
+  }
+});
 document.getElementById('loginForm').addEventListener('submit', (e) => {
   e.preventDefault();
   const email = document.getElementById('loginEmail').value;
