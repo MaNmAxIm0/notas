@@ -875,8 +875,8 @@ function updateFinalGrades12() {
 
 window.removeTest = removeTest;
 
-window.calculateFinalGrades = calculateFinalGrades;
 window.calculateYear12Average = calculateYear12Average;
+window.calculateFinalGrades = calculateFinalGrades;
 window.calculateExamGrades = calculateExamGrades;
 window.calculateSecondaryEducationAverage = calculateSecondaryEducationAverage;
 window.updateSummaryTable = updateSummaryTable;
@@ -886,3 +886,4 @@ window.calculateSubjectCIF = calculateSubjectCIF;
 window.getDomainWeight = getDomainWeight;
 window.processSubject = processSubject;
 window.updateFinalGrades12 = updateFinalGrades12;
+
