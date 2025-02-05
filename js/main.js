@@ -79,8 +79,8 @@ function loadUserData(userId) {
       window.testData = data.testData || [];
       setYearGrades(data.yearGrades);
       setExamGrades(data.examGrades);
-      updateFinalGrades12();  // Se esta função existir
-      calculateFinalGrades(); // Se esta função existir
+      updateFinalGrades12();
+      calculateFinalGrades();
     } else {
       console.log("No data available");
     }
@@ -132,6 +132,12 @@ function updateFinalGrades12() {
   } else {
     console.error("Elemento com ID 'year12-final-grade' não encontrado.");
   }
+}
+
+// Defina a função calculateFinalGrades
+function calculateFinalGrades() {
+  // Implemente a lógica para calcular as notas finais
+  console.log("Calculando as notas finais...");
 }
 
 // Your web app's Firebase configuration
