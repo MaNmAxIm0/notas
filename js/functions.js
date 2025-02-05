@@ -1,4 +1,4 @@
-const subjects = { 
+const subjects = {
   year10: ['Matemática A', 'Português', 'Inglês', 'Educação Física', 'Filosofia', 'Economia A', 'Geografia A'],
   year11: ['Matemática A', 'Português', 'Inglês', 'Educação Física', 'Filosofia', 'Economia A', 'Geografia A'],
   year12: ['Aplicações Informáticas B', 'Economia C', 'Português', 'Matemática A', 'Educação Física']
@@ -34,7 +34,6 @@ const subjectDomains = {
 function populateSubjectSelect() {
     const select = document.getElementById('select12Subject');
     if (!select) return;
-    
     select.innerHTML = '<option value="">Selecione a Disciplina</option>';
     subjects.year12.forEach(subject => {
         const option = document.createElement('option');
@@ -48,12 +47,8 @@ function updateDomainSelect(selectedSubject) {
     const domainSelect = document.getElementById('testDomain');
     const domainContainer = domainSelect.parentElement;
     domainSelect.innerHTML = '<option value="">Selecione o Domínio</option>';
-    
     const existingIcon = domainContainer.querySelector('.domain-info-icon');
-    if (existingIcon) {
-        existingIcon.remove();
-    }
-    
+    if (existingIcon) { existingIcon.remove(); }
     if (selectedSubject && subjectDomains[selectedSubject]) {
         subjectDomains[selectedSubject].forEach(domain => {
             const option = document.createElement('option');
@@ -61,7 +56,6 @@ function updateDomainSelect(selectedSubject) {
             option.textContent = `${domain.name} (${domain.weight * 100}%)`;
             domainSelect.appendChild(option);
         });
-        
         if (selectedSubject === 'Educação Física') {
             const infoIcon = document.createElement('span');
             infoIcon.className = 'domain-info-icon';
@@ -116,12 +110,10 @@ document.getElementById('registerForm').addEventListener('submit', (e) => {
     e.preventDefault();
     const email = document.getElementById('registerEmail').value;
     const password = document.getElementById('registerPassword').value;
-    
     if (password.length < 6) {
         alert('A senha deve ter pelo menos 6 caracteres');
         return;
     }
-    
     createUserWithEmailAndPassword(auth, email, password)
       .then((userCredential) => {
         alert('Conta criada com sucesso!');
@@ -180,7 +172,6 @@ window.saveUserData = function(userId) {
       },
       examGrades: getExamGrades()
     };
-    
     return dbSet(ref(database, 'users/' + userId), data);
 };
 
@@ -223,196 +214,36 @@ function setYearGrades(yearGrades) {
     });
 }
 
-// =================== VERSÃO ÚNICA DA TABELA DE EXAMES ===================
-function setExamGrades(examGrades) {
-    if (!examGrades) return;
-    
-    let examTable = document.getElementById('exam-summary-table');
-    if (!examTable) {
-        examTable = document.createElement('table');
-        examTable.id = 'exam-summary-table';
-        examTable.style.width = '100%';
-        examTable.style.marginTop = '20px';
-        examTable.innerHTML = `
-            <thead>
-                <tr>
-                    <th>Disciplina</th>
-                    <th>Nota</th>
-                    <th>Ação</th>
-                </tr>
-            </thead>
-            <tbody></tbody>
-        `;
-        document.getElementById('exam-entries').appendChild(examTable);
-    }
-    const tbody = examTable.querySelector('tbody');
-    tbody.innerHTML = '';
-    Object.entries(examGrades).forEach(([subject, data]) => {
-        if (subject !== 'average' && data) {
-            const row = document.createElement('tr');
-            row.innerHTML = `
-                <td>${subject}</td>
-                <td>${data.grade * 10}</td>
-                <td>
-                    <button onclick="this.closest('tr').remove(); calculateFinalGrades();" 
-                            style="background-color: #f44336; padding: 5px 10px;">
-                        Remover
-                    </button>
-                </td>
-            `;
-            tbody.appendChild(row);
-        }
-    });
-}
-// =============================================================================
-
-function setupAutoSave() {
-    const inputs = document.querySelectorAll('input, select');
-    inputs.forEach(input => {
-        input.addEventListener('change', () => {
-            if (auth.currentUser) {
-                saveUserData(auth.currentUser.uid);
-            }
-        });
-    });
-}
-
-onAuthStateChanged(auth, (user) => {
-    if (user) {
-      loadUserData(user.uid);
-      setupAutoSave();
-    } else {
-      showLogin();
-    }
-});
-
-document.getElementById('registerForm').addEventListener('submit', (e) => {
-    e.preventDefault();
-    const email = document.getElementById('registerEmail').value;
-    const password = document.getElementById('registerPassword').value;
-    
-    if (password.length < 6) {
-        alert('A senha deve ter pelo menos 6 caracteres');
-        return;
-    }
-    
-    createUserWithEmailAndPassword(auth, email, password)
-      .then((userCredential) => {
-        alert('Conta criada com sucesso!');
-        initializeUserData(userCredential.user.uid);
-      })
-      .catch((error) => {
-        switch (error.code) {
-            case 'auth/email-already-in-use':
-                alert('Este email já está registrado');
-                break;
-            case 'auth/invalid-email':
-                alert('Email inválido');
-                break;
-            case 'auth/operation-not-allowed':
-                alert('Registro de conta desativado');
-                break;
-            case 'auth/weak-password':
-                alert('Senha muito fraca');
-                break;
-            default:
-                alert('Erro de registo: ' + error.message);
-        }
-      });
-});
-
-document.getElementById('loginForm').addEventListener('submit', (e) => {
-    e.preventDefault();
-    const email = document.getElementById('loginEmail').value;
-    const password = document.getElementById('loginPassword').value;
-    
-    signInWithEmailAndPassword(auth, email, password)
-      .then((userCredential) => {
-        loadUserData(userCredential.user.uid);
-      })
-      .catch((error) => {
-        alert('Erro de login: ' + error.message);
-      });
-});
-
-function showTab(tabId) {
-    document.querySelectorAll('.tab-content').forEach(tab => {
-        tab.classList.remove('active');
-    });
-    document.querySelectorAll('.tab-button').forEach(button => {
-        button.classList.remove('active');
-    });
-    document.getElementById(`${tabId}-tab`).classList.add('active');
-    document.querySelector(`.tab-button[onclick="showTab('${tabId}')"]`).classList.add('active');
-}
-
-window.calculateYearAverage = function(year) {
-    const grades = document.querySelectorAll(`.year${year}-grade`);
-    let total = 0, count = 0;
-    grades.forEach(input => {
-        const value = parseFloat(input.value);
-        if (!isNaN(value)) { total += value; count++; }
-    });
-    return count > 0 ? total / count : null;
-};
-
-function createYearInputs() {
-  const year10Div = document.getElementById('year10');
-  subjects.year10.forEach(subject => {
-    year10Div.innerHTML += `
-      <div class="subject">
-        <label>${subject}:</label>
-        <input type="number" min="0" max="20" step="1" class="grade-input year10-grade" 
-               data-subject="${subject}" placeholder="0-20">
-      </div>
-    `;
-  });
-  const year11Div = document.getElementById('year11');
-  subjects.year11.forEach(subject => {
-    year11Div.innerHTML += `
-      <div class="subject">
-        <label>${subject}:</label>
-        <input type="number" min="0" max="20" step="1" class="grade-input year11-grade" 
-               data-subject="${subject}" placeholder="0-20">
-      </div>
-    `;
-  });
-}
-
-// ===================== NOVA ALTERAÇÃO NA FUNÇÃO processSubject =====================
-// Para cada disciplina, gera duas versões do resumo dos testes:
-// - Versão desktop (tabela tradicional – classe "desktop-table")
-// - Versão mobile (layout flex com rodapé – classe "mobile-flex")
+// ============ ALTERAÇÃO NA FUNÇÃO processSubject ============
+// Para cada disciplina, cria uma única tabela na versão desktop que, se o número de domínios exceder um máximo, quebra em novas linhas;
+// e cria também a versão mobile (layout flex) que já permite wrap natural.
 function processSubject(subject, tests, container) {
     const domains = subjectDomains[subject] || [];
     const domainAverages = {};
-    let subjectFinalGrade = 0, totalWeight = 0;
+    let subjectFinalGrade = 0;
+    let totalWeight = 0;
     domains.forEach(domain => {
         const domainTests = tests.filter(t => t.domain === domain.name);
         if (domainTests.length > 0) {
             const rawAvg = domainTests.reduce((sum, t) => sum + t.grade, 0) / domainTests.length;
             const weightedAvg = rawAvg * domain.weight;
-            domainAverages[domain.name] = { rawAverage: rawAvg, weightedAverage: weightedAvg, weight: domain.weight * 100 };
+            domainAverages[domain.name] = {
+                rawAverage: rawAvg,
+                weightedAverage: weightedAvg,
+                weight: domain.weight * 100
+            };
             subjectFinalGrade += weightedAvg;
             totalWeight += domain.weight;
         }
     });
     
-    const subjectContainer = document.createElement('div');
-    subjectContainer.className = 'subject-summary-container';
-    
-    // Versão desktop (tabela tradicional)
-    const desktopHTML = `
-      <table class="finals-summary-table desktop-table">
-        <thead>
-          <tr>
-            <th colspan="${domains.length + 1}">${subject}</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            ${domains.map(domain => `
-              <td>
+    const maxColumns = 3; // Número máximo de colunas por linha na versão desktop
+    const numDomains = domains.length;
+    let desktopRows = "";
+    for (let i = 0; i < numDomains; i += maxColumns) {
+        let rowDomains = domains.slice(i, i + maxColumns);
+        let rowHTML = rowDomains.map(domain => {
+            return `<td>
                 <div class="domain-grade-item">
                   <span class="domain-name">${domain.name} (${domain.weight * 100}%)</span>
                   <div class="domain-tests">
@@ -425,21 +256,32 @@ function processSubject(subject, tests, container) {
                     `).join('')}
                   </div>
                   <span class="domain-value">
-                    Média: ${Math.round((domainAverages[domain.name]?.rawAverage || 0)*10)/10} × ${domain.weight * 100}% = 
-                    ${Math.round((domainAverages[domain.name]?.weightedAverage || 0)*10)/10}
+                    Média: ${Math.round((domainAverages[domain.name]?.rawAverage || 0) * 10) / 10} × ${domain.weight * 100}% = 
+                    ${Math.round((domainAverages[domain.name]?.weightedAverage || 0) * 10) / 10}
                   </span>
                 </div>
-              </td>
-            `).join('')}
-            <td>
-              <strong>Média Final: ${Math.round(subjectFinalGrade * 10) / 10}</strong>
-            </td>
+              </td>`;
+        }).join('');
+        desktopRows += `<tr>${rowHTML}</tr>`;
+    }
+    // Linha final com a média final da disciplina
+    const finalRow = `<tr><td colspan="${maxColumns}"><strong>Média Final: ${Math.round(subjectFinalGrade * 10) / 10}</strong></td></tr>`;
+    
+    const desktopHTML = `
+      <table class="finals-summary-table desktop-table">
+        <thead>
+          <tr>
+            <th colspan="${maxColumns}">${subject}</th>
           </tr>
+        </thead>
+        <tbody>
+          ${desktopRows}
+          ${finalRow}
         </tbody>
       </table>
     `;
     
-    // Versão mobile (layout flex com rodapé)
+    // Versão mobile (layout flex)
     const mobileHTML = `
       <div class="finals-summary-flex mobile-flex">
         <h3>${subject}</h3>
@@ -471,12 +313,14 @@ function processSubject(subject, tests, container) {
       </div>
     `;
     
+    const subjectContainer = document.createElement('div');
+    subjectContainer.className = 'subject-summary-container';
     subjectContainer.innerHTML = desktopHTML + mobileHTML;
     container.appendChild(subjectContainer);
     
     return totalWeight > 0 ? subjectFinalGrade : null;
 }
-// =============================================================================
+// ============ FIM DA ALTERAÇÃO NA FUNÇÃO processSubject ============
 
 function removeTest(testIndex, subject, domain) {
     if (confirm('Tem certeza que deseja remover este teste?')) {
@@ -820,9 +664,7 @@ function getExamGrades() {
         rows.forEach(row => {
             const subject = row.cells[0].textContent;
             const grade = parseFloat(row.cells[1].textContent) / 10;
-            if (!isNaN(grade)) {
-                examGrades[subject] = { grade, weight: 1 };
-            }
+            if (!isNaN(grade)) { examGrades[subject] = { grade, weight: 1 }; }
         });
         const grades = Object.values(examGrades).map(g => g.grade);
         if (grades.length > 0) { examGrades.average = grades.reduce((a, b) => a + b, 0) / grades.length; }
@@ -875,8 +717,8 @@ function updateFinalGrades12() {
 
 window.removeTest = removeTest;
 
-window.calculateYear12Average = calculateYear12Average;
 window.calculateFinalGrades = calculateFinalGrades;
+window.calculateYear12Average = calculateYear12Average;
 window.calculateExamGrades = calculateExamGrades;
 window.calculateSecondaryEducationAverage = calculateSecondaryEducationAverage;
 window.updateSummaryTable = updateSummaryTable;
@@ -886,4 +728,3 @@ window.calculateSubjectCIF = calculateSubjectCIF;
 window.getDomainWeight = getDomainWeight;
 window.processSubject = processSubject;
 window.updateFinalGrades12 = updateFinalGrades12;
-
