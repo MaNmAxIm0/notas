@@ -638,7 +638,7 @@ async function login(event) {
     const password = document.getElementById('password').value;
 
     try {
-        const userCredential = await firebase.auth().signInWithEmailAndPassword(email, password);
+        const userCredential = await signInWithEmailAndPassword(auth, email, password);
         const user = userCredential.user;
         console.log("Login bem-sucedido", user);
 
@@ -653,10 +653,10 @@ async function login(event) {
 
 // Função para carregar as notas do 12º ano
 async function loadYear12Grades(userId) {
-    const gradesRef = firebase.database().ref(`users/${userId}/year12Grades`);
+    const gradesRef = ref(database, `users/${userId}/year12Grades`);
 
     try {
-        const snapshot = await gradesRef.once('value');
+        const snapshot = await get(gradesRef);
         const grades = snapshot.val();
 
         if (grades) {
@@ -669,7 +669,6 @@ async function loadYear12Grades(userId) {
         console.error("Erro ao carregar notas", error);
     }
 }
-
 // Função para preencher a tabela com as notas
 function populateGradesTable(grades) {
     const tableBody = document.getElementById('gradesTableBody');
