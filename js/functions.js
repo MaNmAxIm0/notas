@@ -465,12 +465,3 @@ function saveUserData(userId) {
   
   return dbSet(ref(database, 'users/' + userId), data);
 }
-
-
-  const grades = Object.values(examGrades).map(g => g.grade);
-  if (grades.length > 0) {
-    examGrades.average = grades.reduce((a, b) => a + b, 0) / grades.length;
-  }
-
-  return examGrades;
-}
