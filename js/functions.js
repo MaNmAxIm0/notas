@@ -92,6 +92,11 @@ function showMainContent() {
   document.getElementById('mainContent').style.display = 'block';
 }
 
+function addTest12thYear() {
+  // Implementação da função addTest12thYear
+  console.log("Função addTest12thYear chamada");
+}
+
 window.showLogin = showLoginScreen;
 window.showRegister = showRegister;
 window.showMainContent = showMainContent;
@@ -453,4 +458,32 @@ function saveUserData(userId) {
   };
   
   return dbSet(ref(database, 'users/' + userId), data);
+}
+
+function getExamGrades() {
+  const examEntries = document.querySelectorAll('.exam-entry');
+  const examGrades = {};
+
+  examEntries.forEach(entry => {
+    const subject = entry.querySelector('.exam-subject').value;
+    const gradeInput = entry.querySelector('.exam-grade');
+    const weightInput = entry.querySelector('.exam-weight');
+    
+    if (gradeInput.value && weightInput.value) {
+      const grade = parseFloat(gradeInput.value) / 10;
+      const weight = parseFloat(weightInput.value) / 100;
+      
+      examGrades[subject] = {
+        grade: grade,
+        weight: weight
+      };
+    }
+  });
+
+  const grades = Object.values(examGrades).map(g => g.grade);
+  if (grades.length > 0) {
+    examGrades.average = grades.reduce((a, b) => a + b, 0) / grades.length;
+  }
+
+  return examGrades;
 }
