@@ -419,7 +419,6 @@ button:hover {
     max-width: 100%;
 }
 
-
 /* Garantir que as tabelas ocupam 100% da largura do contêiner */
 table {
     width: 100%;
@@ -474,9 +473,6 @@ table {
     }
 }
 
-
-
-
 /* Estilo para o nome dos testes (para aparecerem sempre, mesmo sem hover) */
 .test-name {
     display: block;
@@ -494,4 +490,3 @@ table {
     font-size: 12px;
     padding: 2px 4px;
 }
-
