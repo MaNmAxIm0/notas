@@ -644,7 +644,7 @@ async function login(event) {
 
         // Carrega notas e redireciona para a página de dashboard
         await loadYear12Grades(user.uid);
-        window.location.href = "index.html"; // Substitua pelo nome correto da página
+        window.location.href = "notas/index.html"; // Substitua pelo nome correto da página
     } catch (error) {
         console.error("Erro ao fazer login", error);
         alert("Erro ao fazer login: " + error.message);
