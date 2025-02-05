@@ -251,28 +251,47 @@ function setYearGrades(yearGrades) {
 function setExamGrades(examGrades) {
     if (!examGrades) return;
     
-    // Clear existing exam entries
-    document.getElementById('exam-entries').innerHTML = '';
+    // Encontra o contêiner de exames
+    const examContainer = document.getElementById('exam-entries');
+    // Limpa o conteúdo
+    examContainer.innerHTML = '';
     
-    // Add saved exam entries
+    // Cria um novo contêiner responsivo e a tabela
+    const container = document.createElement('div');
+    container.className = 'table-container';
+    
+    const examTable = document.createElement('table');
+    examTable.id = 'exam-summary-table';
+    examTable.style.marginTop = '20px';
+    examTable.innerHTML = `
+        <thead>
+            <tr>
+                <th>Disciplina</th>
+                <th>Nota</th>
+            </tr>
+        </thead>
+        <tbody></tbody>
+    `;
+    
+    container.appendChild(examTable);
+    examContainer.appendChild(container);
+    
+    const tbody = examTable.querySelector('tbody');
+    
+    // Percorre os exames salvos (ignorando a propriedade "average", se existir)
     Object.entries(examGrades).forEach(([subject, data]) => {
         if (subject !== 'average' && data) {
-            const examDiv = document.createElement('div');
-            examDiv.className = 'exam-entry';
-            examDiv.innerHTML = `
-                <select class="exam-subject">
-                    ${getAllSubjects().map(subj => 
-                        `<option value="${subj}" ${subj === subject ? 'selected' : ''}>${subj}</option>`
-                    ).join('')}
-                </select>
-                <input type="number" min="0" max="200" step="1" class="exam-grade" value="${data.grade * 10}" placeholder="0-200">
-                <input type="number" min="0" max="100" step="1" class="exam-weight" value="${data.weight * 100}" placeholder="Peso %">
-                <button onclick="this.parentElement.remove()">Remover</button>
+            const row = document.createElement('tr');
+            // Como na função addExam(), a nota é armazenada no mesmo formato; se necessário, converta:
+            row.innerHTML = `
+                <td>${subject}</td>
+                <td>${data.grade * 10}</td>
             `;
-            document.getElementById('exam-entries').appendChild(examDiv);
+            tbody.appendChild(row);
         }
     });
 }
+
 
 // Initialize user data when creating new account
 window.initializeUserData = function(userId) {
@@ -506,16 +525,16 @@ function calculateExamGrades() {
         const rows = examTable.querySelectorAll('tbody tr');
         rows.forEach(row => {
             const subject = row.cells[0].textContent;
-            const grade = parseFloat(row.cells[1].textContent) / 10; // Convert to 20-point scale
+            const grade = parseFloat(row.cells[1].textContent) / 10; // Converte para a escala de 20 pontos, se necessário
             if (!isNaN(grade)) {
                 examGrades[subject] = {
                     grade: grade,
-                    weight: 1 // Default weight if needed
+                    weight: 1 // Peso padrão, se não for usado
                 };
             }
         });
 
-        // Calculate average if there are any grades
+        // Calcula a média se houver exames
         const grades = Object.values(examGrades).map(g => g.grade);
         if (grades.length > 0) {
             examGrades.average = grades.reduce((a, b) => a + b, 0) / grades.length;
@@ -524,6 +543,7 @@ function calculateExamGrades() {
 
     return examGrades;
 }
+
 
 // Function to calculate final grades
 function calculateFinalGrades() {
