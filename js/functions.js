@@ -33,12 +33,10 @@ const subjectDomains = {
 
 function populateSubjectSelect() {
   const select = document.getElementById('select12Subject');
-  if (!select) return; // Add safety check
+  if (!select) return;
   
-  // Clear existing options
   select.innerHTML = '<option value="">Selecione a Disciplina</option>';
   
-  // Add 12th year subjects
   subjects.year12.forEach(subject => {
     const option = document.createElement('option');
     option.value = subject;
@@ -52,7 +50,6 @@ function updateDomainSelect(selectedSubject) {
   const domainContainer = domainSelect.parentElement;
   domainSelect.innerHTML = '<option value="">Selecione o Domínio</option>';
   
-  // Remove existing info icon if present
   const existingIcon = domainContainer.querySelector('.domain-info-icon');
   if (existingIcon) {
     existingIcon.remove();
@@ -66,7 +63,6 @@ function updateDomainSelect(selectedSubject) {
       domainSelect.appendChild(option);
     });
     
-    // Add info icon only for Physical Education
     if (selectedSubject === 'Educação Física') {
       const infoIcon = document.createElement('span');
       infoIcon.className = 'domain-info-icon';
@@ -96,29 +92,22 @@ function showMainContent() {
   document.getElementById('mainContent').style.display = 'block';
 }
 
-// Update these functions to be exposed to window scope, before the Firebase initialization code
 window.showLogin = showLogin;
 window.showRegister = showRegister;
 window.showMainContent = showMainContent;
 window.showTab = showTab;
 window.addExam = addExam;
-window.addTest12thYear = addTest12thYear; // Add this line
+window.addTest12thYear = addTest12thYear;
 window.logout = function() {
   signOut(auth)
     .then(() => {
-      // Clear stored data
       window.testData = [];
-      // Clear all inputs
       document.querySelectorAll('input').forEach(input => {
         input.value = '';
       });
-      // Clear exam entries
       document.getElementById('exam-entries').innerHTML = '';
-      // Clear year 12 finals
       document.querySelector('.year12-finals').innerHTML = '';
-      // Reset all calculations
       calculateFinalGrades();
-      // Show login screen
       showLogin();
     })
     .catch((error) => {
@@ -126,7 +115,6 @@ window.logout = function() {
     });
 };
 
-// Add improved error handling to the registration form
 document.getElementById('registerForm').addEventListener('submit', (e) => {
   e.preventDefault();
   const email = document.getElementById('registerEmail').value;
@@ -162,12 +150,10 @@ document.getElementById('registerForm').addEventListener('submit', (e) => {
     });
 });
 
-// Import the functions you need from the SDKs you need
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-app.js";
 import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-auth.js";
 import { getDatabase, ref, set, get } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-database.js";
 
-// Your web app's Firebase configuration
 const firebaseConfig = {
   apiKey: "AIzaSyC1hg5b-lRtilVWYxeEU6sAwSHfCi7uAG8",
   authDomain: "notas-a3feb.firebaseapp.com",
@@ -178,19 +164,16 @@ const firebaseConfig = {
   appId: "1:657388702531:web:2e25bf0481273453e7bdf6"
 };
 
-// Initialize Firebase
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const database = getDatabase(app);
 
-// Make auth and database available globally
 window.auth = auth;
 window.database = database;
 window.dbRef = ref;
 window.dbSet = set;
 window.dbGet = get;
 
-// Function to save user data
 window.saveUserData = function(userId) {
   const data = {
     testData: window.testData || [],
@@ -204,7 +187,6 @@ window.saveUserData = function(userId) {
   return dbSet(ref(database, 'users/' + userId), data);
 };
 
-// Function to load user data
 window.loadUserData = function(userId) {
   get(ref(database, 'users/' + userId))
     .then((snapshot) => {
@@ -220,7 +202,6 @@ window.loadUserData = function(userId) {
     });
 };
 
-// Function to handle login
 document.getElementById('loginForm').addEventListener('submit', (e) => {
   e.preventDefault();
   const email = document.getElementById('loginEmail').value;
@@ -235,7 +216,6 @@ document.getElementById('loginForm').addEventListener('submit', (e) => {
     });
 });
 
-// Function to handle registration
 document.getElementById('registerForm').addEventListener('submit', (e) => {
   e.preventDefault();
   const email = document.getElementById('registerEmail').value;
@@ -271,7 +251,6 @@ document.getElementById('registerForm').addEventListener('submit', (e) => {
     });
 });
 
-// Update auth state observer to load user data
 onAuthStateChanged(auth, (user) => {
   if (user) {
     loadUserData(user.uid);
@@ -281,7 +260,6 @@ onAuthStateChanged(auth, (user) => {
   }
 });
 
-// Add auto-save functionality
 function setupAutoSave() {
   const inputs = document.querySelectorAll('input, select');
   inputs.forEach(input => {
@@ -293,14 +271,18 @@ function setupAutoSave() {
   });
 }
 
-// Function to show main content
+function showLogin() {
+  document.getElementById('loginScreen').style.display = 'block';
+  document.getElementById('registerScreen').style.display = 'none';
+  document.getElementById('mainContent').style.display = 'none';
+}
+
 function showMainContent() {
   document.getElementById('loginScreen').style.display = 'none';
   document.getElementById('registerScreen').style.display = 'none';
   document.getElementById('mainContent').style.display = 'block';
 }
 
-// Function to initialize user data when creating new account
 window.initializeUserData = function(userId) {
   const emptyData = {
     testData: [],
@@ -318,7 +300,6 @@ window.initializeUserData = function(userId) {
     });
 };
 
-// Function to get year grades
 function getYearGrades(year) {
   const grades = {};
   document.querySelectorAll(`.year${year}-grade`).forEach(input => {
@@ -328,7 +309,6 @@ function getYearGrades(year) {
   return grades;
 }
 
-// Function to set year grades
 function setYearGrades(yearGrades) {
   if (!yearGrades) return;
   
@@ -345,7 +325,6 @@ function setYearGrades(yearGrades) {
   });
 }
 
-// Function to set exam grades
 function setExamGrades(examGrades) {
   if (!examGrades) return;
   
@@ -385,7 +364,6 @@ function setExamGrades(examGrades) {
   });
 }
 
-// Function to get exam grades
 function getExamGrades() {
   const examEntries = document.querySelectorAll('.exam-entry');
   const examGrades = {};
@@ -396,8 +374,8 @@ function getExamGrades() {
     const weightInput = entry.querySelector('.exam-weight');
     
     if (gradeInput.value && weightInput.value) {
-      const grade = parseFloat(gradeInput.value) / 10; // Convert from 200-point to 20-point scale
-      const weight = parseFloat(weightInput.value) / 100; // Convert percentage to decimal
+      const grade = parseFloat(gradeInput.value) / 10;
+      const weight = parseFloat(weightInput.value) / 100;
       
       examGrades[subject] = {
         grade: grade,
@@ -414,7 +392,6 @@ function getExamGrades() {
   return examGrades;
 }
 
-// Function to add exam input
 function addExam() {
   const subject = document.getElementById('exam-subject').value;
   const grade = document.getElementById('exam-grade-input').value;
@@ -489,41 +466,9 @@ document.addEventListener('DOMContentLoaded', function() {
       examSubjectSelect.appendChild(option);
     });
   }
-  
-  document.getElementById('salvarButton').addEventListener('click', salvarNotas);
 });
 
-function salvarNotas() {
-  const notas = {
-    nota1: document.getElementById('nota1').value,
-    nota2: document.getElementById('nota2').value,
-    // Adicione mais notas conforme necessário
-  };
-
-  fetch('/api/salvarNotas', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify(notas),
-  })
-  .then(response => response.json())
-  .then(data => {
-    if (data.success) {
-      alert('Notas salvas com sucesso!');
-    } else {
-      alert('Erro ao salvar as notas.');
-    }
-  })
-  .catch(error => {
-    console.error('Erro:', error);
-    alert('Erro ao salvar as notas.');
-  });
-}
-
-// Existing JavaScript functions
 function showTab(tabId) {
-  // Hide all tabs
   document.querySelectorAll('.tab-content').forEach(tab => {
     tab.classList.remove('active');
   });
@@ -531,6 +476,47 @@ function showTab(tabId) {
     button.classList.remove('active');
   });
 
-  // Show selected tab
   document.getElementById(`${tabId}-tab`).classList.add('active');
-  document.query
+  document.querySelector(`.tab-button[onclick="showTab('${tabId}')"]`).classList.add('active');
+}
+
+window.calculateYearAverage = function(year) {
+  const grades = document.querySelectorAll(`.year${year}-grade`);
+  let total = 0;
+  let count = 0;
+
+  grades.forEach(input => {
+    const value = parseFloat(input.value);
+    if (!isNaN(value)) {
+      total += value;
+      count++;
+    }
+  });
+
+  return count > 0 ? total / count : null;
+};
+
+function createYearInputs() {
+  const year10Div = document.getElementById('year10');
+  subjects.year10.forEach(subject => {
+    year10Div.innerHTML += `
+      <div class="subject">
+        <label>${subject}:</label>
+        <input type="number" min="0" max="20" step="1" class="grade-input year10-grade" 
+               data-subject="${subject}" placeholder="0-20">
+      </div>
+    `;
+  });
+
+  const year11Div = document.getElementById('year11');
+  subjects.year11.forEach(subject => {
+    year11Div.innerHTML += `
+      <div class="subject">
+        <label>${subject}:</label>
+        <input type="number" min="0" max="20" step="1" class="grade-input year11-grade" 
+               data-subject="${subject}" placeholder="0-20">
+      </div>
+    `;
+  });
+}
+
