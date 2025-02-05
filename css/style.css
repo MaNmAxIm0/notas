@@ -428,7 +428,7 @@ table {
 
 /* Media queries para melhorar a visualização em dispositivos móveis */
 @media screen and (max-width: 768px) {
-    /* 1. Ajustar a tabela para telas pequenas */
+    /* Ajuste da tabela para forçar duas colunas fixas e reduzir fonte/padding */
     table {
         table-layout: fixed;
         width: 100%;
@@ -439,11 +439,13 @@ table {
         word-wrap: break-word;
         text-align: center;
     }
-    .subject-table {
+    
+    /* Força a tabela de exames e de 12º ano a ocuparem 100% da largura */
+    .table-container, .subject-table {
         width: 100% !important;
     }
-
-    /* 2. Ajustar inputs, botões e formulários */
+    
+    /* Ajuste para os inputs e botões (formulários) */
     input[type="number"],
     input[type="text"],
     input[type="email"],
@@ -457,7 +459,6 @@ table {
         font-size: 14px;
         margin: 5px 0;
     }
-    
     button {
         width: 100%;
         min-height: 40px;
@@ -466,17 +467,13 @@ table {
         margin: 10px 0;
     }
     
+    /* Se o grid do formulário de teste precisar ser empilhado */
     .consolidated-input {
         grid-template-columns: 1fr 1fr;
         gap: 10px;
     }
-
-    /* 4. Ajustar alinhamento de cabeçalhos e células */
-    th, td {
-        text-align: center;
-        padding: 4px;
-    }
 }
+
 
 
 
