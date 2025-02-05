@@ -426,31 +426,3 @@ document.addEventListener('DOMContentLoaded', function() {
     examSubjectSelect.innerHTML = '<option value="">Selecione a Disciplina</option>';
     getAllSubjects().forEach(subject => {
       const option = document.createElement('option');
-      option.value = subject;
-      option.textContent = subject;
-      examSubjectSelect.appendChild(option);
-    });
-  }
-});
-
-function getYearGrades(year) {
-  const grades = {};
-  document.querySelectorAll(`.year${year}-grade`).forEach(input => {
-    const subject = input.dataset.subject;
-    grades[subject] = input.value ? parseFloat(input.value) : null;
-  });
-  return grades;
-}
-
-function saveUserData(userId) {
-  const data = {
-    testData: window.testData || [],
-    yearGrades: {
-      year10: getYearGrades(10),
-      year11: getYearGrades(11)
-    },
-    examGrades: getExamGrades()
-  };
-  
-  return dbSet(ref(database, 'users/' + userId), data);
-}
