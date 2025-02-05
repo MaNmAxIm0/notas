@@ -145,7 +145,7 @@ document.getElementById('registerForm').addEventListener('submit', (e) => {
                 alert('Erro de registo: ' + error.message);
         }
       });
-};
+});
 
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-app.js";
 import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-auth.js";
