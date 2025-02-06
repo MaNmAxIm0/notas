@@ -83,15 +83,13 @@ table {
     margin-top: 20px;
 }
 
-.finals-summary-table th, 
-.finals-summary-table td {
+th, td {
     border: 1px solid #ddd;
     padding: 8px;
     text-align: center;
-    min-width: 100px;  /* Largura mínima para manter o alinhamento */
 }
 
-.finals-summary-table th {
+th {
     background-color: #f0f0f0;
 }
 
@@ -322,6 +320,7 @@ button:hover {
     color: #333;
 }
 
+/* Pop-up de informação */
 .popup-overlay {
     display: none;
     position: fixed;
@@ -414,183 +413,81 @@ button:hover {
     background-color: #f9f9f9;
 }
 
-/* ========= NOVAS REGRAS PARA RESUMO DOS TESTES DE 12º ANO ========= */
-
-/* As regras abaixo permitem exibir duas versões do resumo: 
-   - Versão desktop: tabela tradicional (classe "desktop-table")
-   - Versão mobile: layout flex com rodapé (classe "mobile-flex") */
-
-/* Em telas grandes, exibe apenas a versão desktop */
-@media screen and (min-width: 769px) {
-  .desktop-table { display: table; }
-  .mobile-flex { display: none; }
-}
-
-/* Em telas pequenas, exibe apenas a versão mobile */
-@media screen and (max-width: 768px) {
-  .desktop-table { display: none; }
-  .mobile-flex { display: block; }
-}
-
-/* Estilo para o container do resumo dos testes */
-.subject-summary-container {
-  margin-bottom: 20px;
-}
-
-/* Versão mobile: layout flex */
-.finals-summary-flex {
-  border: 1px solid #ddd;
-  border-radius: 8px;
-  padding: 10px;
-  margin-bottom: 10px;
-}
-.finals-summary-flex h3 {
-  margin-top: 0;
-  text-align: center;
-}
-.finals-summary-flex .flex-items {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 10px;
-}
-.domain-flex-item {
-  flex: 1 1 200px;
-  background: #f8f9fa;
-  padding: 10px;
-  border-radius: 4px;
-}
-.flex-footer {
-  flex-basis: 100%;
-  text-align: center;
-  margin-top: 10px;
-  background: #e3f2fd;
-  padding: 10px;
-  border-radius: 4px;
-}
-
-/* ========= FIM DAS NOVAS REGRAS ========= */
-
-/* ========= REGRAS PARA DISPOSITIVOS MÓVEIS ========= */
-@media screen and (max-width: 768px) {
-  body {
-    padding: 10px;
-  }
-  body, input, select, button {
-    font-size: 16px;
-  }
-  h1 {
-    font-size: 24px;
-    margin: 15px 0;
-  }
-  h2 {
-    font-size: 20px;
-  }
-  .tab-buttons {
-    flex-direction: column;
-    gap: 8px;
-  }
-  .tab-button {
+/* NOVO: Contêiner responsivo para tabelas */
+.table-container {
     width: 100%;
-    padding: 15px;
-    font-size: 18px;
-  }
-  input[type="number"],
-  input[type="text"],
-  input[type="email"],
-  input[type="password"],
-  select,
-  .grade-input,
-  .domain-select {
-    width: 100%;
-    height: 48px;
-    padding: 12px;
-    font-size: 16px;
-    margin: 5px 0;
-  }
-  button {
-    width: 100%;
-    min-height: 48px;
-    padding: 12px 20px;
-    font-size: 16px;
-    margin: 10px 0;
-  }
-  .finals-summary-table {
-    display: block;
-    overflow-x: auto;
-    white-space: nowrap;
-  }
-  th, td {
-    padding: 12px 8px;
-  }
-  .consolidated-input,
-  .domain-grades-layout,
-  .domain-tests {
-    grid-template-columns: 1fr;
-    gap: 15px;
-  }
-  .year-section,
-  .exam-section {
-    padding: 15px;
-    margin: 15px 0;
-  }
-  .test-grade {
-    padding: 12px;
-    margin: 8px 0;
-  }
-  .test-grade .remove-test {
-    padding: 8px;
-    font-size: 24px;
-  }
-  .exam-input-container > div {
-    grid-template-columns: 1fr;
-    gap: 15px;
-  }
-  .table-container {
     overflow-x: auto;
     -webkit-overflow-scrolling: touch;
-  }
-  .popup-content {
-    width: 90%;
-    max-height: 80vh;
-    padding: 20px;
-  }
-  .close-popup {
-    font-size: 32px;
-    padding: 10px;
-  }
-  #loginScreen > div,
-  #registerScreen > div {
-    width: 90%;
-    margin: 50px auto;
-    padding: 20px;
-  }
-  .final-averages > div {
-    grid-template-columns: 1fr;
-    gap: 15px;
-  }
-  #total-average-no-exams,
-  #total-average-with-exams {
-    font-size: 28px !important;
-  }
-  button:active,
-  .tab-button:active,
-  .test-grade:active {
-    transform: scale(0.98);
-  }
-  .subject {
-    margin: 20px 0;
-  }
-  .domain-info-icon {
-    font-size: 24px;
-    padding: 8px;
-  }
-  .test-name {
+}
+
+/* Garantir que as tabelas ocupam 100% da largura do contêiner */
+table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+/* Media queries para melhorar a visualização em dispositivos móveis */
+@media screen and (max-width: 768px) {
+    body {
+        padding: 10px;
+    }
+
+    /* Tamanho de fonte e espaçamento ajustados para tabelas */
+    table {
+        font-size: 14px;
+    }
+
+    th, td {
+        padding: 8px;
+    }
+
+    /* Ajusta os botões e inputs para telas menores */
+    .tab-buttons {
+        flex-direction: column;
+        gap: 8px;
+    }
+
+    .tab-button {
+        width: 100%;
+        padding: 15px;
+        font-size: 18px;
+    }
+
+    input[type="number"],
+    input[type="text"],
+    input[type="email"],
+    input[type="password"],
+    select,
+    .grade-input,
+    .domain-select {
+        width: 100%;
+        height: 48px;
+        padding: 12px;
+        font-size: 16px;
+        margin: 5px 0;
+    }
+
+    button {
+        width: 100%;
+        min-height: 48px;
+        padding: 12px 20px;
+        font-size: 16px;
+        margin: 10px 0;
+    }
+
+    /* Melhorar a experiência de toque */
+    button:active,
+    .tab-button:active,
+    .test-grade:active {
+        transform: scale(0.98);
+    }
+}
+
+/* Estilo para o nome dos testes (para aparecerem sempre, mesmo sem hover) */
+.test-name {
     display: block;
     font-size: 12px;
     color: #555;
     text-align: center;
     margin-bottom: 3px;
-  }
-  /* As novas regras de resumo já estão dentro das media queries acima */
 }
-/* ========= FIM DAS REGRAS PARA DISPOSITIVOS MÓVEIS ========= */
