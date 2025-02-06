@@ -1,5 +1,5 @@
 // ============================
-// CONFIGURAÇÃO DE DISCIPLINAS E DOMÍNIOS
+// CONFIGURAÇÃO DE DISCIPLINAS E DOMÍNIOS 
 // ============================
 
 const subjects = {
