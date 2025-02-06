@@ -12,6 +12,7 @@ function showTab(tabId) {
     document.querySelector(`.tab-button[onclick="showTab('${tabId}')"]`).classList.add('active');
 }
 
+
 // Add calculateFinalGrades to global scope
 window.calculateFinalGrades = function() {
     const year10Average = calculateYearAverage(10);
