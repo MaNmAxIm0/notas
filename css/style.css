@@ -598,3 +598,28 @@ button:hover {
       max-width: none;
     }
 }
+
+/* Estilos para tabelas com a estrutura mostrada na imagem */
+table {
+    border-collapse: collapse;
+    width: 100%;
+    background-color: #d3d3d3; /* Cor de fundo das tabelas */
+    margin: 20px 0; /* Espaçamento entre tabelas */
+}
+
+th, td {
+    border: 1px solid black;
+    text-align: center;
+    padding: 8px;
+}
+
+th {
+    background-color: #aaa; /* Cor de fundo do cabeçalho */
+    font-weight: bold;
+}
+
+td[colspan="2"] {
+    font-weight: bold;
+    text-align: center;
+    background-color: #e0e0e0; /* Cor de fundo para a célula de média final */
+}
