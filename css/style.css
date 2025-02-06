@@ -81,10 +81,7 @@ th, td {
     border: 1px solid #ddd;
     padding: 8px;
     text-align: center;
-}
-
-th {
-    background-color: #f0f0f0;
+    white-space: nowrap;  /* Prevent line breaks */
 }
 
 button {
@@ -173,7 +170,7 @@ button:hover {
 }
 
 .subject-table {
-    width: calc(50% - 10px);
+    width: 100%;  /* Adjust to 100% width */
     background: white;
     padding: 15px;
     border-radius: 8px;
@@ -192,9 +189,8 @@ button:hover {
 }
 
 .domain-grade-item {
-    flex: 1 1 calc(50% - 10px);  /* Two items per row by default */
-    min-width: 250px;  /* Ensures minimum readability */
-    max-width: 400px;  /* Prevents blocks from getting too wide */
+    flex: 1 1 100%;  /* Adjust to 100% width */
+    min-width: 250px;  /* Ensure minimum readability */
     padding: 8px;
     background-color: #f8f9fa;
     border-radius: 4px;
@@ -212,14 +208,6 @@ button:hover {
     font-size: 1.1em;
     display: block;
     margin-top: 5px;
-}
-
-.subject-table {
-    width: 100%;
-}
-
-.subject-table.full-width {
-    grid-column: 1 / -1; /* Span all columns */
 }
 
 .empty-cell {
