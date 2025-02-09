@@ -239,8 +239,6 @@ window.saveUserData = function(userId) {
 
     return dbSet(ref(database, 'users/' + userId), data);
 };
-
-// Function to load user data
 window.loadUserData = function(userId) {
     get(ref(database, 'users/' + userId))
         .then((snapshot) => {
@@ -248,6 +246,13 @@ window.loadUserData = function(userId) {
             if (data) {
                 window.testData = data.testData || [];
                 
+                // Limpar entradas de exames COM VERIFICAÇÃO
+                const examSummaryBody = document.getElementById('exam-summary-body');
+                if (examSummaryBody) {
+                    examSummaryBody.innerHTML = '';
+                } else {
+                    console.error('Elemento exam-summary-body não encontrado');
+                }    
                 // Clear and repopulate year grades
                 if (data.yearGrades) {
                     // Load 10th year grades
@@ -560,16 +565,16 @@ function calculateExamGrades() {
 // Function to calculate final grades
 function calculateFinalGrades() {
     // Calculate year averages
-    const year10Average = calculateYearAverage(10);
-    const year11Average = calculateYearAverage(11);
-    const year12Average = calculateYear12Average();
+    const year10AvgElem = document.getElementById('year10-average');
+    const year11AvgElem = document.getElementById('year11-average');
+    const year12AvgElem = document.getElementById('year12-average');
     const examGrades = calculateExamGrades();
-
-    // Update year averages display
-    document.getElementById('year10-average').textContent = year10Average ? year10Average.toFixed(1) : '-';
-    document.getElementById('year11-average').textContent = year11Average ? year11Average.toFixed(1) : '-';
-    document.getElementById('year12-average').textContent = year12Average ? year12Average.toFixed(1) : '-';
-
+    if (year10AvgElem && year11AvgElem && year12AvgElem) {
+        year10AvgElem.textContent = year10Average ? year10Average.toFixed(1) : '-';
+        year11AvgElem.textContent = year11Average ? year11Average.toFixed(1) : '-';
+        year12AvgElem.textContent = year12Average ? year12Average.toFixed(1) : '-';
+    }
+    
     // Calculate and update final averages
     const cifAverage = calculateSecondaryEducationAverage(); // Gets value on 200-point scale
     const finalAverage = calculateFinalAverage(cifAverage / 10, examGrades); // Convert back to 20-point scale for final average calculation
@@ -1095,16 +1100,15 @@ function getExamGrades() {
 
     return examGrades;
 }
-
-// New function to update final grades for 12th year
 function updateFinalGrades12() {
     if (!window.testData) return;
 
-    // Clear existing summary and average display
     const summaryContainer = document.querySelector('.year12-finals');
-    summaryContainer.innerHTML = '';
-    
-    // Remove existing average display if present
+    if (!summaryContainer) {
+        console.error('Container .year12-finals não encontrado');
+        return;
+    }
+
     const existingAverage = document.querySelector('.year12-quick-average');
     if (existingAverage) {
         existingAverage.remove();
@@ -1242,17 +1246,19 @@ window.updateWeights = function(examWeight) {
     document.getElementById('gradesWeight').textContent = gradesWeight + '%';
     calculateFinalGrades();
 };
-
-// Change the DOMContentLoaded event to also set the initial weights
+// Atualizar o evento DOMContentLoaded
 document.addEventListener('DOMContentLoaded', function() {
     populateSubjectSelect();
     createYearInputs();
     showTab('year10');
     
-    // Initialize exam weights
-    const examWeight = document.getElementById('examWeight').value;
-    window.updateWeights(examWeight);
-    
+    // Inicializar pesos de exames COM VERIFICAÇÃO
+    const examWeightInput = document.getElementById('examWeight');
+    if (examWeightInput) {
+        window.updateWeights(examWeightInput.value);
+    } else {
+        console.error('Elemento examWeight não encontrado');
+    }
     // Populate exam subject dropdown
     const examSubjectSelect = document.querySelector('.exam-subject');
     if (examSubjectSelect) {
@@ -1267,8 +1273,12 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 document.addEventListener('DOMContentLoaded', function() {
-    // Add event listener for exam weight change
-    document.getElementById('examWeight').addEventListener('change', function() {
-        updateWeights(this.value);
-    });
+    const examWeightInput = document.getElementById('examWeight');
+    if (examWeightInput) {
+        examWeightInput.addEventListener('change', function() {
+            updateWeights(this.value);
+        });
+    } else {
+        console.error('Elemento examWeight não encontrado para listener');
+    }
 });
