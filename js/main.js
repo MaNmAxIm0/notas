@@ -438,8 +438,8 @@ document.getElementById('registerForm').addEventListener('submit', (e) => {
 // Update login handler to load user data
 document.getElementById('loginForm').addEventListener('submit', (e) => {
     e.preventDefault();
-    const email = document.getElementById('loginEmail').value;
-    const password = document.getElementById('loginPassword').value;
+    const email = document.getElementById('Email').value;
+    const password = document.getElementById('Password').value;
     
     signInWithEmailAndPassword(auth, email, password)
       .then((userCredential) => {
