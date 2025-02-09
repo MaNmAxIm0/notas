@@ -1174,39 +1174,79 @@ function processSubject(subject, tests, container) {
     let subjectFinalGrade = 0;
     let totalWeight = 0;
 
+    // Processar cada domínio
     domains.forEach(domain => {
         const domainTests = tests.filter(t => t.domain === domain.name);
         if (domainTests.length > 0) {
+            // Calcular média bruta do domínio
             const rawAvg = domainTests.reduce((sum, t) => sum + t.grade, 0) / domainTests.length;
+            // Aplicar peso do domínio
             const weightedAvg = rawAvg * domain.weight;
             domainAverages[domain.name] = {
                 rawAverage: rawAvg,
                 weightedAverage: weightedAvg,
-                weight: domain.weight * 100 // Convert to percentage for display
+                weight: domain.weight * 100 // Manter como porcentagem para exibição
             };
             subjectFinalGrade += weightedAvg;
             totalWeight += domain.weight;
         }
     });
 
-    // Criar tabela com domínios
+    // Função para formatar números
+    const formatNumber = (num) => {
+        if (num === null || isNaN(num)) return '-';
+        return Number(num.toFixed(1)).toString();
+    };
+
+    // Criar tabela para a disciplina
     const tableContainer = document.createElement('div');
     tableContainer.className = `subject-table ${subject === 'Português' ? 'full-width' : ''}`;
     tableContainer.innerHTML = `
-        <div class="domain-tests">
-            ${domains.map(domain => `
-                <div class="domain-grade-item">
-                    <span class="domain-name">${domain.name} (${domain.weight * 100}%)</span>
-                    <span class="domain-value">${(domainAverages[domain.name]?.rawAverage || 0).toFixed(1)}</span>
-                </div>
-            `).join('')}
-        </div>
-        <div class="final-average">
-            Média Final: ${totalWeight > 0 ? subjectFinalGrade.toFixed(1) : '-'}
-        </div>
+        <h3>${subject}</h3>
+        <table>
+            <thead>
+                <tr>
+                    <th>Domínio</th>
+                    <th>Peso</th>
+                    <th>Testes</th>
+                    <th>Média Bruta</th>
+                    <th>Média Ponderada</th>
+                </tr>
+            </thead>
+            <tbody>
+                ${domains.map((domain) => `
+                    <tr>
+                        <td>${domain.name}</td>
+                        <td>${domain.weight * 100}%</td>
+                        <td>
+                            ${tests
+                                .filter(t => t.domain === domain.name)
+                                .map(test => `
+                                    <div class="test-grade">
+                                        <span class="test-name">${test.name}</span>
+                                        <span class="grade-value">${formatNumber(test.grade)}</span>
+                                        <span class="remove-test" onclick="removeTest(${window.testData.indexOf(test)}, '${subject}', '${domain.name}')">×</span>
+                                    </div>
+                                `).join('')}
+                        </td>
+                        <td>${formatNumber(domainAverages[domain.name]?.rawAverage || 0)}</td>
+                        <td>${formatNumber(domainAverages[domain.name]?.weightedAverage || 0)}</td>
+                    </tr>
+                `).join('')}
+            </tbody>
+            <tfoot>
+                <tr>
+                    <td colspan="4"><strong>Média Final da Disciplina:</strong></td>
+                    <td><strong>${formatNumber(subjectFinalGrade)}</strong></td>
+                </tr>
+            </tfoot>
+        </table>
     `;
+
+    // Adicionar tabela ao contêiner
     container.appendChild(tableContainer);
 
+    // Retornar a média final da disciplina
     return totalWeight > 0 ? subjectFinalGrade : null;
 }
 
