@@ -1176,7 +1176,31 @@ function updateFinalGrades12() {
     const title = document.querySelector('#year12-tab h2');
     title.appendChild(averageDisplay);
 }
+function calculateSubjectFinalGrade(subject) {
+    if (!window.testData || window.testData.length === 0) return null; // Verifica se há dados de testes
 
+    // Filtra os testes para a disciplina específica
+    const tests = window.testData.filter(test => test.subject === subject);
+    if (tests.length === 0) return null; // Se não houver testes, retorna null
+
+    const domains = subjectDomains[subject] || []; // Obtém os domínios da disciplina
+    let subjectFinalGrade = 0;
+    let totalWeight = 0;
+
+    // Calcula a nota final ponderada
+    domains.forEach(domain => {
+        const domainTests = tests.filter(t => t.domain === domain.name);
+        if (domainTests.length > 0) {
+            const rawAvg = domainTests.reduce((sum, t) => sum + t.grade, 0) / domainTests.length; // Média bruta
+            const weightedAvg = rawAvg * domain.weight; // Aplica o peso do domínio
+            subjectFinalGrade += weightedAvg;
+            totalWeight += domain.weight;
+        }
+    });
+
+    // Retorna a nota final se houver peso total
+    return totalWeight > 0 ? Math.round(subjectFinalGrade * 10) / 10 : null; // Arredonda para uma casa decimal
+}
 function processSubject(subject, tests, container) {
     const domains = subjectDomains[subject] || [];
     const finalGrade = calculateSubjectFinalGrade(subject);
@@ -1251,20 +1275,188 @@ window.updateWeights = function(examWeight) {
     document.getElementById('gradesWeight').textContent = gradesWeight + '%';
     calculateFinalGrades();
 };
-// Atualizar o evento DOMContentLoaded
 document.addEventListener('DOMContentLoaded', function() {
-    populateSubjectSelect();
-    createYearInputs();
-    showTab('year10');
-    
-    // Inicializar pesos de exames COM VERIFICAÇÃO
+    // Garante que o DOM esteja carregado antes de acessar elementos
+    const examSummaryBody = document.getElementById('exam-summary-body');
+    if (examSummaryBody) {
+        examSummaryBody.innerHTML = ''; // Limpa o conteúdo do elemento
+    } else {
+        console.error('Elemento #exam-summary-body não encontrado');
+    }
+
+    // Define a função calculateSubjectFinalGrade
+    function calculateSubjectFinalGrade(subject) {
+        if (!window.testData || window.testData.length === 0) return null;
+
+        const tests = window.testData.filter(test => test.subject === subject);
+        if (tests.length === 0) return null;
+
+        const domains = subjectDomains[subject] || [];
+        let subjectFinalGrade = 0;
+        let totalWeight = 0;
+
+        domains.forEach(domain => {
+            const domainTests = tests.filter(t => t.domain === domain.name);
+            if (domainTests.length > 0) {
+                const rawAvg = domainTests.reduce((sum, t) => sum + t.grade, 0) / domainTests.length;
+                const weightedAvg = rawAvg * domain.weight;
+                subjectFinalGrade += weightedAvg;
+                totalWeight += domain.weight;
+            }
+        });
+
+        return totalWeight > 0 ? Math.round(subjectFinalGrade * 10) / 10 : null;
+    }
+
+    // Função para atualizar as notas finais do 12º ano
+    function updateFinalGrades12() {
+        if (!window.testData) return;
+
+        const summaryContainer = document.querySelector('.year12-finals');
+        if (!summaryContainer) {
+            console.error('Container .year12-finals não encontrado');
+            return;
+        }
+
+        // Limpa o conteúdo existente
+        summaryContainer.innerHTML = '';
+
+        // Cria e insere a exibição da média
+        const averageDisplay = document.createElement('div');
+        averageDisplay.className = 'year12-quick-average';
+        averageDisplay.style.cssText = `
+            background: #ffe6ea;
+            display: inline-block;
+            padding: 8px 15px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            text-align: center;
+            margin-left: 15px;
+            vertical-align: middle;
+        `;
+
+        // Calcula a média geral
+        const subjectTests = {};
+        let totalGrade = 0;
+        let subjectCount = 0;
+
+        window.testData.forEach(test => {
+            if (!subjectTests[test.subject]) {
+                subjectTests[test.subject] = [];
+            }
+            subjectTests[test.subject].push(test);
+        });
+
+        // Processa disciplinas não-Português primeiro
+        Object.entries(subjectTests)
+            .filter(([subject]) => subject !== 'Português')
+            .forEach(([subject, tests]) => {
+                const subjectGrade = processSubject(subject, tests, summaryContainer);
+                if (subjectGrade !== null) {
+                    totalGrade += subjectGrade;
+                    subjectCount++;
+                }
+            });
+
+        // Processa Português por último
+        if (subjectTests['Português']) {
+            const portugueseGrade = processSubject('Português', subjectTests['Português'], summaryContainer);
+            if (portugueseGrade !== null) {
+                totalGrade += portugueseGrade;
+                subjectCount++;
+            }
+        }
+
+        // Atualiza a exibição da média
+        const yearAverage = subjectCount > 0 ? totalGrade / subjectCount : 0;
+        averageDisplay.innerHTML = `
+            <strong>Média 12º Ano:</strong>
+            <span style="font-size: 1.2em; margin-left: 5px">${yearAverage.toFixed(1)}</span>
+        `;
+
+        // Insere a exibição da média ao lado do título
+        const title = document.querySelector('#year12-tab h2');
+        title.appendChild(averageDisplay);
+    }
+
+    // Função para processar uma disciplina e exibir os resultados
+    function processSubject(subject, tests, container) {
+        const domains = subjectDomains[subject] || [];
+        const finalGrade = calculateSubjectFinalGrade(subject);
+
+        // Cria o container
+        const grid = document.createElement('div');
+        grid.className = 'domain-grid';
+
+        // Adiciona os domínios
+        domains.forEach((domain, index) => {
+            const domainCell = document.createElement('div');
+            const isMobile = window.innerWidth <= 768;
+
+            // Mobile: Último domínio ímpar ocupa 2 colunas
+            if (isMobile && domains.length % 2 !== 0 && index === domains.length - 1) {
+                domainCell.className = 'domain-cell single';
+            } else {
+                domainCell.className = 'domain-cell';
+            }
+
+            // Conteúdo do domínio
+            domainCell.innerHTML = `
+                <div class="domain-header">
+                    ${domain.name} (${domain.weight * 100}%)
+                </div>
+                <div class="domain-tests">
+                    ${tests.filter(t => t.domain === domain.name).map(test => `
+                        <div class="test-grade">
+                            <span>${test.name}</span>
+                            <strong>${test.grade.toFixed(1)}</strong>
+                            <button onclick="removeTest(${window.testData.indexOf(test)})">×</button>
+                        </div>
+                    `).join('')}
+                </div>
+            `;
+
+            grid.appendChild(domainCell);
+        });
+
+        // Adiciona a média final
+        const footer = document.createElement('div');
+        footer.className = 'final-average-footer';
+        footer.textContent = `Média Final: ${finalGrade.toFixed(1)}`;
+        grid.appendChild(footer);
+
+        // Adiciona ao container principal
+        const subjectDiv = document.createElement('div');
+        subjectDiv.innerHTML = `<h4>${subject}</h4>`;
+        subjectDiv.appendChild(grid);
+        container.appendChild(subjectDiv);
+
+        return finalGrade;
+    }
+
+    // Função para remover um teste
+    window.removeTest = function(testIndex) {
+        if (confirm('Tem certeza que deseja remover este teste?')) {
+            window.testData = window.testData.filter((test, index) => index !== testIndex);
+            updateFinalGrades12();
+            calculateFinalGrades();
+
+            // Salva no banco de dados se o usuário estiver logado
+            if (auth.currentUser) {
+                saveUserData(auth.currentUser.uid);
+            }
+        }
+    };
+
+    // Inicializa os pesos dos exames
     const examWeightInput = document.getElementById('examWeight');
     if (examWeightInput) {
         window.updateWeights(examWeightInput.value);
     } else {
         console.error('Elemento examWeight não encontrado');
     }
-    // Populate exam subject dropdown
+
+    // Popula o dropdown de disciplinas dos exames
     const examSubjectSelect = document.querySelector('.exam-subject');
     if (examSubjectSelect) {
         examSubjectSelect.innerHTML = '<option value="">Selecione a Disciplina</option>';
@@ -1274,16 +1466,5 @@ document.addEventListener('DOMContentLoaded', function() {
             option.textContent = subject;
             examSubjectSelect.appendChild(option);
         });
-    }
-});
-
-document.addEventListener('DOMContentLoaded', function() {
-    const examWeightInput = document.getElementById('examWeight');
-    if (examWeightInput) {
-        examWeightInput.addEventListener('change', function() {
-            updateWeights(this.value);
-        });
-    } else {
-        console.error('Elemento examWeight não encontrado para listener');
     }
 });
