@@ -438,15 +438,17 @@ document.getElementById('registerForm').addEventListener('submit', (e) => {
 // Update login handler to load user data
 document.getElementById('loginForm').addEventListener('submit', (e) => {
     e.preventDefault();
-    const email = document.getElementById('Email').value;
-    const password = document.getElementById('Password').value;
+    const email = document.getElementById('loginEmail').value;
+    const password = document.getElementById('loginPassword').value;
     
     signInWithEmailAndPassword(auth, email, password)
       .then((userCredential) => {
-        loadUserData(userCredential.user.uid);
+          console.log('Usuário autenticado:', userCredential.user.uid);
+          loadUserData(userCredential.user.uid); // Carrega os dados do usuário
       })
       .catch((error) => {
-        alert('Erro de login: ' + error.message);
+          console.error('Erro de login:', error.code, error.message);
+          alert('Erro: ' + error.message); // Exemplo: "Senha incorreta"
       });
 });
 
