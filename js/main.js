@@ -246,16 +246,9 @@ window.loadUserData = function(userId) {
             if (data) {
                 window.testData = data.testData || [];
                 
-                // Limpar entradas de exames COM VERIFICAÇÃO
-                const examSummaryBody = document.getElementById('exam-summary-body');
-                if (examSummaryBody) {
-                    examSummaryBody.innerHTML = '';
-                } else {
-                    console.error('Elemento exam-summary-body não encontrado');
-                }    
-                // Clear and repopulate year grades
+                // Carregar notas dos anos (10º e 11º)
                 if (data.yearGrades) {
-                    // Load 10th year grades
+                    // 10º ano
                     if (data.yearGrades.year10) {
                         Object.entries(data.yearGrades.year10).forEach(([subject, grade]) => {
                             const input = document.querySelector(`.year10-grade[data-subject="${subject}"]`);
@@ -265,7 +258,7 @@ window.loadUserData = function(userId) {
                         });
                     }
                     
-                    // Load 11th year grades
+                    // 11º ano
                     if (data.yearGrades.year11) {
                         Object.entries(data.yearGrades.year11).forEach(([subject, grade]) => {
                             const input = document.querySelector(`.year11-grade[data-subject="${subject}"]`);
@@ -276,11 +269,16 @@ window.loadUserData = function(userId) {
                     }
                 }
                 
-                // Clear existing exam entries
-                document.getElementById('exam-summary-body').innerHTML = '';
+                // Limpar exames existentes COM VERIFICAÇÃO
+                const examSummaryBody = document.getElementById('exam-summary-body');
+                if (examSummaryBody) {
+                    examSummaryBody.innerHTML = '';
+                } else {
+                    console.error('Elemento #exam-summary-body não encontrado');
+                }
                 
-                // Load exam data
-                if (data.examData) {
+                // Carregar dados de exames
+                if (data.examData && examSummaryBody) {
                     Object.entries(data.examData).forEach(([safeKey, examInfo]) => {
                         const tr = document.createElement('tr');
                         tr.setAttribute('data-subject', examInfo.subject);
@@ -291,14 +289,19 @@ window.loadUserData = function(userId) {
                                 <button onclick="removeExamGrade(this)" class="remove-exam">Remover</button>
                             </td>
                         `;
-                        document.getElementById('exam-summary-body').appendChild(tr);
+                        examSummaryBody.appendChild(tr);
                     });
                 }
                 
+                // Atualizar interfaces
                 updateFinalGrades12();
                 calculateFinalGrades();
             }
             showMainContent();
+        })
+        .catch((error) => {
+            console.error('Erro ao carregar dados:', error);
+            alert('Erro ao carregar dados do usuário');
         });
 };
 
