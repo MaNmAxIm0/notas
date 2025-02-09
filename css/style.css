@@ -617,3 +617,22 @@ tr td[colspan="2"] {
     text-align: center;
     font-weight: bold;
 }
+/* Estilo para dois domínios por linha em telas menores */
+@media screen and (max-width: 768px) {
+    .domain-tests {
+        grid-template-columns: repeat(2, 1fr); /* Dois domínios por linha */
+        gap: 10px;
+    }
+
+    .subject-table {
+        display: flex;
+        flex-direction: column; /* Garante que o rodapé fique abaixo da tabela */
+    }
+
+    .subject-table .domain-grade-item {
+        flex: 1 1 calc(50% - 10px); /* Dois itens por linha */
+        max-width: calc(50% - 10px);
+    }
+
+    .subject-table .final-average {
+        order: 999; /* Coloca a média final como rodapé */
