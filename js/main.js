@@ -1177,69 +1177,36 @@ function processSubject(subject, tests, container) {
     domains.forEach(domain => {
         const domainTests = tests.filter(t => t.domain === domain.name);
         if (domainTests.length > 0) {
-            // Calculate raw average for the domain
             const rawAvg = domainTests.reduce((sum, t) => sum + t.grade, 0) / domainTests.length;
-            // Apply domain weight (percentage * 0.01)
             const weightedAvg = rawAvg * domain.weight;
             domainAverages[domain.name] = {
                 rawAverage: rawAvg,
                 weightedAverage: weightedAvg,
-                weight: domain.weight * 100 // Keep as percentage for display
+                weight: domain.weight * 100 // Convert to percentage for display
             };
             subjectFinalGrade += weightedAvg;
             totalWeight += domain.weight;
         }
     });
 
-    // Function to format number with minimum decimal places
-    const formatNumber = (num) => {
-        if (num === null || isNaN(num)) return '-';
-        return Number(num.toFixed(3)).toString();
-    };
-
+    // Criar tabela com domínios
     const tableContainer = document.createElement('div');
     tableContainer.className = `subject-table ${subject === 'Português' ? 'full-width' : ''}`;
-    
     tableContainer.innerHTML = `
-        <table class="finals-summary-table">
-            <thead>
-                <tr>
-                    <th colspan="${domains.length + 1}">${subject}</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr>
-                    ${domains.map((domain) => `
-                        <td>
-                            <div class="domain-grade-item">
-                                <span class="domain-name">${domain.name} (${domain.weight * 100}%)</span>
-                                <div class="domain-tests">
-                                    ${tests
-                                        .filter(t => t.domain === domain.name)
-                                        .map((test, index) => `
-                                            <div class="test-grade" title="${test.name}">
-                                                <span class="test-name">${test.name}</span>
-                                                <span class="grade-value">${test.grade.toFixed(1)}</span>
-                                                <span class="remove-test" onclick="removeTest(${window.testData.indexOf(test)}, '${subject}', '${domain.name}')">&times;</span>
-                                            </div>
-                                        `).join('')}
-                                </div>
-                                <span class="domain-value">
-                                    Média: ${(domainAverages[domain.name]?.rawAverage || 0).toFixed(1)} × ${domain.weight * 100}% = 
-                                    ${formatNumber(domainAverages[domain.name]?.weightedAverage || 0)}
-                                </span>
-                            </div>
-                        </td>
-                    `).join('')}
-                    <td>
-                        <strong>Média Final: ${totalWeight > 0 ? formatNumber(subjectFinalGrade) : '-'}</strong>
-                    </td>
-                </tr>
-            </tbody>
-        </table>
+        <div class="domain-tests">
+            ${domains.map(domain => `
+                <div class="domain-grade-item">
+                    <span class="domain-name">${domain.name} (${domain.weight * 100}%)</span>
+                    <span class="domain-value">${(domainAverages[domain.name]?.rawAverage || 0).toFixed(1)}</span>
+                </div>
+            `).join('')}
+        </div>
+        <div class="final-average">
+            Média Final: ${totalWeight > 0 ? subjectFinalGrade.toFixed(1) : '-'}
+        </div>
     `;
-
     container.appendChild(tableContainer);
+
     return totalWeight > 0 ? subjectFinalGrade : null;
 }
 
