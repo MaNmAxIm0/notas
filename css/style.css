@@ -1,10 +1,9 @@
-/* Estilo geral */
 body {
     font-family: Arial, sans-serif;
     max-width: 1200px;
     margin: 0 auto;
     padding: 20px;
-    background-color: #fff0f3; /* Fundo rosa claro */
+    background-color: #fff0f3;  /* Light pink background */
 }
 
 .tab-container {
@@ -19,14 +18,14 @@ body {
 
 .tab-button {
     padding: 10px 20px;
-    background-color: #ffb5c5; /* Rosa claro */
+    background-color: #ffb5c5;  /* Light pink */
     border: none;
     border-radius: 4px;
     cursor: pointer;
 }
 
 .tab-button.active {
-    background-color: #ff69b4; /* Rosa quente */
+    background-color: #ff69b4;  /* Hot pink */
     color: white;
 }
 
@@ -35,7 +34,7 @@ body {
     padding: 20px;
     margin: 20px 0;
     border-radius: 8px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
 }
 
 .exam-section {
@@ -43,7 +42,7 @@ body {
     padding: 20px;
     margin: 20px 0;
     border-radius: 8px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
 }
 
 .exam-entry {
@@ -70,28 +69,26 @@ body {
     margin-left: 10px;
 }
 
-/* Estilo das tabelas */
 table {
     width: 100%;
     border-collapse: collapse;
     margin-top: 20px;
-    overflow-x: auto; /* Permite rolagem horizontal apenas quando necessário */
-    display: block; /* Torna a tabela um bloco flexível */
-    max-width: 100%; /* Garante que a tabela não ultrapasse a largura da tela */
+    overflow-x: auto;
+    display: block;
 }
 
 th, td {
     border: 1px solid #ddd;
     padding: 8px;
     text-align: center;
-    white-space: nowrap; /* Impede quebras de linha por padrão */
-    word-break: break-word; /* Permite quebra de palavras longas */
-    min-width: 80px; /* Largura mínima para evitar colapsos */
 }
 
-/* Botões */
+th {
+    background-color: #f0f0f0;
+}
+
 button {
-    background-color: #ff69b4; /* Rosa quente */
+    background-color: #ff69b4;  /* Hot pink */
     color: white;
     padding: 10px 20px;
     border: none;
@@ -101,11 +98,11 @@ button {
 }
 
 button:hover {
-    background-color: #ff1493; /* Rosa mais escuro */
+    background-color: #ff1493;  /* Deep pink */
 }
 
 .submit-grade {
-    background-color: #ff69b4; /* Rosa quente */
+    background-color: #ff69b4;  /* Hot pink */
     color: white;
     padding: 5px 10px;
     border: none;
@@ -115,11 +112,11 @@ button:hover {
 }
 
 .submit-grade:hover {
-    background-color: #ff1493; /* Rosa mais escuro */
+    background-color: #ff1493;  /* Deep pink */
 }
 
 .reset-grade {
-    background-color: #ff6b6b; /* Vermelho claro */
+    background-color: #ff6b6b;  /* Light red */
     color: white;
     padding: 5px 10px;
     border: none;
@@ -129,28 +126,27 @@ button:hover {
 }
 
 .reset-grade:hover {
-    background-color: #ff4040; /* Vermelho mais escuro */
+    background-color: #ff4040;  /* Darker red */
 }
 
 .submitted {
-    background-color: #ffe6ea; /* Rosa muito claro */
+    background-color: #ffe6ea;  /* Very light pink */
 }
 
 .year-average {
     font-weight: bold;
-    background-color: #fff0f3; /* Rosa claro */
+    background-color: #fff0f3;  /* Light pink */
 }
 
 .final-average {
     font-weight: bold;
-    background-color: #ffe6ea; /* Rosa muito claro */
+    background-color: #ffe6ea;  /* Very light pink */
 }
 
-/* Seção de entrada de testes */
 .test-input-section {
     position: relative;
     width: 100%;
-    padding-right: 0; /* Remove preenchimento à direita */
+    padding-right: 0;  /* Remove right padding */
     margin-bottom: 20px;
 }
 
@@ -177,16 +173,16 @@ button:hover {
 }
 
 .subject-table {
-    width: 100%; /* Ajusta para 100% de largura */
+    width: calc(50% - 10px);
     background: white;
     padding: 15px;
     border-radius: 8px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
 }
 
 .subject-table.full-width {
     width: 100%;
-    order: 999; /* Garante que apareça por último */
+    order: 999; /* Ensures it appears last */
 }
 
 .domain-grades-layout {
@@ -196,8 +192,9 @@ button:hover {
 }
 
 .domain-grade-item {
-    flex: 1 1 100%; /* Ajusta para 100% de largura */
-    min-width: 250px; /* Garante legibilidade mínima */
+    flex: 1 1 calc(50% - 10px);  /* Two items per row by default */
+    min-width: 250px;  /* Ensures minimum readability */
+    max-width: 400px;  /* Prevents blocks from getting too wide */
     padding: 8px;
     background-color: #f8f9fa;
     border-radius: 4px;
@@ -215,6 +212,14 @@ button:hover {
     font-size: 1.1em;
     display: block;
     margin-top: 5px;
+}
+
+.subject-table {
+    width: 100%;
+}
+
+.subject-table.full-width {
+    grid-column: 1 / -1; /* Span all columns */
 }
 
 .empty-cell {
@@ -246,25 +251,25 @@ button:hover {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    background: #ffe6ea; /* Rosa muito claro */
+    background: #ffe6ea;  /* Very light pink */
     padding: 4px 8px;
     border-radius: 4px;
     margin: 2px 0;
-    flex-wrap: wrap; /* Permite quebra em dispositivos móveis */
+    flex-wrap: wrap;  /* Allow wrapping on mobile */
 }
 
 .test-grade .test-name {
     font-size: 0.9em;
     color: #666;
     margin-right: 8px;
-    flex: 1; /* Ocupa o espaço restante */
-    min-width: 100px; /* Garante largura mínima para legibilidade */
+    flex: 1;  /* Take remaining space */
+    min-width: 100px;  /* Ensure minimum width for readability */
 }
 
 .test-grade .grade-value {
     font-weight: bold;
     margin: 0 8px;
-    white-space: nowrap; /* Mantém a nota em uma linha */
+    white-space: nowrap;  /* Keep grade on one line */
 }
 
 .test-grade .remove-test {
@@ -291,31 +296,31 @@ button:hover {
 }
 
 .year12-average-display {
-    background-color: #ffe6ea; /* Rosa muito claro */
+    background-color: #ffe6ea;  /* Very light pink */
     padding: 20px;
     margin: 20px 0;
     border-radius: 8px;
     text-align: center;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
 }
 
 .year12-average-display h3 {
     margin: 0;
-    color: #ff1493; /* Rosa mais escuro */
+    color: #ff1493;  /* Deep pink */
 }
 
 .year12-average-value {
     font-size: 24px;
     font-weight: bold;
     margin: 10px 0;
-    color: #ff69b4; /* Rosa quente */
+    color: #ff69b4;  /* Hot pink */
 }
 
 .year12-quick-average {
-    background: #ffe6ea; /* Rosa muito claro */
+    background: #ffe6ea;  /* Very light pink */
     padding: 8px 15px;
     border-radius: 8px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
     text-align: center;
 }
 
@@ -339,7 +344,7 @@ button:hover {
     left: 0;
     width: 100%;
     height: 100%;
-    background-color: rgba(0, 0, 0, 0.7);
+    background-color: rgba(0,0,0,0.7);
     z-index: 1000;
     justify-content: center;
     align-items: center;
@@ -382,7 +387,6 @@ button:hover {
     display: none;
 }
 
-/* Responsividade para telas pequenas */
 @media screen and (max-width: 768px) {
     body {
         padding: 10px;
@@ -490,11 +494,9 @@ button:hover {
     }
 }
 
-/* Melhorias para tabelas em dispositivos móveis */
 @media screen and (max-width: 768px) {
-    /* Layout de tabela melhorado para dispositivos móveis */
-    .finals-summary-table,
-    table {
+    /* Improved mobile table layout */
+    .finals-summary-table, table {
         width: 100%;
         overflow-x: visible;
         display: table;
@@ -560,21 +562,21 @@ button:hover {
     .subject-table {
         width: 100% !important;
     }
-
+    
     .test-grade {
         flex-direction: column;
         align-items: flex-start;
     }
-
+    
     .domain-grade-item span.domain-value {
         word-break: break-word;
         font-size: 0.9em;
     }
-
+    
     .subject-table table {
         display: block;
     }
-
+    
     .subject-table td:last-child {
         grid-column: 1 / -1;
         background: #f8f9fa;
@@ -589,41 +591,22 @@ button:hover {
 
 @media screen and (min-width: 1200px) {
     .domain-grades-layout {
-        flex-wrap: wrap;
+      flex-wrap: wrap;  
     }
 
     .domain-grade-item {
-        flex: 0 1 calc(50% - 10px);
-        max-width: 500px;
+      flex: 0 1 calc(50% - 10px);  
+      max-width: 500px;  
     }
 }
 
 @media screen and (max-width: 768px) {
     .domain-grades-layout {
-        flex-direction: column;
+      flex-direction: column;
     }
 
     .domain-grade-item {
-        flex: 1 1 100%;
-        max-width: none;
+      flex: 1 1 100%;  
+      max-width: none;
     }
-}
-
-/* Ajuste para tabelas com domínios lado a lado */
-table {
-    border-collapse: collapse;
-    width: 100%;
-    margin: 20px 0; /* Espaçamento entre tabelas */
-}
-
-th, td {
-    border: 1px solid black;
-    text-align: center;
-    padding: 8px;
-    width: 25%; /* Garantir que cada domínio tenha largura igual */
-}
-
-tr td[colspan="2"] {
-    text-align: center;
-    font-weight: bold;
 }
