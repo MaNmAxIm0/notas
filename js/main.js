@@ -1170,77 +1170,54 @@ function updateFinalGrades12() {
 
 function processSubject(subject, tests, container) {
     const domains = subjectDomains[subject] || [];
-    const domainAverages = {};
-    let subjectFinalGrade = 0;
-    let totalWeight = 0;
-
-    domains.forEach(domain => {
-        const domainTests = tests.filter(t => t.domain === domain.name);
-        if (domainTests.length > 0) {
-            // Calculate raw average for the domain
-            const rawAvg = domainTests.reduce((sum, t) => sum + t.grade, 0) / domainTests.length;
-            // Apply domain weight (percentage * 0.01)
-            const weightedAvg = rawAvg * domain.weight;
-            domainAverages[domain.name] = {
-                rawAverage: rawAvg,
-                weightedAverage: weightedAvg,
-                weight: domain.weight * 100 // Keep as percentage for display
-            };
-            subjectFinalGrade += weightedAvg;
-            totalWeight += domain.weight;
-        }
-    });
-
-    // Function to format number with minimum decimal places
-    const formatNumber = (num) => {
-        if (num === null || isNaN(num)) return '-';
-        return Number(num.toFixed(3)).toString();
-    };
-
-    const tableContainer = document.createElement('div');
-    tableContainer.className = `subject-table ${subject === 'Português' ? 'full-width' : ''}`;
+    const finalGrade = calculateSubjectFinalGrade(subject);
     
-    tableContainer.innerHTML = `
-        <table class="finals-summary-table">
-            <thead>
-                <tr>
-                    <th colspan="${domains.length + 1}">${subject}</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr>
-                    ${domains.map((domain) => `
-                        <td>
-                            <div class="domain-grade-item">
-                                <span class="domain-name">${domain.name} (${domain.weight * 100}%)</span>
-                                <div class="domain-tests">
-                                    ${tests
-                                        .filter(t => t.domain === domain.name)
-                                        .map((test, index) => `
-                                            <div class="test-grade" title="${test.name}">
-                                                <span class="test-name">${test.name}</span>
-                                                <span class="grade-value">${test.grade.toFixed(1)}</span>
-                                                <span class="remove-test" onclick="removeTest(${window.testData.indexOf(test)}, '${subject}', '${domain.name}')">&times;</span>
-                                            </div>
-                                        `).join('')}
-                                </div>
-                                <span class="domain-value">
-                                    Média: ${(domainAverages[domain.name]?.rawAverage || 0).toFixed(1)} × ${domain.weight * 100}% = 
-                                    ${formatNumber(domainAverages[domain.name]?.weightedAverage || 0)}
-                                </span>
-                            </div>
-                        </td>
-                    `).join('')}
-                    <td>
-                        <strong>Média Final: ${totalWeight > 0 ? formatNumber(subjectFinalGrade) : '-'}</strong>
-                    </td>
-                </tr>
-            </tbody>
-        </table>
-    `;
-
-    container.appendChild(tableContainer);
-    return totalWeight > 0 ? subjectFinalGrade : null;
+    // Criar container
+    const grid = document.createElement('div');
+    grid.className = 'domain-grid';
+    
+    // Adicionar domínios
+    domains.forEach((domain, index) => {
+        const domainCell = document.createElement('div');
+        const isMobile = window.innerWidth <= 768;
+        
+        // Mobile: Último domínio ímpar ocupa 2 colunas
+        if (isMobile && domains.length % 2 !== 0 && index === domains.length - 1) {
+            domainCell.className = 'domain-cell single';
+        } else {
+            domainCell.className = 'domain-cell';
+        }
+        
+        // Conteúdo do domínio
+        domainCell.innerHTML = `
+            <div class="domain-header">
+                ${domain.name} (${domain.weight * 100}%)
+            </div>
+            <div class="domain-tests">
+                ${tests.filter(t => t.domain === domain.name).map(test => `
+                    <div class="test-grade">
+                        <span>${test.name}</span>
+                        <strong>${test.grade.toFixed(1)}</strong>
+                        <button onclick="removeTest(${window.testData.indexOf(test)})">×</button>
+                    </div>
+                `).join('')}
+            </div>
+        `;
+        
+        grid.appendChild(domainCell);
+    });
+    
+    // Adicionar média final
+    const footer = document.createElement('div');
+    footer.className = 'final-average-footer';
+    footer.textContent = `Média Final: ${finalGrade.toFixed(1)}`;
+    grid.appendChild(footer);
+    
+    // Adicionar ao container principal
+    const subjectDiv = document.createElement('div');
+    subjectDiv.innerHTML = `<h4>${subject}</h4>`;
+    subjectDiv.appendChild(grid);
+    container.appendChild(subjectDiv);
 }
 
 function removeTest(testIndex, subject, domain) {
