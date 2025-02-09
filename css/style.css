@@ -610,3 +610,42 @@ button:hover {
       max-width: none;
     }
 }
+/* ====== NOVAS REGRAS PARA DOMÍNIOS ====== */
+/* Desktop: 4 colunas */
+.domain-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 15px;
+    margin-bottom: 20px;
+}
+
+/* Mobile: 2 colunas */
+@media (max-width: 768px) {
+    .domain-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+    
+    /* Último domínio ímpar ocupa 2 colunas */
+    .domain-cell.single {
+        grid-column: span 2;
+    }
+}
+
+/* Estilos comuns para células */
+.domain-cell {
+    border: 1px solid #ddd;
+    padding: 12px;
+    border-radius: 6px;
+    background: #fff;
+    word-break: break-word;
+}
+
+/* Rodapé da média final (ocupa todas as colunas) */
+.final-average-footer {
+    grid-column: 1 / -1;
+    text-align: center;
+    padding: 12px;
+    background: #ffe6ea;
+    border-radius: 6px;
+    font-weight: bold;
+}
