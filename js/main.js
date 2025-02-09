@@ -245,7 +245,7 @@ window.loadUserData = function(userId) {
             const data = snapshot.val();
             if (data) {
                 window.testData = data.testData || [];
-                
+
                 // Carregar notas dos anos (10º e 11º)
                 if (data.yearGrades) {
                     // 10º ano
@@ -257,7 +257,7 @@ window.loadUserData = function(userId) {
                             }
                         });
                     }
-                    
+
                     // 11º ano
                     if (data.yearGrades.year11) {
                         Object.entries(data.yearGrades.year11).forEach(([subject, grade]) => {
@@ -268,15 +268,15 @@ window.loadUserData = function(userId) {
                         });
                     }
                 }
-                
-                // Limpar exames existentes COM VERIFICAÇÃO
+
+                // Limpar exames existentes
                 const examSummaryBody = document.getElementById('exam-summary-body');
                 if (examSummaryBody) {
                     examSummaryBody.innerHTML = '';
                 } else {
                     console.error('Elemento #exam-summary-body não encontrado');
                 }
-                
+
                 // Carregar dados de exames
                 if (data.examData && examSummaryBody) {
                     Object.entries(data.examData).forEach(([safeKey, examInfo]) => {
@@ -292,7 +292,7 @@ window.loadUserData = function(userId) {
                         examSummaryBody.appendChild(tr);
                     });
                 }
-                
+
                 // Atualizar interfaces
                 updateFinalGrades12();
                 calculateFinalGrades();
@@ -438,21 +438,51 @@ document.getElementById('registerForm').addEventListener('submit', (e) => {
       });
 });
 
-// Update login handler to load user data
-document.getElementById('loginForm').addEventListener('submit', (e) => {
-    e.preventDefault();
+// Função para fazer login
+document.getElementById('loginForm').addEventListener('submit', function(e) {
+    e.preventDefault(); // Impede o envio do formulário
+
     const email = document.getElementById('loginEmail').value;
     const password = document.getElementById('loginPassword').value;
-    
+
+    // Verifica se os campos estão preenchidos
+    if (!email || !password) {
+        alert('Por favor, preencha todos os campos.');
+        return;
+    }
+
+    // Faz o login com Firebase Auth
     signInWithEmailAndPassword(auth, email, password)
-      .then((userCredential) => {
-          console.log('Usuário autenticado:', userCredential.user.uid);
-          loadUserData(userCredential.user.uid); // Carrega os dados do usuário
-      })
-      .catch((error) => {
-          console.error('Erro de login:', error.code, error.message);
-          alert('Erro: ' + error.message); // Exemplo: "Senha incorreta"
-      });
+        .then((userCredential) => {
+            console.log('Usuário autenticado:', userCredential.user.uid);
+
+            // Carrega os dados do usuário após o login
+            loadUserData(userCredential.user.uid);
+
+            // Exibe o conteúdo principal
+            showMainContent();
+        })
+        .catch((error) => {
+            console.error('Erro de login:', error.code, error.message);
+
+            // Exibe mensagens de erro amigáveis
+            switch (error.code) {
+                case 'auth/invalid-email':
+                    alert('Email inválido. Por favor, insira um email válido.');
+                    break;
+                case 'auth/user-disabled':
+                    alert('Esta conta foi desativada. Entre em contato com o suporte.');
+                    break;
+                case 'auth/user-not-found':
+                    alert('Usuário não encontrado. Verifique o email ou crie uma nova conta.');
+                    break;
+                case 'auth/wrong-password':
+                    alert('Senha incorreta. Tente novamente.');
+                    break;
+                default:
+                    alert('Erro ao fazer login: ' + error.message);
+            }
+        });
 });
 
 // Existing JavaScript functions
