@@ -2,6 +2,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Calculadora de Notas do Ensino Secundário</title>
 <link rel="stylesheet" href="/notas/css/style.css">
+<input type="number" id="examWeight" min="0" max="100" value="50">
+<tbody id="exam-summary-body"></tbody>
 <script src="/notas/js/main.js" type="module"></script>
 </head>
 <body>
@@ -197,7 +199,5 @@
 
 <button onclick="calculateFinalGrades()">Calcular Notas Finais</button>
 </div>
-<input type="number" id="examWeight" min="0" max="100" value="50">
-<tbody id="exam-summary-body"></tbody>
 <script type="module" src="/notas/js/functions.js"></script>
 </body></html>
