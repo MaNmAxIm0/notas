@@ -597,33 +597,33 @@ function calculateExamGrades() {
     return examGrades;
 }
 
-// Function to calculate final grades
 function calculateFinalGrades() {
-    // Calculate year averages
+    // Calcula as médias dos anos
+    const year10Average = calculateYearAverage(10);
+    const year11Average = calculateYearAverage(11);
+    const year12Average = calculateYear12Average();
+
+    // Atualiza os elementos da interface
     const year10AvgElem = document.getElementById('year10-average');
     const year11AvgElem = document.getElementById('year11-average');
     const year12AvgElem = document.getElementById('year12-average');
-    const examGrades = calculateExamGrades();
     if (year10AvgElem && year11AvgElem && year12AvgElem) {
         year10AvgElem.textContent = year10Average ? year10Average.toFixed(1) : '-';
         year11AvgElem.textContent = year11Average ? year11Average.toFixed(1) : '-';
         year12AvgElem.textContent = year12Average ? year12Average.toFixed(1) : '-';
     }
-    
-    // Calculate and update final averages
-    const cifAverage = calculateSecondaryEducationAverage(); // Gets value on 200-point scale
-    const finalAverage = calculateFinalAverage(cifAverage / 10, examGrades); // Convert back to 20-point scale for final average calculation
 
-    // Update final averages display with new label and format
-    document.getElementById('total-average-no-exams').textContent = 
-        cifAverage ? cifAverage.toFixed(1) : '-';
-    document.getElementById('total-average-with-exams').textContent = 
-        finalAverage ? (finalAverage * 10).toFixed(1) : '-'; // Convert to 200-point scale
+    // Calcula e atualiza as médias finais
+    const cifAverage = calculateSecondaryEducationAverage(); // Obtém o valor na escala de 0-200
+    const finalAverage = calculateFinalAverage(cifAverage / 10, examGrades); // Converte para a escala de 0-20
 
-    // Update summary table
+    // Atualiza a exibição das médias finais
+    document.getElementById('total-average-no-exams').textContent = cifAverage ? cifAverage.toFixed(1) : '-';
+    document.getElementById('total-average-with-exams').textContent = finalAverage ? (finalAverage * 10).toFixed(1) : '-';
+
+    // Atualiza a tabela de resumo
     updateSummaryTable(year10Average, year11Average, year12Average, examGrades);
 }
-
 function calculateYearAverage(year) {
     const grades = document.querySelectorAll(`.year${year}-grade`);
     let total = 0;
@@ -1144,12 +1144,10 @@ function updateFinalGrades12() {
         return;
     }
 
-    const existingAverage = document.querySelector('.year12-quick-average');
-    if (existingAverage) {
-        existingAverage.remove();
-    }
+    // Limpa o conteúdo existente
+    summaryContainer.innerHTML = '';
 
-    // Create and insert average display next to the title
+    // Cria e insere a exibição da média
     const averageDisplay = document.createElement('div');
     averageDisplay.className = 'year12-quick-average';
     averageDisplay.style.cssText = `
@@ -1163,7 +1161,7 @@ function updateFinalGrades12() {
         vertical-align: middle;
     `;
 
-    // Calculate overall average
+    // Calcula a média geral
     const subjectTests = {};
     let totalGrade = 0;
     let subjectCount = 0;
@@ -1175,7 +1173,7 @@ function updateFinalGrades12() {
         subjectTests[test.subject].push(test);
     });
 
-    // Process non-Portuguese subjects first
+    // Processa disciplinas não-Português primeiro
     Object.entries(subjectTests)
         .filter(([subject]) => subject !== 'Português')
         .forEach(([subject, tests]) => {
@@ -1186,7 +1184,7 @@ function updateFinalGrades12() {
             }
         });
 
-    // Process Portuguese last
+    // Processa Português por último
     if (subjectTests['Português']) {
         const portugueseGrade = processSubject('Português', subjectTests['Português'], summaryContainer);
         if (portugueseGrade !== null) {
@@ -1195,14 +1193,14 @@ function updateFinalGrades12() {
         }
     }
 
-    // Update average display
+    // Atualiza a exibição da média
     const yearAverage = subjectCount > 0 ? totalGrade / subjectCount : 0;
     averageDisplay.innerHTML = `
         <strong>Média 12º Ano:</strong>
         <span style="font-size: 1.2em; margin-left: 5px">${yearAverage.toFixed(1)}</span>
     `;
 
-    // Insert average display next to the title (instead of before test input section)
+    // Insere a exibição da média ao lado do título
     const title = document.querySelector('#year12-tab h2');
     title.appendChild(averageDisplay);
 }
@@ -1496,5 +1494,13 @@ document.addEventListener('DOMContentLoaded', function() {
             option.textContent = subject;
             examSubjectSelect.appendChild(option);
         });
+    }
+});
+document.addEventListener('DOMContentLoaded', function() {
+    const examSummaryBody = document.getElementById('exam-summary-body');
+    if (examSummaryBody) {
+        examSummaryBody.innerHTML = ''; // Limpa o conteúdo do elemento
+    } else {
+        console.error('Elemento #exam-summary-body não encontrado');
     }
 });
