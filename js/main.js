@@ -579,16 +579,16 @@ function calculateExamGrades() {
     examRows.forEach(row => {
         const subject = row.getAttribute('data-subject');
         const grade = parseFloat(row.querySelector('.exam-grade-display').textContent);
-        
+
         if (subject && !isNaN(grade)) {
             examGrades[subject] = {
-                grade: grade / 10, // Convert from 200-point to 20-point scale
-                weight: 0.3 // Fixed weight of 30%
+                grade: grade / 10, // Converte de 200 para 20
+                weight: 0.3 // Peso fixo de 30%
             };
         }
     });
 
-    // Calculate average if there are any grades
+    // Calcula a média dos exames, se houver notas
     const grades = Object.values(examGrades).map(g => g.grade);
     if (grades.length > 0) {
         examGrades.average = grades.reduce((a, b) => a + b, 0) / grades.length;
@@ -602,6 +602,9 @@ function calculateFinalGrades() {
     const year10Average = calculateYearAverage(10);
     const year11Average = calculateYearAverage(11);
     const year12Average = calculateYear12Average();
+
+    // Calcula as notas dos exames
+    const examGrades = calculateExamGrades(); // Adicione esta linha
 
     // Atualiza os elementos da interface
     const year10AvgElem = document.getElementById('year10-average');
@@ -1060,12 +1063,12 @@ function addTest12thYear() {
         return;
     }
 
-    // Initialize testData array if it doesn't exist
+    // Inicializa o array testData se não existir
     if (!window.testData) {
         window.testData = [];
     }
 
-    // Add new test
+    // Adiciona o novo teste
     window.testData.push({
         subject: subject,
         name: testName,
@@ -1073,16 +1076,16 @@ function addTest12thYear() {
         domain: domain
     });
 
-    // Clear inputs
+    // Limpa os campos de entrada
     document.getElementById('testName').value = '';
     document.getElementById('testGrade').value = '';
     document.getElementById('testDomain').value = '';
 
-    // Update display
+    // Atualiza a interface
     updateFinalGrades12();
-    calculateFinalGrades();
+    calculateFinalGrades(); // Chama a função para recalcular as médias
 
-    // Save to database if user is logged in
+    // Salva no banco de dados se o usuário estiver logado
     if (auth.currentUser) {
         saveUserData(auth.currentUser.uid);
     }
