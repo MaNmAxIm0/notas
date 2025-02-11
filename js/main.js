@@ -1,3 +1,7 @@
+// Inicializa variáveis globais
+window.testData = [];
+window.yearGrades = { year10: {}, year11: {} };
+window.examData = {};
 const subjects = { 
   year10: ['Matemática A', 'Português', 'Inglês', 'Educação Física', 'Filosofia', 'Economia A', 'Geografia A'],
   year11: ['Matemática A', 'Português', 'Inglês', 'Educação Física', 'Filosofia', 'Economia A', 'Geografia A'],
@@ -243,68 +247,31 @@ window.loadUserData = function(userId) {
     get(ref(database, 'users/' + userId))
         .then((snapshot) => {
             const data = snapshot.val();
-            if (data) {
-                window.testData = data.testData || [];
 
-                // Carregar notas dos anos (10º e 11º)
-                if (data.yearGrades) {
-                    // 10º ano
-                    if (data.yearGrades.year10) {
-                        Object.entries(data.yearGrades.year10).forEach(([subject, grade]) => {
-                            const input = document.querySelector(`.year10-grade[data-subject="${subject}"]`);
-                            if (input) {
-                                input.value = Math.round(grade);
-                            }
-                        });
-                    }
-
-                    // 11º ano
-                    if (data.yearGrades.year11) {
-                        Object.entries(data.yearGrades.year11).forEach(([subject, grade]) => {
-                            const input = document.querySelector(`.year11-grade[data-subject="${subject}"]`);
-                            if (input) {
-                                input.value = Math.round(grade);
-                            }
-                        });
-                    }
-                }
-
-                // Limpar exames existentes
-                const examSummaryBody = document.getElementById('exam-summary-body');
-                if (examSummaryBody) {
-                    examSummaryBody.innerHTML = '';
-                } else {
-                    console.error('Elemento #exam-summary-body não encontrado');
-                }
-
-                // Carregar dados de exames
-                if (data.examData && examSummaryBody) {
-                    Object.entries(data.examData).forEach(([safeKey, examInfo]) => {
-                        const tr = document.createElement('tr');
-                        tr.setAttribute('data-subject', examInfo.subject);
-                        tr.innerHTML = `
-                            <td>${examInfo.subject}</td>
-                            <td class="exam-grade-display">${(examInfo.grade * 10).toFixed(1)}</td>
-                            <td>
-                                <button onclick="removeExamGrade(this)" class="remove-exam">Remover</button>
-                            </td>
-                        `;
-                        examSummaryBody.appendChild(tr);
-                    });
-                }
-
-                // Atualizar interfaces
-                updateFinalGrades12();
-                calculateFinalGrades();
+            // Inicializa dados padrão se não houver dados salvos
+            if (!data) {
+                window.testData = [];
+                window.yearGrades = { year10: {}, year11: {} };
+                window.examData = {};
+                showMainContent();
+                return;
             }
+
+            // Carrega dados existentes
+            window.testData = data.testData || [];
+            window.yearGrades = data.yearGrades || { year10: {}, year11: {} };
+            window.examData = data.examData || {};
+
+            // Atualiza a interface
+            updateFinalGrades12();
+            calculateFinalGrades();
             showMainContent();
         })
         .catch((error) => {
-            console.error('Erro ao carregar dados:', error);
-            alert('Erro ao carregar dados do usuário');
+            console.error("Erro técnico ao carregar dados:", error);
+            // Não exibe alerta para o usuário
         });
 };
-
 // Function to set year grades
 function setYearGrades(yearGrades) {
     if (!yearGrades) return;
@@ -396,7 +363,7 @@ function setupAutoSave() {
 onAuthStateChanged(auth, (user) => {
     if (user) {
       loadUserData(user.uid);
-      setupAutoSave();
+      showMainContent();
     } else {
       showLogin();
     }
