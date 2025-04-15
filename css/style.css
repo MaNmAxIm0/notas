@@ -1,651 +1,752 @@
 body {
-    font-family: Arial, sans-serif;
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 20px;
-    background-color: #fff0f3;  /* Light pink background */
+  font-family: Arial, sans-serif;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px;
+  background-color: #fff0f3;  /* Light pink background */
 }
 
 .tab-container {
-    margin: 20px 0;
+  margin: 20px 0;
 }
 
 .tab-buttons {
-    display: flex;
-    gap: 10px;
-    margin-bottom: 20px;
+  display: flex;
+  gap: 10px;
+  margin-bottom: 20px;
 }
 
 .tab-button {
-    padding: 10px 20px;
-    background-color: #ffb5c5;  /* Light pink */
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
+  padding: 10px 20px;
+  background-color: #ffb5c5;  /* Light pink */
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
 }
 
 .tab-button.active {
-    background-color: #ff69b4;  /* Hot pink */
-    color: white;
+  background-color: #ff69b4;  /* Hot pink */
+  color: white;
 }
 
 .year-section {
-    background-color: white;
-    padding: 20px;
-    margin: 20px 0;
-    border-radius: 8px;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  background-color: white;
+  padding: 20px;
+  margin: 20px 0;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
 }
 
 .exam-section {
-    background-color: white;
-    padding: 20px;
-    margin: 20px 0;
-    border-radius: 8px;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  background-color: white;
+  padding: 20px;
+  margin: 20px 0;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
 }
 
 .exam-entry {
-    display: flex;
-    gap: 10px;
-    align-items: center;
-    margin-bottom: 10px;
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  margin-bottom: 10px;
 }
 
 .subject {
-    margin: 15px 0;
-    padding: 10px;
-    border: 1px solid #ddd;
-    border-radius: 4px;
+  margin: 15px 0;
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
 }
 
 .grade-input {
-    width: 60px;
-    padding: 5px;
-    margin: 0 5px;
+  width: 60px;
+  padding: 5px;
+  margin: 0 5px;
 }
 
 .domain-select {
-    margin-left: 10px;
+  margin-left: 10px;
 }
 
 table {
-    width: 100%;
-    border-collapse: collapse;
-    margin-top: 20px;
-    overflow-x: auto;
-    display: block;
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 20px;
+  overflow-x: auto;
+  display: block;
 }
 
 th, td {
-    border: 1px solid #ddd;
-    padding: 8px;
-    text-align: center;
+  border: 1px solid #ddd;
+  padding: 8px;
+  text-align: center;
 }
 
 th {
-    background-color: #f0f0f0;
+  background-color: #f0f0f0;
 }
 
 button {
-    background-color: #ff69b4;  /* Hot pink */
-    color: white;
-    padding: 10px 20px;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-    margin: 10px 0;
+  background-color: #ff69b4;  /* Hot pink */
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  margin: 10px 0;
 }
 
 button:hover {
-    background-color: #ff1493;  /* Deep pink */
+  background-color: #ff1493;  /* Deep pink */
 }
 
 .submit-grade {
-    background-color: #ff69b4;  /* Hot pink */
-    color: white;
-    padding: 5px 10px;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-    margin-left: 10px;
+  background-color: #ff69b4;  /* Hot pink */
+  color: white;
+  padding: 5px 10px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  margin-left: 10px;
 }
 
 .submit-grade:hover {
-    background-color: #ff1493;  /* Deep pink */
+  background-color: #ff1493;  /* Deep pink */
 }
 
 .reset-grade {
-    background-color: #ff6b6b;  /* Light red */
-    color: white;
-    padding: 5px 10px;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-    margin-left: 10px;
+  background-color: #ff6b6b;  /* Light red */
+  color: white;
+  padding: 5px 10px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  margin-left: 10px;
 }
 
 .reset-grade:hover {
-    background-color: #ff4040;  /* Darker red */
+  background-color: #ff4040;  /* Darker red */
 }
 
 .submitted {
-    background-color: #ffe6ea;  /* Very light pink */
+  background-color: #ffe6ea;  /* Very light pink */
 }
 
 .year-average {
-    font-weight: bold;
-    background-color: #fff0f3;  /* Light pink */
+  font-weight: bold;
+  background-color: #fff0f3;  /* Light pink */
 }
 
 .final-average {
-    font-weight: bold;
-    background-color: #ffe6ea;  /* Very light pink */
+  font-weight: bold;
+  background-color: #ffe6ea;  /* Very light pink */
 }
 
 .test-input-section {
-    position: relative;
-    width: 100%;
-    padding-right: 0;  /* Remove right padding */
-    margin-bottom: 20px;
+  position: relative;
+  width: 100%;
+  padding-right: 0;  /* Remove right padding */
+  margin-bottom: 20px;
 }
 
 .consolidated-input {
-    display: grid;
-    grid-template-columns: 1fr 1fr 1fr 1fr auto;
-    gap: 10px;
-    align-items: center;
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr 1fr auto;
+  gap: 10px;
+  align-items: center;
 }
 
 .finals-summary-table {
-    font-size: 0.9em;
-    margin: 0;
-    width: 100%;
-    border-collapse: collapse;
-    overflow-x: auto;
-    display: block;
+  font-size: 0.9em;
+  margin: 0;
+  width: 100%;
+  border-collapse: collapse;
+  overflow-x: auto;
+  display: block;
 }
 
 .year12-finals {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 20px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
 }
 
 .subject-table {
-    width: calc(50% - 10px);
-    background: white;
-    padding: 15px;
-    border-radius: 8px;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  width: calc(50% - 10px);
+  background: white;
+  padding: 15px;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
 }
 
 .subject-table.full-width {
-    width: 100%;
-    order: 999; /* Ensures it appears last */
+  width: 100%;
+  order: 999; /* Ensures it appears last */
 }
 
 .domain-grades-layout {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 10px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
 }
 
 .domain-grade-item {
-    flex: 1 1 calc(50% - 10px);  /* Two items per row by default */
-    min-width: 250px;  /* Ensures minimum readability */
-    max-width: 400px;  /* Prevents blocks from getting too wide */
-    padding: 8px;
-    background-color: #f8f9fa;
-    border-radius: 4px;
-    text-align: center;
+  flex: 1 1 calc(50% - 10px);  /* Two items per row by default */
+  min-width: 250px;  /* Ensures minimum readability */
+  max-width: 400px;  /* Prevents blocks from getting too wide */
+  padding: 8px;
+  background-color: #f8f9fa;
+  border-radius: 4px;
+  text-align: center;
 }
 
 .domain-name {
-    font-weight: bold;
-    margin-bottom: 5px;
-    font-size: 0.9em;
-    display: block;
+  font-weight: bold;
+  margin-bottom: 5px;
+  font-size: 0.9em;
+  display: block;
 }
 
 .domain-value {
-    font-size: 1.1em;
-    display: block;
-    margin-top: 5px;
+  font-size: 1.1em;
+  display: block;
+  margin-top: 5px;
 }
 
 .subject-table {
-    width: 100%;
+  width: 100%;
 }
 
 .subject-table.full-width {
-    grid-column: 1 / -1; /* Span all columns */
+  grid-column: 1 / -1; /* Span all columns */
 }
 
 .empty-cell {
-    background-color: #f9f9f9;
+  background-color: #f9f9f9;
 }
 
 #finals12Summary td {
-    padding: 8px;
-    text-align: center;
+  padding: 8px;
+  text-align: center;
 }
 
 #finals12Summary span[title] {
-    cursor: help;
-    border-bottom: 1px dotted #999;
+  cursor: help;
+  border-bottom: 1px dotted #999;
 }
 
 #finals12Summary tr:hover td {
-    background-color: #f5f5f5;
+  background-color: #f5f5f5;
 }
 
 .domain-tests {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 5px;
-    margin: 5px 0;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 5px;
+  margin: 5px 0;
 }
 
 .test-grade {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    background: #ffe6ea;  /* Very light pink */
-    padding: 4px 8px;
-    border-radius: 4px;
-    margin: 2px 0;
-    flex-wrap: wrap;  /* Allow wrapping on mobile */
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: #ffe6ea;  /* Very light pink */
+  padding: 4px 8px;
+  border-radius: 4px;
+  margin: 2px 0;
+  flex-wrap: wrap;  /* Allow wrapping on mobile */
 }
 
 .test-grade .test-name {
-    font-size: 0.9em;
-    color: #666;
-    margin-right: 8px;
-    flex: 1;  /* Take remaining space */
-    min-width: 100px;  /* Ensure minimum width for readability */
+  font-size: 0.9em;
+  color: #666;
+  margin-right: 8px;
+  flex: 1;  /* Take remaining space */
+  min-width: 100px;  /* Ensure minimum width for readability */
 }
 
 .test-grade .grade-value {
-    font-weight: bold;
-    margin: 0 8px;
-    white-space: nowrap;  /* Keep grade on one line */
+  font-weight: bold;
+  margin: 0 8px;
+  white-space: nowrap;  /* Keep grade on one line */
 }
 
 .test-grade .remove-test {
-    color: #f44336;
-    cursor: pointer;
-    padding: 0 4px;
-    font-size: 16px;
+  color: #f44336;
+  cursor: pointer;
+  padding: 0 4px;
+  font-size: 16px;
 }
 
 @media screen and (max-width: 768px) {
-    .test-grade {
-        flex-direction: column;
-        align-items: flex-start;
-    }
+  .test-grade {
+    flex-direction: column;
+    align-items: flex-start;
+  }
 
-    .test-grade .test-name {
-        margin-bottom: 4px;
-        width: 100%;
-    }
+  .test-grade .test-name {
+    margin-bottom: 4px;
+    width: 100%;
+  }
 
-    .test-grade .grade-value {
-        margin-left: 0;
-    }
+  .test-grade .grade-value {
+    margin-left: 0;
+  }
 }
 
 .year12-average-display {
-    background-color: #ffe6ea;  /* Very light pink */
-    padding: 20px;
-    margin: 20px 0;
-    border-radius: 8px;
-    text-align: center;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  background-color: #ffe6ea;  /* Very light pink */
+  padding: 20px;
+  margin: 20px 0;
+  border-radius: 8px;
+  text-align: center;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
 }
 
 .year12-average-display h3 {
-    margin: 0;
-    color: #ff1493;  /* Deep pink */
+  margin: 0;
+  color: #ff1493;  /* Deep pink */
 }
 
 .year12-average-value {
-    font-size: 24px;
-    font-weight: bold;
-    margin: 10px 0;
-    color: #ff69b4;  /* Hot pink */
+  font-size: 24px;
+  font-weight: bold;
+  margin: 10px 0;
+  color: #ff69b4;  /* Hot pink */
 }
 
 .year12-quick-average {
-    background: #ffe6ea;  /* Very light pink */
-    padding: 8px 15px;
-    border-radius: 8px;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-    text-align: center;
+  background: #ffe6ea;  /* Very light pink */
+  padding: 8px 15px;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  text-align: center;
 }
 
 .domain-info-icon {
-    cursor: pointer;
-    margin-left: 5px;
-    color: #666;
-    font-size: 18px;
-    display: inline-block;
-    vertical-align: middle;
+  cursor: pointer;
+  margin-left: 5px;
+  color: #666;
+  font-size: 18px;
+  display: inline-block;
+  vertical-align: middle;
 }
 
 .domain-info-icon:hover {
-    color: #333;
+  color: #333;
 }
 
 .popup-overlay {
-    display: none;
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0,0,0,0.7);
-    z-index: 1000;
-    justify-content: center;
-    align-items: center;
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0,0,0,0.7);
+  z-index: 1000;
+  justify-content: center;
+  align-items: center;
 }
 
 .popup-content {
-    background-color: white;
-    padding: 20px;
-    border-radius: 8px;
-    max-width: 90%;
-    max-height: 90vh;
-    overflow: auto;
-    position: relative;
+  background-color: white;
+  padding: 20px;
+  border-radius: 8px;
+  max-width: 90%;
+  max-height: 90vh;
+  overflow: auto;
+  position: relative;
 }
 
 .popup-content img {
-    max-width: 100%;
-    height: auto;
-    display: block;
+  max-width: 100%;
+  height: auto;
+  display: block;
 }
 
 .close-popup {
-    position: absolute;
-    right: 10px;
-    top: 10px;
-    font-size: 24px;
-    cursor: pointer;
-    color: #666;
+  position: absolute;
+  right: 10px;
+  top: 10px;
+  font-size: 24px;
+  cursor: pointer;
+  color: #666;
 }
 
 .close-popup:hover {
-    color: #333;
+  color: #333;
 }
 
 .year12-quick-average {
-    flex-shrink: 0;
+  flex-shrink: 0;
 }
 
 .tab-content {
+  display: none;
+}
+
+@media screen and (max-width: 768px) {
+  body {
+    padding: 10px;
+  }
+
+  .tab-buttons {
+    flex-wrap: wrap;
+  }
+
+  .tab-button {
+    flex: 1 1 calc(50% - 10px);
+    min-width: 120px;
+    margin-bottom: 5px;
+  }
+
+  .consolidated-input {
+    grid-template-columns: 1fr;
+    gap: 10px;
+  }
+
+  .domain-grades-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .domain-tests {
+    grid-template-columns: 1fr;
+  }
+
+  .year12-finals .subject-table {
+    overflow-x: auto;
+  }
+
+  th, td {
+    min-width: 80px;
+    white-space: normal;
+    word-wrap: break-word;
+  }
+
+  .final-averages > div {
+    grid-template-columns: 1fr !important;
+  }
+
+  .exam-entry {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .exam-entry select,
+  .exam-entry input,
+  .exam-entry button {
+    width: 100%;
+    margin: 5px 0;
+  }
+
+  #exam-entries {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+  }
+
+  .domain-grade-item {
+    margin-bottom: 10px;
+  }
+
+  .test-input-section {
+    width: 100%;
+    overflow-x: hidden;
+  }
+
+  .subject-table.full-width {
+    overflow-x: auto;
+  }
+
+  .final-averages {
+    margin: 15px 5px !important;
+    padding: 10px !important;
+  }
+
+  .average-box {
+    margin: 5px 0;
+  }
+
+  .finals-summary-table td {
+    font-size: 0.9em;
+  }
+  
+  .domain-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    flex-wrap: wrap;
+  }
+  
+  .domain-block {
+    flex: initial;
+    width: auto;
+    min-width: 0;
+  }
+  
+  .domain-block:last-child:nth-child(2n + 1) {
+    grid-column: 1 / -1;
+  }
+}
+
+@media screen and (max-width: 480px) {
+  .tab-button {
+    flex: 1 1 100%;
+  }
+
+  th, td {
+    padding: 5px;
+    font-size: 0.85em;
+  }
+
+  .domain-info-icon {
+    font-size: 16px;
+  }
+
+  .year12-quick-average {
+    width: 100%;
+    margin: 10px 0;
+  }
+}
+
+@media screen and (max-width: 768px) {
+  /* Improved mobile table layout */
+  .finals-summary-table, table {
+    width: 100%;
+    overflow-x: visible;
+    display: table;
+  }
+
+  #finals12Summary tr {
+    display: grid;
+    grid-template-columns: 1fr;
+    border-bottom: 2px solid #ddd;
+    padding: 10px 0;
+  }
+
+  #finals12Summary td {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 5px;
+    padding: 8px 5px;
+    border: none;
+    text-align: left;
+  }
+
+  #finals12Summary td::before {
+    content: attr(data-label);
+    font-weight: bold;
+    color: #666;
+  }
+
+  .subject-table table {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .subject-table td {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    width: 100%;
+    box-sizing: border-box;
+    padding: 10px 5px;
+    border-bottom: 1px solid #ddd;
+  }
+
+  .subject-table td::before {
+    content: attr(data-label);
+    font-weight: bold;
+    color: #666;
+  }
+
+  .subject-table th {
     display: none;
+  }
+
+  .subject-table .domain-grade-item {
+    grid-template-columns: 1fr;
+    padding: 10px 0;
+  }
+
+  .domain-tests {
+    grid-template-columns: 1fr;
+  }
 }
 
-@media screen and (max-width: 768px) {
-    body {
-        padding: 10px;
-    }
-
-    .tab-buttons {
-        flex-wrap: wrap;
-    }
-
-    .tab-button {
-        flex: 1 1 calc(50% - 10px);
-        min-width: 120px;
-        margin-bottom: 5px;
-    }
-
-    .consolidated-input {
-        grid-template-columns: 1fr;
-        gap: 10px;
-    }
-
-    .domain-grades-layout {
-        grid-template-columns: 1fr;
-    }
-
-    .domain-tests {
-        grid-template-columns: 1fr;
-    }
-
-    .year12-finals .subject-table {
-        overflow-x: auto;
-    }
-
-    th, td {
-        min-width: 80px;
-        white-space: normal;
-        word-wrap: break-word;
-    }
-
-    .final-averages > div {
-        grid-template-columns: 1fr !important;
-    }
-
-    .exam-entry {
-        flex-direction: column;
-        align-items: stretch;
-    }
-
-    .exam-entry select,
-    .exam-entry input,
-    .exam-entry button {
-        width: 100%;
-        margin: 5px 0;
-    }
-
-    #exam-entries {
-        display: flex;
-        flex-direction: column;
-        gap: 15px;
-    }
-
-    .domain-grade-item {
-        margin-bottom: 10px;
-    }
-
-    .test-input-section {
-        width: 100%;
-        overflow-x: hidden;
-    }
-
-    .subject-table.full-width {
-        overflow-x: auto;
-    }
-
-    .final-averages {
-        margin: 15px 5px !important;
-        padding: 10px !important;
-    }
-
-    .average-box {
-        margin: 5px 0;
-    }
-
-    .finals-summary-table td {
-        font-size: 0.9em;
-    }
-}
-
-@media screen and (max-width: 480px) {
-    .tab-button {
-        flex: 1 1 100%;
-    }
-
-    th, td {
-        padding: 5px;
-        font-size: 0.85em;
-    }
-
-    .domain-info-icon {
-        font-size: 16px;
-    }
-
-    .year12-quick-average {
-        width: 100%;
-        margin: 10px 0;
-    }
-}
-
-@media screen and (max-width: 768px) {
-    /* Improved mobile table layout */
-    .finals-summary-table, table {
-        width: 100%;
-        overflow-x: visible;
-        display: table;
-    }
-
-    #finals12Summary tr {
-        display: grid;
-        grid-template-columns: 1fr;
-        border-bottom: 2px solid #ddd;
-        padding: 10px 0;
-    }
-
-    #finals12Summary td {
-        display: grid;
-        grid-template-columns: 1fr 1fr;
-        gap: 5px;
-        padding: 8px 5px;
-        border: none;
-        text-align: left;
-    }
-
-    #finals12Summary td::before {
-        content: attr(data-label);
-        font-weight: bold;
-        color: #666;
-    }
-
-    .subject-table table {
-        display: flex;
-        flex-direction: column;
-    }
-
-    .subject-table td {
-        display: grid;
-        grid-template-columns: 1fr 1fr;
-        width: 100%;
-        box-sizing: border-box;
-        padding: 10px 5px;
-        border-bottom: 1px solid #ddd;
-    }
-
-    .subject-table td::before {
-        content: attr(data-label);
-        font-weight: bold;
-        color: #666;
-    }
-
-    .subject-table th {
-        display: none;
-    }
-
-    .subject-table .domain-grade-item {
-        grid-template-columns: 1fr;
-        padding: 10px 0;
-    }
-
-    .domain-tests {
-        grid-template-columns: 1fr;
-    }
-}
-
-@media screen and (max-width: 480px) {
-    .subject-table {
-        width: 100% !important;
-    }
-    
-    .test-grade {
-        flex-direction: column;
-        align-items: flex-start;
-    }
-    
-    .domain-grade-item span.domain-value {
-        word-break: break-word;
-        font-size: 0.9em;
-    }
-    
-    .subject-table table {
-        display: block;
-    }
-    
-    .subject-table td:last-child {
-        grid-column: 1 / -1;
-        background: #f8f9fa;
-        font-weight: bold;
-        margin-top: 10px;
-    }
+@media (max-width: 480px) {
+  .subject-table {
+    width: 100% !important;
+  }
+  
+  .test-grade {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  
+  .domain-grade-item span.domain-value {
+    word-break: break-word;
+    font-size: 0.9em;
+  }
+  
+  .subject-table table {
+    display: block;
+  }
+  
+  .subject-table td:last-child {
+    grid-column: 1 / -1;
+    background: #f8f9fa;
+    font-weight: bold;
+    margin-top: 10px;
+  }
+  
+  .domain-block {
+    padding: 10px;
+  }
+  
+  .domain-name {
+    font-size: 0.85em;
+  }
 }
 
 .year12-finals .subject-table {
-    width: 100%;
+  width: 100%;
 }
 
 @media screen and (min-width: 1200px) {
-    .domain-grades-layout {
-      flex-wrap: wrap;  
-    }
+  .domain-grades-layout {
+    flex-wrap: wrap;  
+  }
 
-    .domain-grade-item {
-      flex: 0 1 calc(50% - 10px);  
-      max-width: 500px;  
-    }
+  .domain-grade-item {
+    flex: 0 1 calc(50% - 10px);  
+    max-width: 500px;  
+  }
 }
 
 @media screen and (max-width: 768px) {
-    .domain-grades-layout {
-      flex-direction: column;
-    }
+  .domain-grades-layout {
+    flex-direction: column;
+  }
 
-    .domain-grade-item {
-      flex: 1 1 100%;  
-      max-width: none;
-    }
+  .domain-grade-item {
+    flex: 1 1 100%;  
+    max-width: none;
+  }
 }
-/* ====== NOVAS REGRAS PARA DOMÍNIOS ====== */
-/* Desktop: 4 colunas */
+
+.subject-container {
+  background: white;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  margin-bottom: 20px;
+}
+
+.subject-title {
+  font-size: 1.2em;
+  font-weight: bold;
+  color: #ff69b4;
+  margin-bottom: 15px;
+  text-align: center;
+}
+
 .domain-grid {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 15px;
-    margin-bottom: 20px;
+  display: flex;
+  gap: 15px;
+  margin-bottom: 15px;
+  flex-wrap: nowrap; 
+  overflow-x: auto; 
 }
 
-/* Mobile: 2 colunas */
+.domain-block {
+  flex: 1;
+  min-width: 150px; 
+  max-width: none; 
+  background: #fff0f3;
+  padding: 15px;
+  border-radius: 6px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+}
+
+.domain-name {
+  font-weight: bold;
+  margin-bottom: 10px;
+  color: #666;
+  font-size: 0.9em; 
+}
+
+.domain-content {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.test-list {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.final-grade {
+  width: 100%;
+  text-align: center;
+  background: #ffe6ea;
+  padding: 15px;
+  border-radius: 6px;
+  font-weight: bold;
+  font-size: 1.1em;
+  color: #ff1493;
+  margin-top: 10px;
+}
+
+#summary-table {
+  width: 100%;
+}
+
+#summary-table th, #summary-table td {
+  text-align: center;
+  vertical-align: middle;
+}
+
+.approval-checkbox, .entrance-exam-checkbox {
+  width: 18px;
+  height: 18px;
+  cursor: pointer;
+}
+
 @media (max-width: 768px) {
-    .domain-grid {
-        grid-template-columns: repeat(2, 1fr);
-    }
-    
-    /* Último domínio ímpar ocupa 2 colunas */
-    .domain-cell.single {
-        grid-column: span 2;
-    }
+  .approval-checkbox, .entrance-exam-checkbox {
+    width: 16px;
+    height: 16px;
+  }
 }
 
-/* Estilos comuns para células */
-.domain-cell {
-    border: 1px solid #ddd;
-    padding: 12px;
-    border-radius: 6px;
-    background: #fff;
-    word-break: break-word;
-}
-
-/* Rodapé da média final (ocupa todas as colunas) */
-.final-average-footer {
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .domain-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    flex-wrap: wrap;
+  }
+  
+  .domain-block {
+    flex: initial;
+    width: auto;
+    min-width: 0;
+  }
+  
+  .domain-block:last-child:nth-child(2n + 1) {
     grid-column: 1 / -1;
-    text-align: center;
-    padding: 12px;
-    background: #ffe6ea;
-    border-radius: 6px;
-    font-weight: bold;
+  }
+}
+
+@media (max-width: 480px) {
+  .domain-block {
+    padding: 10px;
+  }
+  
+  .domain-name {
+    font-size: 0.85em;
+  }
 }
