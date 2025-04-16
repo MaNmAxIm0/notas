@@ -649,7 +649,7 @@ export function processSubject(subject, tests, container) {
   return totalWeight > 0 ? subjectFinalGrade : null;
 }
 
-export function updateSummaryTable(year10Avg, year11Avg, year12Avg, examGrades) {
+export function updateSummaryTable(year10Avg, year11Avg, year12Avg, Grades) {
   const tbody = document.getElementById('summary-body');
   tbody.innerHTML = '';
 
@@ -662,7 +662,7 @@ export function updateSummaryTable(year10Avg, year11Avg, year12Avg, examGrades) 
     const year12Grade = getSubjectGrade12(subject);
     
     // Get exam data
-    const examData = examGrades[subject];
+    const examData = Grades[subject];
     const examRawGrade = examData ? examData.grade : null;
     const examGrade = examRawGrade !== null ? Math.round(examRawGrade / 10) : null;
     
@@ -683,16 +683,18 @@ export function updateSummaryTable(year10Avg, year11Avg, year12Avg, examGrades) 
       const weightedSum = yearGrades.reduce((sum, g) => sum + g.grade * g.weight, 0);
       const totalWeight = yearGrades.reduce((sum, g) => sum + g.weight, 0);
       
-      // Calculate average of year grades, rounded to nearest whole number
-      const yearAverage = Math.round(weightedSum / totalWeight);
+      // Calculate average of year grades, with 2 decimal places
+      let yearAverage = (weightedSum / totalWeight);
       
-      // If checkbox is checked, calculate CIF with exam
-      if (isApproved && examGrade !== null) {
+      if (isApproved) {
+        yearAverage = Math.round(yearAverage);
+      }
+      
+      if (isApproved && examGrade != null) {
         const yearAverageWithWeight = yearAverage * 0.7;
-        const examGradeWithWeight = examGrade * 0.3;
-        finalCIF = (yearAverageWithWeight + examGradeWithWeight).toFixed(2);
+        const examWithWeighted = Math.round(examRawGrade / 10) * 0.3;
+        finalCIF = (yearAverageWithWeight + examWithWeighted).toFixed(2);
       } else {
-        // Otherwise, just use the year average to 2 decimal places
         finalCIF = yearAverage.toFixed(2);
       }
     }
@@ -701,7 +703,7 @@ export function updateSummaryTable(year10Avg, year11Avg, year12Avg, examGrades) 
         <td>${subject}</td>
         <td>${year10Grade !== null && !isNaN(year10Grade) ? Math.round(year10Grade) : '-'}</td>
         <td>${year11Grade !== null && !isNaN(year11Grade) ? Math.round(year11Grade) : '-'}</td>
-        <td>${year12Grade !== null && !isNaN(year12Grade) ? (Math.round(year12Grade * 10) / 10).toFixed(1) : '-'}</td>
+        <td>${year12Grade !== null && !isNaN(year12Grade) ? Math.round(year12Grade) : '-'}</td>
         <td>${examRawGrade !== null && !isNaN(examRawGrade) ? (examRawGrade / 10).toFixed(1) : '-'}</td>
         <td>${finalCIF !== null && !isNaN(parseFloat(finalCIF)) ? finalCIF : '-'}</td>
         <td>${finalCIF !== null && !isNaN(parseFloat(finalCIF)) ? Math.round(parseFloat(finalCIF)) : '-'}</td>
@@ -741,7 +743,41 @@ export function updateSummaryTable(year10Avg, year11Avg, year12Avg, examGrades) 
     if (averageCells[2]) averageCells[2].textContent = year11Avg !== null ? year11Avg.toFixed(1) : '-';
     if (averageCells[3]) averageCells[3].textContent = year12Avg !== null ? year12Avg.toFixed(1) : '-';
 
-    // Additional averages calculation and display can be added here
+    // Calculate and update exam average
+    const examValues = Array.from(document.querySelectorAll('#summary-body tr'))
+      .filter(row => {
+        // Only include exams that have the entrance exam checkbox checked
+        const entranceExamCheckbox = row.querySelector('.entrance-exam-checkbox');
+        return entranceExamCheckbox && entranceExamCheckbox.checked;
+      })
+      .map(row => {
+        const examCell = row.children[4];
+        return examCell && examCell.textContent !== '-' ? Math.round(parseFloat(examCell.textContent)) : null;
+      })
+      .filter(val => val !== null && !isNaN(val));
+    
+    const examAvg = examValues.length > 0 ? examValues.reduce((a, b) => a + b, 0) / examValues.length : null;
+    document.getElementById('exams-average').textContent = examAvg !== null ? examAvg.toFixed(1) : '-';
+    
+    // Calculate and update CIF average
+    const cifValues = Array.from(document.querySelectorAll('#summary-body tr')).map(row => {
+      const cifCell = row.children[5];
+      return cifCell ? parseFloat(cifCell.textContent) : null;
+    }).filter(val => val !== null && !isNaN(val));
+    
+    const cifAvg = cifValues.length > 0 ? cifValues.reduce((a, b) => a + b, 0) / cifValues.length : null;
+    document.getElementById('cif-average').textContent = cifAvg !== null ? cifAvg.toFixed(1) : '-';
+    
+    // Calculate and update final average
+    const finalValues = Array.from(document.querySelectorAll('#summary-body tr')).map(row => {
+      const finalCell = row.children[6];
+      return finalCell ? parseFloat(finalCell.textContent) : null;
+    }).filter(val => val !== null && !isNaN(val));
+    
+    const finalAvg = finalValues.length > 0 ? finalValues.reduce((a, b) => a + b, 0) / finalValues.length : null;
+    document.getElementById('final-average').textContent = finalAvg !== null ? finalAvg.toFixed(1) : '-';
+
+    // Additional averages calculation and display
     const totalAverageNoExams = calculateSecondaryEducationAverage();
     const finalAverage = calculateFinalAverage();
 
