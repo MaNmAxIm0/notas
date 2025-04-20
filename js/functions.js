@@ -86,7 +86,7 @@ export function saveUserData(userId, auth, database, dbRef, dbSet) {
     examData: examData
   };
 
-  return dbSet(dbRef(database, 'users/' + userId), data);
+  return dbUpdate(dbRef(database, 'users/' + userId), data);
 }
 
 export function loadUserData(userId, database, dbRef, dbGet) {
