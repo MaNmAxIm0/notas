@@ -365,3 +365,189 @@ function setupAutoSave() {
     });
   });
 }
+
+// Add global function for PDF generation
+window.generatePDF = function() {
+  // Import the jsPDF module
+  const { jsPDF } = window.jspdf;
+  
+  // Create a new PDF document
+  const doc = new jsPDF();
+  
+  // Set initial coordinates for content
+  let y = 20;
+  const pageHeight = doc.internal.pageSize.height;
+  const margin = 10;
+  
+  // Function to check if we need a new page
+  function checkPageBreak(heightNeeded) {
+    if (y + heightNeeded > pageHeight - margin) {
+      doc.addPage();
+      y = 20; // Reset y position for new page
+      return true;
+    }
+    return false;
+  }
+  
+  // Add title
+  doc.setFontSize(18);
+  doc.setTextColor(255, 105, 180); // Hot pink
+  doc.text("Calculadora de Notas do Ensino Secundário", 105, y, { align: "center" });
+  y += 15;
+  
+  // Add 10th and 11th year grades
+  doc.setFontSize(14);
+  doc.setTextColor(0, 0, 0);
+  
+  // 10th year section
+  checkPageBreak(10);
+  doc.text("10º Ano", 20, y);
+  y += 10;
+  doc.setFontSize(10);
+  
+  const year10Inputs = document.querySelectorAll('.year10-grade');
+  year10Inputs.forEach(input => {
+    checkPageBreak(7);
+    const subject = input.getAttribute('data-subject');
+    const grade = input.value ? input.value : "-";
+    doc.text(`${subject}: ${grade}`, 25, y);
+    y += 7;
+  });
+  
+  // 11th year section
+  checkPageBreak(15);
+  y += 5;
+  doc.setFontSize(14);
+  doc.text("11º Ano", 20, y);
+  y += 10;
+  doc.setFontSize(10);
+  
+  const year11Inputs = document.querySelectorAll('.year11-grade');
+  year11Inputs.forEach(input => {
+    checkPageBreak(7);
+    const subject = input.getAttribute('data-subject');
+    const grade = input.value ? input.value : "-";
+    doc.text(`${subject}: ${grade}`, 25, y);
+    y += 7;
+  });
+  
+  // 12th year section with domains
+  checkPageBreak(15);
+  y += 5;
+  doc.setFontSize(14);
+  doc.text("12º Ano", 20, y);
+  y += 10;
+  doc.setFontSize(10);
+  
+  // Group tests by subject and domain
+  const subjectDomainTests = {};
+  
+  if (window.testData && window.testData.length > 0) {
+    window.testData.forEach(test => {
+      if (!subjectDomainTests[test.subject]) {
+        subjectDomainTests[test.subject] = {};
+      }
+      if (!subjectDomainTests[test.subject][test.domain]) {
+        subjectDomainTests[test.subject][test.domain] = [];
+      }
+      subjectDomainTests[test.subject][test.domain].push(test);
+    });
+    
+    // Print 12th year grades by subject and domain
+    Object.entries(subjectDomainTests).forEach(([subject, domains]) => {
+      checkPageBreak(7);
+      doc.text(`${subject}:`, 25, y);
+      y += 7;
+      
+      Object.entries(domains).forEach(([domain, tests]) => {
+        checkPageBreak(7);
+        doc.text(`   ${domain}:`, 30, y);
+        y += 7;
+        
+        tests.forEach(test => {
+          checkPageBreak(7);
+          doc.text(`      ${test.name}: ${test.grade.toFixed(1)}`, 35, y);
+          y += 7;
+        });
+        
+        // Add domain average
+        checkPageBreak(7);
+        const domainAvg = tests.reduce((sum, t) => sum + t.grade, 0) / tests.length;
+        doc.text(`      Média: ${domainAvg.toFixed(1)}`, 35, y);
+        y += 7;
+      });
+      
+      // Add subject final grade
+      checkPageBreak(10);
+      const subjectGrade = funcs.getSubjectGrade12(subject);
+      if (subjectGrade !== null) {
+        doc.text(`   Nota Final: ${subjectGrade}`, 30, y);
+        y += 10;
+      } else {
+        y += 3;
+      }
+    });
+  }
+  
+  // Add exam grades section
+  checkPageBreak(20);
+  doc.setFontSize(14);
+  doc.text("Exames Nacionais", 20, y);
+  y += 10;
+  doc.setFontSize(10);
+  
+  const examRows = document.querySelectorAll('#exam-summary-body tr');
+  examRows.forEach(row => {
+    checkPageBreak(7);
+    const subject = row.getAttribute('data-subject');
+    const grade = row.querySelector('.exam-grade-display')?.textContent || "-";
+    doc.text(`${subject}: ${grade}`, 25, y);
+    y += 7;
+  });
+  
+  // Final results table
+  checkPageBreak(30);
+  y += 10;
+  doc.setFontSize(14);
+  doc.text("Resumo dos Resultados", 20, y);
+  y += 10;
+  
+  // Create data for the summary table
+  const tableData = [];
+  const tableRows = document.querySelectorAll('#summary-body tr');
+  
+  tableRows.forEach(row => {
+    const cells = Array.from(row.children).slice(0, 7); // First 7 cells (exclude approval and entrance exam)
+    const rowData = cells.map(cell => cell.textContent);
+    tableData.push(rowData);
+  });
+  
+  // Add summary table - the autoTable plugin handles page breaks internally
+  doc.autoTable({
+    startY: y,
+    head: [['Disciplina', '10º Ano', '11º Ano', '12º Ano', 'Nota Exame', 'CIF', 'Nota na Pauta']],
+    body: tableData,
+    theme: 'grid',
+    styles: { fontSize: 8 },
+    headStyles: { fillColor: [255, 105, 180] }
+  });
+  
+  // Add averages
+  y = doc.lastAutoTable.finalY + 10;
+  checkPageBreak(20);
+  
+  // Get average values
+  const totalAverageNoExams = document.getElementById('total-average-no-exams').textContent;
+  const totalAverageWithExams = document.getElementById('total-average-with-exams').textContent;
+  
+  doc.setFontSize(12);
+  doc.text(`Média do Ensino Secundário: ${totalAverageNoExams}`, 20, y);
+  y += 10;
+  
+  checkPageBreak(10);
+  const examWeight = document.getElementById('examWeight').value;
+  doc.text(`Média de acesso ao ensino superior (Exames ${examWeight}%): ${totalAverageWithExams}`, 20, y);
+  
+  // Save the PDF
+  doc.save('NotasEnsinoSecundario.pdf');
+};
