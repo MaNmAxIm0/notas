@@ -1,6 +1,6 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-app.js";
 import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-auth.js";
-import { getDatabase, ref, set, get } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-database.js";
+import { getDatabase, ref, set, get, update } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-database.js";
 
 import * as funcs from './functions.js';
 
@@ -172,7 +172,7 @@ window.logout = function() {
 
 // Database helper functions
 function saveUserData(userId) {
-  return funcs.saveUserData(userId, auth, database, ref, set);
+  return funcs.saveUserData(userId, auth, database, ref, set, update);
 }
 
 function loadUserData(userId) {
