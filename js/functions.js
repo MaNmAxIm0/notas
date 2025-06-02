@@ -1,3 +1,6 @@
+// Core utility functions
+
+// Authentication and Navigation functions
 export function showLogin() {
   document.getElementById('loginScreen').style.display = 'block';
   document.getElementById('registerScreen').style.display = 'none';
@@ -40,7 +43,7 @@ export function closePopup() {
 }
 
 // Database functions
-export function saveUserData(userId, auth, database, dbRef, dbSet) {
+export function saveUserData(userId, auth, database, dbRef, dbSet, dbUpdate) {
   const yearGrades = {
     year10: {},
     year11: {}
@@ -86,7 +89,7 @@ export function saveUserData(userId, auth, database, dbRef, dbSet) {
     examData: examData
   };
 
-  return dbUpdate(dbRef(database, 'users/' + userId), data);
+  return dbSet(dbRef(database, 'users/' + userId), data);
 }
 
 export function loadUserData(userId, database, dbRef, dbGet) {
