@@ -1,4 +1,4 @@
-// Core utility functions
+// Core utility functions 
 
 // Authentication and Navigation functions
 export function showLogin() { 
