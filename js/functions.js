@@ -1,7 +1,7 @@
-// Core utility functions 
+// Core utility functions
 
 // Authentication and Navigation functions
-export function showLogin() { 
+export function showLogin() {
   document.getElementById('loginScreen').style.display = 'block';
   document.getElementById('registerScreen').style.display = 'none';
   document.getElementById('mainContent').style.display = 'none';
@@ -593,10 +593,10 @@ export function processSubject(subject, tests, container) {
     }
   });
 
-  // Function to format number with minimum decimal places
+  // Function to format number with minimum decimal places - show up to 2 decimals only when needed
   const formatNumber = (num) => {
     if (num === null || isNaN(num)) return '-';
-    return Number(num.toFixed(3)).toString();
+    return parseFloat(num.toFixed(2)).toString();
   };
 
   const subjectContainer = document.createElement('div');
@@ -624,13 +624,13 @@ export function processSubject(subject, tests, container) {
             ${domainTests.map(test => `
               <div class="test-grade">
                 <span class="test-name">${test.name}</span>
-                <span class="grade-value">${test.grade.toFixed(1)}</span>
+                <span class="grade-value">${parseFloat(test.grade.toFixed(2))}</span>
                 <span class="remove-test" onclick="removeTest(${window.testData.indexOf(test)}, '${subject}', '${domain.name}')">&times;</span>
               </div>
             `).join('')}
           </div>
           <div class="domain-average">
-            Média: ${domainAvg ? `${domainAvg.rawAverage.toFixed(1)} × ${domain.weight * 100}% = ${formatNumber(domainAvg.weightedAverage)}` : '-'}
+            Média: ${domainAvg ? `${parseFloat(domainAvg.rawAverage.toFixed(2))} × ${domain.weight * 100}% = ${formatNumber(domainAvg.weightedAverage)}` : '-'}
           </div>
         </div>
     `;
