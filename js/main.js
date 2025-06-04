@@ -7,7 +7,7 @@ import * as funcs from '/notas/js/functions.js';
 // Make core functions globally available
 window.showLogin = funcs.showLogin;
 window.showRegister = funcs.showRegister;
-window.showMainContent = funcs.showMainContent;
+window.showMainContent = funcs.showMainContent; 
 window.showTab = funcs.showTab;
 window.closePopup = funcs.closePopup;
 
