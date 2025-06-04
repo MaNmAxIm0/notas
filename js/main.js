@@ -2,7 +2,7 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.0/firebas
 import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-auth.js";
 import { getDatabase, ref, set, get, update } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-database.js";
 
-import * as funcs from 'notas/js/functions.js';
+import * as funcs from './functions.js';
 
 // Make core functions globally available
 window.showLogin = funcs.showLogin;
@@ -247,12 +247,44 @@ document.addEventListener('DOMContentLoaded', function() {
     const email = document.getElementById('loginEmail').value;
     const password = document.getElementById('loginPassword').value;
     
+    if (!email || !password) {
+      alert('Por favor preencha todos os campos');
+      return;
+    }
+    
+    const submitButton = this.querySelector('button[type="submit"]');
+    const originalText = submitButton.textContent;
+    submitButton.disabled = true;
+    submitButton.textContent = 'Entrando...';
+    
     signInWithEmailAndPassword(auth, email, password)
       .then((userCredential) => {
-        loadUserData(userCredential.user.uid);
+        console.log('Login successful');
       })
       .catch((error) => {
-        alert('Erro de login: ' + error.message);
+        console.error('Login error:', error);
+        let errorMessage = 'Erro de login: ';
+        switch (error.code) {
+          case 'auth/user-not-found':
+            errorMessage += 'Utilizador não encontrado';
+            break;
+          case 'auth/wrong-password':
+            errorMessage += 'Senha incorreta';
+            break;
+          case 'auth/invalid-email':
+            errorMessage += 'Email inválido';
+            break;
+          case 'auth/too-many-requests':
+            errorMessage += 'Muitas tentativas de login. Tente novamente mais tarde';
+            break;
+          default:
+            errorMessage += error.message;
+        }
+        alert(errorMessage);
+      })
+      .finally(() => {
+        submitButton.disabled = false;
+        submitButton.textContent = originalText;
       });
   });
 
@@ -296,10 +328,14 @@ document.addEventListener('DOMContentLoaded', function() {
 // Auth state observer
 onAuthStateChanged(auth, (user) => {
   if (user) {
-    loadUserData(user.uid);
-    setupAutoSave();
+    if (document.getElementById('mainContent').style.display === 'none') {
+      loadUserData(user.uid);
+      setupAutoSave();
+    }
   } else {
-    funcs.showLogin();
+    if (document.getElementById('loginScreen').style.display === 'none') {
+      funcs.showLogin();
+    }
   }
 });
 
