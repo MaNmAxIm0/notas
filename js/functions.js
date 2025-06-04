@@ -1,7 +1,7 @@
 // Core utility functions
 
 // Authentication and Navigation functions
-export function showLogin() {
+export function showLogin() { 
   document.getElementById('loginScreen').style.display = 'block';
   document.getElementById('registerScreen').style.display = 'none';
   document.getElementById('mainContent').style.display = 'none';
